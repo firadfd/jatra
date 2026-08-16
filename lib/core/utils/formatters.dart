@@ -156,6 +156,10 @@ class Fmt {
   /// the axis style applies it only where it means something.
   String monthAbbrev(int ms) => _formatDate('MMM', ms);
 
+  /// `Aug 24` — an axis tick on a chart that spans years, where a bare month
+  /// name repeats and stops identifying anything.
+  String monthYearAbbrev(int ms) => _formatDate('MMM yy', ms);
+
   /// `4 Aug 2026, 6:42 pm`
   String dateTime(int ms) => _formatDate('d MMM yyyy, h:mm a', ms);
 

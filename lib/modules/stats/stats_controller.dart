@@ -3,6 +3,7 @@ import 'package:get/get.dart' hide Value;
 import '../../core/calc/cost_calc.dart';
 import '../../core/calc/date_range.dart';
 import '../../core/calc/mileage_calc.dart';
+import '../../core/calc/monthly_rollup.dart';
 import '../../core/utils/clock.dart';
 import '../../core/utils/money.dart';
 import '../../data/db/database.dart';
@@ -11,30 +12,6 @@ import '../../data/repositories/fuel_repo.dart';
 import '../../data/repositories/service_repo.dart';
 import '../../services/settings_service.dart';
 import '../vehicles/vehicle_controller.dart';
-
-/// One calendar month of spending, split by where it went.
-class MonthlySpend {
-  const MonthlySpend({
-    required this.monthStartMs,
-    required this.fuel,
-    required this.service,
-    required this.other,
-    required this.distanceM,
-  });
-
-  final int monthStartMs;
-  final Money fuel;
-  final Money service;
-  final Money other;
-  final int distanceM;
-
-  Money get total => fuel + service + other;
-
-  /// Cost per metre in minor units, or null for a month with no measured
-  /// distance — guard every division.
-  double? get costPerMetreMinor =>
-      distanceM <= 0 ? null : total.minor / distanceM;
-}
 
 /// A single point on the mileage or price line.
 class SeriesPoint {
@@ -197,59 +174,14 @@ class StatsController extends GetxController {
     List<ExpenseRow> expenses,
     List<({int dateMs, int odometerM})> observations,
   ) {
-    final months = <int, ({Money fuel, Money service, Money other})>{};
-
-    void add(int dateMs, {Money? fuel, Money? service, Money? other}) {
-      final key = Dates.startOfLocalMonth(dateMs);
-      final current =
-          months[key] ??
-          (fuel: Money.zero, service: Money.zero, other: Money.zero);
-      months[key] = (
-        fuel: current.fuel + (fuel ?? Money.zero),
-        service: current.service + (service ?? Money.zero),
-        other: current.other + (other ?? Money.zero),
-      );
-    }
-
-    for (final e in fuelEntries) {
-      add(e.dateMs, fuel: Money(e.totalCostMinor));
-    }
-    for (final s in serviceLogs) {
-      add(s.dateMs, service: Money(s.totalCostMinor));
-    }
-    for (final x in expenses) {
-      add(x.dateMs, other: Money(x.amountMinor));
-    }
-
-    final keys = months.keys.toList()..sort();
-    monthly.assignAll([
-      for (final key in keys)
-        MonthlySpend(
-          monthStartMs: key,
-          fuel: months[key]!.fuel,
-          service: months[key]!.service,
-          other: months[key]!.other,
-          distanceM: _distanceInMonth(observations, key),
-        ),
-    ]);
-  }
-
-  /// Odometer span within one calendar month. Zero when fewer than two
-  /// readings landed in it.
-  int _distanceInMonth(
-    List<({int dateMs, int odometerM})> observations,
-    int monthStartMs,
-  ) {
-    final d = DateTime.fromMillisecondsSinceEpoch(monthStartMs);
-    final monthEnd = DateTime(d.year, d.month + 1).millisecondsSinceEpoch - 1;
-    return CostCalculator.distanceIn(
-      observations,
-      range: DateRange(
-        fromMs: monthStartMs,
-        toMs: monthEnd,
-        preset: RangePreset.custom,
+    monthly.assignAll(
+      MonthlyRollup.build(
+        fuelEntries: fuelEntries,
+        serviceLogs: serviceLogs,
+        expenses: expenses,
+        observations: observations,
       ),
-    ).distanceM;
+    );
   }
 
   /// Trip calculator, exposed for the stats screen's inline estimator.

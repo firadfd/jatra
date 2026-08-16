@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Distance per month on its own. 4x2 by default: enough for the chart,
+  its current value and both axes.
+
+  updatePeriodMillis is 0 on purpose. All-time figures change only when the
+  user logs something, and they can only log something inside the app — so
+  the app pushes new faces when that happens and the system never needs to
+  wake this receiver on a timer. A widget that polls a database nothing else
+  is writing to is a battery cost with no possible benefit.
+
+  minWidth/minHeight are the hard floor, set to the smallest size this face
+  is actually drawn for rather than to the default. They are kept low
+  deliberately: minResize* is the documented way to allow shrinking past the
+  default, but several OEM launchers ignore it and treat minWidth/minHeight
+  as the floor, and on those the widget would refuse to shrink at all. On
+  Android 11 and below these also decide the placed size.
+
+  Resizing reflows immediately, without the app running: see WidgetPanel.
+
+  previewImage rather than previewLayout, and generated rather than drawn by
+  hand. The picker renders its preview with the app not running, so a widget
+  whose face is a bitmap pushed from Flutter has nothing to show — the entry
+  comes out blank next to every other app's. previewLayout would only draw
+  the "open Jatra" placeholder, and is API 31+ besides. A picture of the real
+  widget works on every version. Regenerate with
+  `flutter test tool/generate_widget_previews.dart`.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/jatra_widget_distance_description"
+    android:initialLayout="@layout/jatra_widget"
+    android:minHeight="80dp"
+    android:minResizeHeight="80dp"
+    android:minResizeWidth="140dp"
+    android:minWidth="180dp"
+    android:maxResizeHeight="800dp"
+    android:maxResizeWidth="800dp"
+    android:previewImage="@drawable/widget_preview_distance"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellHeight="2"
+    android:targetCellWidth="4"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen" />
