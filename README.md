@@ -62,6 +62,13 @@ it.
   usually the first sign of something mechanical.
 - **Optional GPS ride tracking**, off by default, drawing your route over
   OpenStreetMap. It asks for location only when you turn it on.
+- **Home-screen widgets** (Android): all-time distance, total spend, mileage
+  and fuel cost per kilometre, over monthly charts of spend, distance and
+  fuel cost — each with its own axes. Take the lot in one widget, or place
+  just the figures, or just the one chart you care about, from five separate
+  entries in the widget picker. Resize any of them from a single strip to
+  half a screen — they reflow immediately — and they wear whichever theme
+  you picked in the app.
 - **Backup and restore** to a plain, readable JSON file you own, plus CSV
   export and a raw `.sqlite` copy for same-version transfers.
 - **English and Bangla**, switchable in settings.
@@ -76,6 +83,12 @@ analytics, no remote config and no update check.
 Backups are unencrypted JSON by design — it is your data, in a format you
 can read and a spreadsheet can parse. Treat an exported file the way you
 would treat any other document containing your movements.
+
+The home-screen widget is a picture, not a database. Jatra renders it inside
+the app and keeps the resulting PNG in its own private storage; the launcher
+is handed the image to draw and never gets access to your records. Bear in
+mind that a widget puts your figures on a screen that unlocks in public —
+remove it if that is not what you want.
 
 ---
 

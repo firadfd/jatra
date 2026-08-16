@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The whole face arrives as one image, rendered by Flutter (see
+  JatraStatsWidget). This layout is the frame it sits in, plus the state
+  shown before the first render exists.
+
+  No background of its own: the image carries the app's card surface, border
+  and corner radius, so the widget follows the theme the user chose inside
+  Jatra rather than the launcher's idea of night mode.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/jatra_widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--
+      fitCenter, not fitXY. The bitmap is rendered at the exact size the
+      launcher reported, so the two normally match to the pixel; when they
+      do not — a resize while the app was closed — this letterboxes rather
+      than stretching the typography, and corrects itself on the next run.
+    -->
+    <ImageView
+        android:id="@+id/jatra_widget_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/jatra_widget_description"
+        android:scaleType="fitCenter"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/jatra_widget_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/jatra_widget_placeholder_background"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="@string/jatra_widget_placeholder"
+        android:textColor="@color/jatra_widget_placeholder_text"
+        android:textSize="13sp"
+        android:visibility="visible" />
+</FrameLayout>

@@ -13,6 +13,7 @@ import '../../modules/rides/ride_tracker_controller.dart';
 import '../../modules/service/service_controller.dart';
 import '../../modules/vehicles/vehicle_controller.dart';
 import '../../services/export_service.dart';
+import '../../services/home_widget/home_widget_service.dart';
 import '../../services/import_service.dart';
 import '../../services/location_service.dart';
 import '../../services/notification_service.dart';
@@ -114,6 +115,21 @@ class InitialBinding extends Bindings {
         Get.find<VehicleController>(),
         Get.find<ReminderService>(),
       ),
+      permanent: true,
+    );
+
+    // Last, because it reads the active vehicle and every repository above
+    // it. Registered unconditionally and inert everywhere but Android, and
+    // inert on Android too until the user places a widget.
+    Get.putAsync<HomeWidgetService>(
+      () => HomeWidgetService(
+        db,
+        Get.find<VehicleController>(),
+        Get.find<SettingsService>(),
+        Get.find<FuelRepo>(),
+        Get.find<ServiceRepo>(),
+        Get.find<ExpenseRepo>(),
+      ).init(),
       permanent: true,
     );
   }

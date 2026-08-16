@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Palette.ink800 / ink600 / slate400 — the dark theme's card surface. -->
+    <color name="jatra_widget_surface">#1A2026</color>
+    <color name="jatra_widget_border">#38424C</color>
+    <color name="jatra_widget_placeholder_text">#7C8A97</color>
+</resources>

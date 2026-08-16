@@ -437,6 +437,24 @@
   "@statsNoBikeBody": {
     "description": "Empty state on the statistics screen when no bike is selected."
   },
+  "widgetFuelCostPer": "Fuel cost {unit}",
+  "@widgetFuelCostPer": {
+    "description": "Home-screen widget tile and chart label. Petrol only — the widget has no room to explain the difference between fuel, running and true cost, so it shows the one a rider can check against a pump receipt and names it.",
+    "placeholders": {
+      "unit": {
+        "type": "String",
+        "example": "/KM"
+      }
+    }
+  },
+  "widgetNoBike": "Add a bike in Jatra to see your numbers here.",
+  "@widgetNoBike": {
+    "description": "Home-screen widget, shown when no vehicle exists yet."
+  },
+  "widgetNoData": "Log a refuel in Jatra to see your numbers here.",
+  "@widgetNoData": {
+    "description": "Home-screen widget, shown when a vehicle exists but nothing has been logged against it."
+  },
   "statsCostPerDistance": "Cost per distance",
   "@statsCostPerDistance": {
     "description": "Section label above the three cost-per-distance figures."

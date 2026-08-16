@@ -872,6 +872,19 @@ class LBn extends L {
   String get statsNoBikeBody => 'পরিসংখ্যান দেখতে একটি বাইক যোগ করুন।';
 
   @override
+  String widgetFuelCostPer(String unit) {
+    return 'জ্বালানি খরচ $unit';
+  }
+
+  @override
+  String get widgetNoBike =>
+      'এখানে আপনার হিসাব দেখতে Jatra-তে একটি বাইক যোগ করুন।';
+
+  @override
+  String get widgetNoData =>
+      'এখানে আপনার হিসাব দেখতে Jatra-তে একটি রিফুয়েল লিখুন।';
+
+  @override
   String get statsCostPerDistance => 'প্রতি দূরত্বে খরচ';
 
   @override

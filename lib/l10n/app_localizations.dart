@@ -1627,6 +1627,24 @@ abstract class L {
   /// **'Add a bike to see statistics.'**
   String get statsNoBikeBody;
 
+  /// Home-screen widget tile and chart label. Petrol only — the widget has no room to explain the difference between fuel, running and true cost, so it shows the one a rider can check against a pump receipt and names it.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel cost {unit}'**
+  String widgetFuelCostPer(String unit);
+
+  /// Home-screen widget, shown when no vehicle exists yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a bike in Jatra to see your numbers here.'**
+  String get widgetNoBike;
+
+  /// Home-screen widget, shown when a vehicle exists but nothing has been logged against it.
+  ///
+  /// In en, this message translates to:
+  /// **'Log a refuel in Jatra to see your numbers here.'**
+  String get widgetNoData;
+
   /// Section label above the three cost-per-distance figures.
   ///
   /// In en, this message translates to:

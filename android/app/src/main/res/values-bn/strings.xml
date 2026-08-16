@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="jatra_widget_placeholder">এই উইজেট চালু করতে Jatra খুলুন</string>
+
+    <string name="jatra_widget_all_label">Jatra পরিসংখ্যান</string>
+    <string name="jatra_widget_all_description">সব সময়ের দূরত্ব, খরচ, মাইলেজ ও প্রতি কিলোমিটারে জ্বালানি খরচ, সঙ্গে প্রতিটির মাসিক চার্ট।</string>
+
+    <string name="jatra_widget_info_label">Jatra হিসাব</string>
+    <string name="jatra_widget_info_description">সব সময়ের দূরত্ব, মোট খরচ, মাইলেজ ও প্রতি কিলোমিটারে জ্বালানি খরচ।</string>
+
+    <string name="jatra_widget_spend_label">মাসিক খরচ</string>
+    <string name="jatra_widget_spend_description">প্রতি মাসে জ্বালানি, সার্ভিসিং ও অন্যান্য খাতে আপনার খরচ।</string>
+
+    <string name="jatra_widget_distance_label">মাসিক দূরত্ব</string>
+    <string name="jatra_widget_distance_description">প্রতি মাসে আপনি কত পথ চালিয়েছেন।</string>
+
+    <string name="jatra_widget_fuel_cost_label">প্রতি কিমিতে জ্বালানি খরচ</string>
+    <string name="jatra_widget_fuel_cost_description">মাসে মাসে এক কিলোমিটারে কত টাকার পেট্রোল লাগে।</string>
+
+    <string name="jatra_widget_description">সব সময়ের দূরত্ব, খরচ, মাইলেজ ও প্রতি কিলোমিটারে জ্বালানি খরচ, সঙ্গে মাসিক চার্ট।</string>
+</resources>

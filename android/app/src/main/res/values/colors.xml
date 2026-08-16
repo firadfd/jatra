@@ -3,4 +3,13 @@
     <!-- Palette.ink900 — the app's base surface, so the icon and the first
          frame of the app agree. -->
     <color name="ic_launcher_background">#12161A</color>
+
+    <!--
+      Home-screen widget placeholder, in the light theme's paper palette.
+      Used only until Flutter renders the real face, which paints its own
+      surface from whichever theme the user picked inside the app.
+    -->
+    <color name="jatra_widget_surface">#FFFFFF</color>
+    <color name="jatra_widget_border">#DCD6CC</color>
+    <color name="jatra_widget_placeholder_text">#5F6B75</color>
 </resources>

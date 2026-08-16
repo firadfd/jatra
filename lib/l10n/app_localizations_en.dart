@@ -865,6 +865,17 @@ class LEn extends L {
   String get statsNoBikeBody => 'Add a bike to see statistics.';
 
   @override
+  String widgetFuelCostPer(String unit) {
+    return 'Fuel cost $unit';
+  }
+
+  @override
+  String get widgetNoBike => 'Add a bike in Jatra to see your numbers here.';
+
+  @override
+  String get widgetNoData => 'Log a refuel in Jatra to see your numbers here.';
+
+  @override
   String get statsCostPerDistance => 'Cost per distance';
 
   @override

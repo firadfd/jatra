@@ -97,6 +97,78 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!--
+          Home-screen widgets — five of them, so a rider can put a single
+          chart on a home screen without the other two and four figures
+          coming along. They share one implementation; see JatraWidgets.kt.
+
+          All exported, because the AppWidget framework delivers
+          APPWIDGET_UPDATE as a broadcast from the system and some launchers
+          will not bind a provider that is not. Nothing is exposed by that:
+          each receiver reads a PNG out of the app's own files directory and
+          hands it to the system to draw. They accept no data, and there is
+          no other action in the filter to send them.
+        -->
+        <receiver
+            android:name=".JatraStatsWidget"
+            android:exported="true"
+            android:label="@string/jatra_widget_all_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/jatra_stats_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".JatraInfoWidget"
+            android:exported="true"
+            android:label="@string/jatra_widget_info_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/jatra_info_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".JatraSpendWidget"
+            android:exported="true"
+            android:label="@string/jatra_widget_spend_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/jatra_spend_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".JatraDistanceWidget"
+            android:exported="true"
+            android:label="@string/jatra_widget_distance_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/jatra_distance_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".JatraFuelCostWidget"
+            android:exported="true"
+            android:label="@string/jatra_widget_fuel_cost_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/jatra_fuel_cost_widget_info" />
+        </receiver>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

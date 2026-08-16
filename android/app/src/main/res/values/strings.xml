@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android resource strings, which is a different place from the app's own
+  localisation. These are read by the system — the widget picker and TalkBack
+  — before any Flutter code runs, so they cannot come from the .arb files.
+  Bangla lives in values-bn/strings.xml.
+-->
+<resources>
+    <string name="jatra_widget_placeholder">Open Jatra to set up this widget</string>
+
+    <string name="jatra_widget_all_label">Jatra stats</string>
+    <string name="jatra_widget_all_description">All-time distance, spend, mileage and fuel cost per kilometre, over monthly charts of each.</string>
+
+    <string name="jatra_widget_info_label">Jatra figures</string>
+    <string name="jatra_widget_info_description">All-time distance, total spend, mileage and fuel cost per kilometre.</string>
+
+    <string name="jatra_widget_spend_label">Monthly spend</string>
+    <string name="jatra_widget_spend_description">What you spent each month on fuel, servicing and everything else.</string>
+
+    <string name="jatra_widget_distance_label">Distance per month</string>
+    <string name="jatra_widget_distance_description">How far you rode each month.</string>
+
+    <string name="jatra_widget_fuel_cost_label">Fuel cost per km</string>
+    <string name="jatra_widget_fuel_cost_description">What a kilometre costs in petrol, month by month.</string>
+
+    <string name="jatra_widget_description">All-time distance, spend, mileage and fuel cost per kilometre, with monthly charts.</string>
+</resources>
