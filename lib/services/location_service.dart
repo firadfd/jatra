@@ -1,0 +1,193 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart' hide Value;
+
+import '../core/utils/geo_utils.dart';
+import '../data/models/enums.dart';
+import '../core/utils/l10n.dart';
+
+/// Where a permission request ended up.
+enum LocationPermissionState {
+  /// Never asked, or asked and dismissed without an answer.
+  notRequested,
+
+  /// Foreground only. Enough for "while app is open".
+  whileInUse,
+
+  /// Background granted. Required for recording with the screen off.
+  always,
+
+  /// Refused, but can be asked again.
+  denied,
+
+  /// Refused permanently, or blocked by policy. Only Settings can undo this.
+  deniedForever,
+
+  /// Location is switched off device-wide.
+  servicesDisabled;
+
+  bool get allowsForeground =>
+      this == LocationPermissionState.whileInUse ||
+      this == LocationPermissionState.always;
+
+  bool get allowsBackground => this == LocationPermissionState.always;
+
+  /// True when nothing the app can do will change the answer — the user has
+  /// to go to Settings.
+  bool get needsSettings => this == LocationPermissionState.deniedForever;
+}
+
+/// GPS access and the permission dance around it.
+///
+/// Nothing in this class runs at launch. It is constructed lazily, and the
+/// first thing that touches the platform is a request the user explicitly
+/// triggered by switching tracking on.
+class LocationService extends GetxService {
+  /// Current known permission state, kept for the settings screen to react
+  /// to without re-querying on every rebuild.
+  final permission = LocationPermissionState.notRequested.obs;
+
+  /// The stream configuration for a tracking mode.
+  ///
+  /// The critical detail is [ForegroundNotificationConfig]: supplying it
+  /// starts an Android foreground service, and passing `null` means no
+  /// service and no notification at all. "While app is open" must not show
+  /// a persistent notification, so it passes null.
+  static LocationSettings buildSettings({required bool backgroundEnabled}) {
+    if (!Platform.isAndroid) {
+      return const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      );
+    }
+
+    return AndroidSettings(
+      accuracy: LocationAccuracy.high,
+      // A 10 m filter at the platform level, on top of the app's own 5 m
+      // jitter rule. The platform one saves battery; the app's one is what
+      // keeps distances honest.
+      distanceFilter: 10,
+      foregroundNotificationConfig: backgroundEnabled
+          ? ForegroundNotificationConfig(
+              notificationTitle: l10n.ridesRecording,
+              notificationText: l10n.ridesForegroundNotification,
+              enableWakeLock: true,
+            )
+          : null,
+    );
+  }
+
+  /// Reads the current state without prompting.
+  Future<LocationPermissionState> check() async {
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      return permission.value = LocationPermissionState.servicesDisabled;
+    }
+    return permission.value = _map(await Geolocator.checkPermission());
+  }
+
+  /// Requests foreground location.
+  ///
+  /// Called at the moment the user flips the tracking toggle, never before,
+  /// and never at launch.
+  Future<LocationPermissionState> requestForeground() async {
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      return permission.value = LocationPermissionState.servicesDisabled;
+    }
+
+    var current = await Geolocator.checkPermission();
+    if (current == LocationPermission.denied) {
+      current = await Geolocator.requestPermission();
+    }
+    return permission.value = _map(current);
+  }
+
+  /// Requests background ("Allow all the time") location.
+  ///
+  /// On Android 11+ this **cannot** be granted from the standard dialog —
+  /// the system only offers "While using the app". The second request
+  /// returns `whileInUse` rather than `always`, and the only route to
+  /// `always` is the app's settings page.
+  ///
+  /// So: ask once, and if the answer is not `always`, hand back the state
+  /// and let the UI show an explainer with a button to [openAppSettings].
+  /// Never loop the dialog — repeated prompts are how an app gets its
+  /// permission permanently denied.
+  Future<LocationPermissionState> requestBackground() async {
+    final foreground = await requestForeground();
+    if (!foreground.allowsForeground) return foreground;
+
+    final result = await Geolocator.requestPermission();
+    return permission.value = _map(result);
+  }
+
+  /// Opens the app's settings page, for the Android 11+ background case and
+  /// for a permanent denial. The caller re-checks on resume.
+  Future<bool> openAppSettings() => Geolocator.openAppSettings();
+
+  /// Opens the device location settings, for when GPS is off entirely.
+  Future<bool> openLocationSettings() => Geolocator.openLocationSettings();
+
+  /// The position stream, already mapped to the app's own [GeoPoint].
+  ///
+  /// Unfiltered — quality rules live in [GpsFilter] and are applied by the
+  /// tracker, so they stay testable without a GPS.
+  Stream<GeoPoint> watch({required TrackingMode mode}) {
+    if (mode == TrackingMode.off) return const Stream.empty();
+
+    return Geolocator.getPositionStream(
+      locationSettings: buildSettings(
+        backgroundEnabled: mode == TrackingMode.background,
+      ),
+    ).map(toGeoPoint);
+  }
+
+  /// A foreground position stream that does not depend on the tracking mode.
+  ///
+  /// [watch] returns an empty stream when tracking is Off, which is correct
+  /// for ride recording — that switch governs whether rides are *recorded*.
+  /// Showing a "you are here" dot is a different question, asked and answered
+  /// per tap, and never writes a thing to the database.
+  ///
+  /// Always foreground-only: no [ForegroundNotificationConfig], so no service
+  /// and no persistent notification. The caller is responsible for cancelling
+  /// this the moment the map stops being looked at.
+  Stream<GeoPoint> watchForeground() {
+    return Geolocator.getPositionStream(
+      locationSettings: buildSettings(backgroundEnabled: false),
+    ).map(toGeoPoint);
+  }
+
+  /// A single fix, for stamping the start of a ride.
+  Future<GeoPoint?> currentPosition() async {
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: buildSettings(backgroundEnabled: false),
+      );
+      return toGeoPoint(position);
+    } on Object {
+      // A timeout or a revoked permission mid-call. A ride can start
+      // without an initial fix; the first stream sample will do.
+      return null;
+    }
+  }
+
+  static GeoPoint toGeoPoint(Position p) => GeoPoint(
+    lat: p.latitude,
+    lng: p.longitude,
+    timestampMs: p.timestamp.millisecondsSinceEpoch,
+    accuracy: p.accuracy,
+    speed: p.speed,
+    altitude: p.altitude,
+  );
+
+  static LocationPermissionState _map(LocationPermission p) => switch (p) {
+    LocationPermission.always => LocationPermissionState.always,
+    LocationPermission.whileInUse => LocationPermissionState.whileInUse,
+    LocationPermission.denied => LocationPermissionState.denied,
+    LocationPermission.deniedForever => LocationPermissionState.deniedForever,
+    LocationPermission.unableToDetermine =>
+      LocationPermissionState.notRequested,
+  };
+}

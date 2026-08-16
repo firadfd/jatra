@@ -1,0 +1,7 @@
+# Generated localisations. Run `flutter gen-l10n` (flutter run/build do it
+# automatically) after editing an .arb file.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: L
+nullable-getter: false

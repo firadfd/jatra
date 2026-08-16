@@ -1,0 +1,117 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      Jatra requests no permission of its own. Service reminders are posted by
+      flutter_local_notifications, which contributes POST_NOTIFICATIONS
+      (asked for only when the user switches reminders on) plus the two
+      below, which we do not use and therefore remove:
+
+        SCHEDULE_EXACT_ALARM / USE_EXACT_ALARM — reminders are scheduled with
+        AndroidScheduleMode.inexactAllowWhileIdle. A service due "sometime
+        this week" does not need to wake the device to the second, and
+        declaring exact alarms would trigger a Play Store declaration form
+        for no benefit.
+
+        RECEIVE_BOOT_COMPLETED — we recompute and reschedule on every app
+        launch, so surviving a reboot in the scheduler is unnecessary.
+    -->
+    <!--
+      Map tiles, and nothing else.
+
+      Jatra has no account, no server of its own and no analytics. The one
+      network call it makes is fetching OpenStreetMap raster tiles to draw
+      behind a recorded ride, which sends the tile coordinates of that ride
+      to openstreetmap.org. Every other feature — fuel, service, expenses,
+      statistics, backups, reminders — works with the radio off.
+
+      This must live in the main manifest: Flutter's generated debug and
+      profile manifests declare it too, so leaving it out here still shows
+      tiles in development and silently shows none in a release build.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"
+        tools:node="remove" />
+
+    <!--
+      Ride tracking (Phase 6). All of these are runtime permissions and none
+      is requested until the user picks a tracking mode in settings — the
+      default is Off, and the app is fully usable that way.
+
+      ACCESS_BACKGROUND_LOCATION triggers a manual Play Store review with a
+      declaration form and a demo video. It is here because "record with the
+      screen off" cannot work without it. Removing this one line, and the
+      background option from TrackingMode, is all it takes to go back to a
+      near-instant review.
+
+      GPS only — Jatra has no use for the network-based coarse location, and
+      asking for less is asking for less.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+    <!--
+      Jatra does not use coarse location, and geolocator contributes it by
+      default. Removed so the Play listing does not claim an access the app
+      never makes.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+        tools:node="remove" />
+
+    <!-- GPS is required for this feature; the app does not fall back to
+         network positioning. Marked not-required so the Play listing stays
+         open to devices without it, since every other feature works. -->
+    <uses-feature android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <application
+        android:label="Jatra"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+</manifest>

@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest something Jatra should do
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Worth knowing before you write: Jatra makes exactly one network call
+        (map tiles) and requests no permission until you switch on a feature
+        that needs it. Requests that require an account, a server, syncing or
+        analytics will be declined — see
+        [CONTRIBUTING.md](https://github.com/firadfd/jatra/blob/main/CONTRIBUTING.md#1-nothing-leaves-the-device).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: >
+        Describe the situation you are in, not the feature you imagined. It
+        often turns out there is a better fix than the one first thought of.
+      placeholder: >
+        I ride two bikes and I can never remember which one I last serviced,
+        so I open each in turn to check.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What did you have in mind?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      options:
+        - label: This works fully offline, with no account and no server.
+          required: true
+        - label: This needs no new Android permission (or I have explained why below).
+          required: false

@@ -1,0 +1,135 @@
+name: jatra
+description: "Jatra — offline-first fuel, service and ride-cost tracker for motorcycles."
+publish_to: 'none'
+
+# versionName+versionCode. Keep in sync with the `appVersion` written into JSON backups.
+version: 1.0.1+2
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # --- State + routing ---
+  get: ^4.7.3
+
+  # --- Persistence ---
+  drift: ^2.34.3
+  drift_flutter: ^0.3.1        # bundles sqlite3_flutter_libs for the native build
+  path_provider: ^2.1.6        # we resolve the .sqlite path ourselves, for raw backup
+  get_storage: ^2.1.1          # settings only — never records
+
+  # --- Formatting + localisation ---
+  # Pinned to what the Flutter SDK's flutter_localizations depends on; a
+  # caret range here resolves higher and the two then refuse to coexist.
+  intl: 0.20.3
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # --- Service reminders (Phase 3) ---
+  # Scheduled inexactly, so SCHEDULE_EXACT_ALARM / USE_EXACT_ALARM are removed
+  # from the merged manifest — see android/app/src/main/AndroidManifest.xml.
+  flutter_local_notifications: ^22.2.0
+  timezone: ^0.11.1            # zonedSchedule needs a real timezone database
+
+  # --- Charts (Phase 4) ---
+  fl_chart: ^1.2.0
+
+  # --- Backup, export, import (Phase 5) ---
+  #
+  # These two are version-locked to each other. share_plus 13 requires
+  # win32 ^6 while file_picker <12 requires win32 ^5, and pub resolves that
+  # standoff by silently dropping file_picker back to 3.0.4 — a 2021 release
+  # that does not work on a modern Android. Pinning share_plus to 10.x keeps
+  # file_picker on 10.x, which does. Re-check this pair before bumping
+  # either one.
+  share_plus: ^10.0.0
+  file_picker: ^10.0.0
+  # CSV is written by hand — see `export_service.dart`. RFC 4180 escaping is
+  # a dozen lines and not worth a dependency.
+
+  # --- Ride tracking (Phase 6) ---
+  #
+  # This block is what puts location permissions in the manifest, and with
+  # them a manual Play Store review. Nothing here runs, and no permission is
+  # requested, until the user switches tracking on — it is Off by default.
+  geolocator: ^14.0.2          # GPS stream + its own foreground service
+  wakelock_plus: ^1.5.2        # optional "keep screen on while recording"
+  # Draws the ride path over OpenStreetMap's standard raster tiles. No API
+  # key, no account, no token — in exchange OSM's tile usage policy wants an
+  # identifying User-Agent and visible attribution, both of which live in
+  # `ride_map.dart`. This is the only network call the app makes, and the
+  # reason INTERNET is in the manifest.
+  flutter_map: ^8.3.1
+  latlong2: ^0.10.1
+
+  # permission_handler is deliberately *not* used either. Geolocator already
+  # exposes openAppSettings()/openLocationSettings(), and
+  # flutter_local_notifications requests POST_NOTIFICATIONS itself — so it
+  # would earn nothing, and its 13.x line requires compileSdk 37, past what
+  # this Android Gradle Plugin recommends.
+  #
+  # flutter_foreground_task is deliberately *not* used. geolocator's
+  # AndroidSettings.foregroundNotificationConfig starts the same foreground
+  # service, driven by the same stream, with one fewer plugin holding a
+  # second notification channel and its own lifecycle.
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.0
+  drift_dev: ^2.34.5
+
+flutter:
+  uses-material-design: true
+
+  # Generates lib/l10n/app_localizations.dart from the .arb files.
+  generate: true
+
+  fonts:
+    # Display / numerals — condensed grotesque with tabular figures (`tnum`).
+    # Used for odometer readings, km/L and money at large sizes.
+    - family: BarlowCondensed
+      fonts:
+        - asset: assets/fonts/BarlowCondensed-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/BarlowCondensed-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/BarlowCondensed-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/BarlowCondensed-Bold.ttf
+          weight: 700
+
+    # Body / UI.
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+
+    # Data labels / units — monospace, so digits are tabular by construction.
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/JetBrainsMono-Medium.ttf
+          weight: 500
+
+    # Bangla. Wired into every style's fontFamilyFallback so Bangla never
+    # renders as tofu boxes, even inside chart labels.
+    - family: HindSiliguri
+      fonts:
+        - asset: assets/fonts/HindSiliguri-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/HindSiliguri-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/HindSiliguri-SemiBold.ttf
+          weight: 600

@@ -1,0 +1,1308 @@
+{
+  "@@locale": "en",
+  "appName": "Jatra",
+  "@appName": {
+    "description": "The app's name. Not translated."
+  },
+  "actionSave": "Save",
+  "actionCancel": "Cancel",
+  "actionContinue": "Continue",
+  "actionBack": "Back",
+  "actionDelete": "Delete",
+  "actionEdit": "Edit",
+  "actionUndo": "Undo",
+  "actionNotNow": "Not now",
+  "actionGotIt": "Got it",
+  "actionSeeAll": "See all",
+  "navHome": "Home",
+  "navFuelLog": "Fuel log",
+  "navService": "Service",
+  "navExpenses": "Expenses",
+  "navRides": "Rides",
+  "navStatistics": "Statistics",
+  "navBikes": "Bikes",
+  "navSettings": "Settings",
+  "navFuel": "Fuel",
+  "@navFuel": {
+    "description": "Bottom-nav label. Shorter than navFuelLog, which titles the screen."
+  },
+  "navMap": "Map",
+  "@navMap": {
+    "description": "Bottom-nav label for the map tab."
+  },
+  "navStats": "Stats",
+  "@navStats": {
+    "description": "Bottom-nav label. Shorter than navStatistics, which titles the screen."
+  },
+  "onboardingStep": "Step {current} of {total}",
+  "@onboardingStep": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingBikeTitle": "What are you riding?",
+  "onboardingBikeBody": "A name is all Jatra needs. Everything else can wait.",
+  "onboardingBikeName": "Bike name",
+  "onboardingBikeNameError": "Give your bike a name — \"Pulsar\" works fine.",
+  "onboardingMake": "Make",
+  "onboardingModel": "Model",
+  "onboardingFuel": "Fuel",
+  "onboardingOdometerTitle": "What does the odometer read?",
+  "onboardingOdometerBody": "Jatra measures everything from here. Round to the nearest whole number — it does not need to be exact.",
+  "onboardingOdometerLabel": "Current reading",
+  "onboardingOdometerError": "Enter the reading on your odometer right now, in {unit}.",
+  "@onboardingOdometerError": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingUnits": "Units",
+  "onboardingDoneTitle": "You are set.",
+  "onboardingDoneBody": "Log every refuel and Jatra works out your real mileage, when your next service is due, and what a kilometre actually costs you.",
+  "onboardingPrivacyTitle": "Everything stays on this phone",
+  "onboardingPrivacyBody": "No account, no cloud, no analytics. Your fuel, service and expense records never leave this phone, and all of that works in airplane mode. Export a full backup whenever you want it.\n\nThe one exception: if you record a ride, the map behind it loads from OpenStreetMap, which sees roughly where that ride was.",
+  "onboardingPermissionNote": "Location tracking is off, and Jatra will not ask for any permission until you turn on a feature that needs one.",
+  "onboardingStart": "Start tracking",
+  "unitKm": "km",
+  "unitMiles": "miles",
+  "unitLitres": "litres",
+  "unitGallons": "gallons",
+  "homeOdometer": "Odometer",
+  "homeLastTank": "Last tank",
+  "homeRunningCost": "Running cost",
+  "homeRunningCostCaption": "Fuel, service and fixed",
+  "homeNextService": "Next service",
+  "homeRecentFills": "Recent fills",
+  "homeNeedsTwoTanks": "Needs two full tanks",
+  "homeLatestUnreliable": "Latest tank was unreliable",
+  "homeAverage": "Average {value} {unit}",
+  "@homeAverage": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "homeNoBikeTitle": "No bike selected",
+  "homeNoBikeBody": "Add a bike to start logging fuel and services.",
+  "homeAddBike": "Add a bike",
+  "homeNoFillsTitle": "No fills logged yet",
+  "homeNoFillsBody": "Add your first refuel to start tracking mileage.",
+  "homeAddFuel": "Add fuel",
+  "homeNothingDue": "Nothing due",
+  "homeNoServiceItems": "No service items set up yet.",
+  "homeAllClear": "All {count} items are in the clear.",
+  "@homeAllClear": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mileageDropTitle": "Mileage down {percent}% this tank",
+  "@mileageDropTitle": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "mileageDropVsUsual": "vs your usual {value}",
+  "@mileageDropVsUsual": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "mileageDropCauses": "Common causes: tyre pressure, air filter, chain tension.",
+  "fuelAdd": "Add fuel",
+  "fuelEdit": "Edit fill",
+  "fuelSave": "Save fill",
+  "fuelHistory": "Fuel history",
+  "fuelWhen": "When",
+  "fuelDate": "Date",
+  "fuelOdometer": "Odometer",
+  "fuelLastReading": "Last reading: {value} {unit}",
+  "@fuelLastReading": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "fuelOdometerMustBeHigher": "Odometer must be higher than your last reading of {value} {unit}.",
+  "@fuelOdometerMustBeHigher": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "fuelHowMuch": "How much",
+  "fuelFillAnyTwo": "Fill in any two",
+  "fuelAdded": "Fuel added",
+  "fuelPrice": "Price",
+  "fuelTotalPaid": "Total paid",
+  "fuelFilledTank": "Filled the tank",
+  "fuelFullTankExplain": "Mileage is measured between full tanks.",
+  "fuelPartialExplain": "Partial fill. It counts toward your next full tank, but gets no mileage figure of its own.",
+  "fuelMissedEntry": "I missed logging a fill before this",
+  "fuelMissedEntryExplain": "Keeps this tank out of your averages, since some fuel is unaccounted for.",
+  "fuelStation": "Station",
+  "fuelNotes": "Notes",
+  "fuelPartial": "Partial",
+  "fuelGap": "Gap",
+  "fuelUnreliable": "unreliable",
+  "fuelCountsTowardNext": "Counts toward\nnext tank",
+  "fuelNoFillsTitle": "No fills logged yet",
+  "fuelNoFillsBody": "Add your first refuel to start tracking mileage.",
+  "fuelCountFills": "{count, plural, =1{1 fill} other{{count} fills}}",
+  "@fuelCountFills": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "serviceTitle": "Service",
+  "serviceDue": "Due",
+  "serviceNothingPending": "Nothing pending",
+  "serviceNeedAttention": "{count} need attention",
+  "@serviceNeedAttention": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "serviceLogAction": "Log service",
+  "serviceHistory": "History",
+  "serviceNoItemsTitle": "No service items",
+  "serviceNoItemsBody": "Add the jobs you want Jatra to keep track of — engine oil, chain lube, brake pads.",
+  "serviceAddItem": "Add a service item",
+  "serviceNothingLogged": "Nothing logged yet. Log a service and Jatra will move that item's next due point forward for you.",
+  "serviceRemindersTitle": "Get told when a service is due",
+  "serviceRemindersBody": "Jatra will post a reminder on this phone. Nothing is sent anywhere — the reminder is worked out here, from your own log.",
+  "serviceRemindersEnable": "Turn on reminders",
+  "serviceToGo": "{value} {unit} to go",
+  "@serviceToGo": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceOver": "{value} {unit} over",
+  "@serviceOver": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceNoInterval": "No interval set. Edit to add one.",
+  "statusOk": "OK",
+  "statusDueSoon": "DUE SOON",
+  "statusDueNow": "DUE NOW",
+  "statusOverdue": "OVERDUE",
+  "statusNotSet": "NOT SET",
+  "expensesTitle": "Expenses",
+  "expensesAdd": "Add an expense",
+  "expensesDocuments": "Documents",
+  "expensesTotal": "Total",
+  "expensesAllBikes": "All bikes",
+  "expensesNoneTitle": "No expenses logged",
+  "expensesNoneBody": "Insurance, tax token, fitness, a new helmet — anything that is not fuel or a service.",
+  "expensesExpired": "Expired",
+  "expensesExpiresToday": "Expires today",
+  "expensesDaysLeft": "{count} days",
+  "@expensesDaysLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "statsTitle": "Statistics",
+  "statsRangeThisMonth": "This month",
+  "statsRangeLast3Months": "Last 3 months",
+  "statsRangeThisYear": "This year",
+  "statsRangeAllTime": "All time",
+  "statsRangeCustom": "Custom",
+  "statsCostPer": "Cost per {unit}",
+  "@statsCostPer": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "statsFuel": "Fuel",
+  "statsFuelExplain": "Petrol only. Moves with pump prices and traffic.",
+  "statsRunning": "Running",
+  "statsRunningExplain": "Fuel, servicing, parts and fixed costs.",
+  "statsTrue": "True",
+  "statsTrueExplain": "Running cost plus the value the bike lost.",
+  "statsEstimate": "Estimate",
+  "statsNeedTwoReadings": "Two odometer readings in this period are needed before Jatra can work out what a {unit} costs. Log another fill.",
+  "@statsNeedTwoReadings": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "statsAddPurchasePrice": "Add what you paid for the bike to see this.",
+  "statsTripTitle": "What would a trip cost?",
+  "statsTripDistance": "Distance",
+  "statsTripUsesRates": "Uses the rates from the period selected above.",
+  "statsTripNotEnough": "Not enough history in this period to price a trip. Try a wider range.",
+  "statsTrueCost": "True cost",
+  "statsMileageOverTime": "Mileage over time",
+  "statsMileageSubtitle": "One point per full tank measured against the last",
+  "statsMileageEmpty": "Two full tanks in this period will draw a line here.",
+  "statsMonthlySpend": "Monthly spend",
+  "statsMonthlySpendSubtitle": "Where the money went",
+  "statsDistancePerMonth": "Distance per month",
+  "statsDistanceEmpty": "Needs two odometer readings in a month to measure a distance.",
+  "statsFuelPricePaid": "Fuel price paid",
+  "statsNotEnoughData": "Not enough data yet.",
+  "statsOther": "Other",
+  "statsDistance": "Distance",
+  "statsTotalSpent": "Total spent",
+  "statsAverage": "Average",
+  "statsBestTank": "Best tank",
+  "statsWorstTank": "Worst tank",
+  "statsFills": "Fills",
+  "statsDaysOwned": "Days owned",
+  "statsFuelShare": "Fuel share",
+  "ridesTitle": "Rides",
+  "ridesStart": "Start ride",
+  "ridesRecording": "Recording",
+  "ridesPaused": "Paused",
+  "ridesPause": "Pause",
+  "ridesResume": "Resume",
+  "ridesFinish": "Finish",
+  "ridesPoints": "{count} points",
+  "@ridesPoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ridesTrackingOffTitle": "Ride tracking is off",
+  "ridesTrackingOffBody": "Jatra can trace your route with GPS and work out distance and speed. It is off by default and asks for location only when you switch it on.\n\nEverything else in Jatra works without it.",
+  "ridesSetUp": "Set up ride tracking",
+  "ridesNoneTitle": "No rides recorded",
+  "ridesNoneBody": "Start a ride and Jatra will trace where you went and how far.",
+  "ridesInterruptedTitle": "A ride was left recording",
+  "ridesResumeAction": "Resume",
+  "ridesSaveWhatWeHave": "Save what we have",
+  "ridesDiscard": "Discard",
+  "ridesGapNotice": "Ride paused while the app was closed — {minutes} min gap. Turn on background tracking to keep recording with the screen off.",
+  "@ridesGapNotice": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "ridesNoPath": "No path recorded for this ride.",
+  "ridesMovingTime": "Moving time",
+  "ridesTotalTime": "Total time",
+  "ridesAverageSpeed": "Average speed",
+  "ridesTopSpeed": "Top speed",
+  "ridesStopped": "Stopped",
+  "ridesElevation": "Elevation",
+  "settingsTitle": "Settings",
+  "settingsPrivacyTitle": "No data leaves this device, ever",
+  "settingsPrivacyBody": "Jatra has no account, no server of its own and no analytics. Everything works in airplane mode except the map behind a recorded ride, which loads its tiles from OpenStreetMap.",
+  "settingsAppearance": "Appearance",
+  "settingsThemeDark": "Dark",
+  "settingsThemeLight": "Light",
+  "settingsThemeSystem": "System",
+  "settingsLanguage": "Language",
+  "settingsMileageAlert": "Mileage alert",
+  "settingsMileageAlertPrompt": "Warn me when a tank falls below my usual by",
+  "settingsMileageAlertOff": "Off",
+  "settingsMileageAlertExplain": "Compared against the median of your last five reliable tanks, so one unusual week does not trigger it.",
+  "settingsMileageAlertDisabled": "Jatra will not comment on mileage changes.",
+  "settingsReminders": "Reminders",
+  "settingsRemindersTitle": "Service and document reminders",
+  "settingsRemindersBody": "Posted on this phone, worked out from your own log. Nothing is sent anywhere.",
+  "settingsRemindersBlocked": "Notifications are switched off for Jatra in your Android settings. Turn them back on there and this will start working again.",
+  "settingsDepreciation": "Depreciation",
+  "settingsDepreciationPrompt": "Assume a bike loses this much of its price each year",
+  "settingsDepreciationExplain": "Only used for bikes with no current-value estimate. True cost per kilometre is always an estimate.",
+  "settingsTracking": "Ride tracking",
+  "settingsTrackingBody": "Jatra can trace your route with GPS. Everything else in the app works without it.",
+  "settingsKeepScreenOn": "Keep screen on during rides",
+  "settingsKeepScreenOnExplain": "Released as soon as you stop recording.",
+  "settingsBikes": "Bikes",
+  "settingsManageBikes": "Manage bikes",
+  "settingsManageBikesBody": "Add, edit, set default, archive",
+  "settingsData": "Data",
+  "settingsBackup": "Backup and export",
+  "settingsBackupBody": "JSON backup, spreadsheets, restore",
+  "settingsDeleteLocationHistory": "Delete location history",
+  "settingsDeleteLocationHistoryBody": "Removes recorded routes. Ride distances and times are kept.",
+  "settingsDeleteAll": "Delete all data",
+  "settingsDeleteAllBody": "Every bike, fill, service and setting",
+  "settingsAbout": "About",
+  "settingsAboutBody": "An offline fuel, service and ride-cost tracker for motorcycles.",
+  "settingsFontCredit": "Typeset in Barlow Condensed, Inter, JetBrains Mono and Hind Siliguri, all under the SIL Open Font License.",
+  "trackingOff": "Off",
+  "trackingAppOpen": "While app is open",
+  "trackingBackground": "Background",
+  "trackingOffExplain": "No GPS. Enter ride distances by hand. Everything else works.",
+  "trackingAppOpenExplain": "Records while Jatra is on screen. Pauses when you switch away.",
+  "trackingBackgroundExplain": "Keeps recording with the screen off, using a notification.",
+  "trackingDefault": "Default",
+  "trackingAskForegroundTitle": "Use your location?",
+  "trackingAskForegroundBody": "Jatra will read your location while a ride is recording and you have the app open, to trace your route and measure distance.\n\nYour route is saved on this phone and sent nowhere.",
+  "trackingAskBackgroundTitle": "Record with the screen off?",
+  "trackingAskBackgroundBody": "Android will ask you to allow location \"all the time\". Jatra uses it only while you are recording a ride, and shows a notification the whole time it is running.\n\nYour route is saved on this phone and sent nowhere.",
+  "trackingServicesDisabled": "Location is switched off on this phone, so Jatra cannot record a route.",
+  "trackingOpenLocationSettings": "Open location settings",
+  "trackingBlocked": "Location is blocked for Jatra. Android will not ask again, so it has to be changed in Settings.",
+  "trackingNotGranted": "Jatra does not have permission to read your location yet.",
+  "trackingBackgroundNeedsSettings": "Android only allows \"all the time\" access to be granted from Settings. Until then Jatra records while the app is open. Choose Jatra → Permissions → Location → Allow all the time.",
+  "trackingOpenAppSettings": "Open app settings",
+  "emptyDash": "—",
+  "fuelDeletedSnack": "Deleted the {date} fill · {amount}",
+  "@fuelDeletedSnack": {
+    "description": "Undo snackbar after swiping a fill away. {date} is short-form, {amount} is money."
+  },
+  "ridesDeletedSnack": "Deleted the {date} ride",
+  "@ridesDeletedSnack": {
+    "description": "Undo snackbar after swiping a ride away."
+  },
+  "actionSaveChanges": "Save changes",
+  "@actionSaveChanges": {
+    "description": "Submit label when editing an existing record."
+  },
+  "fuelOptional": "Optional",
+  "@fuelOptional": {
+    "description": "Section label above the station and notes fields."
+  },
+  "fuelStationHint": "Meghna Petrol Pump",
+  "@fuelStationHint": {
+    "description": "Example petrol station name, shown as a hint."
+  },
+  "fuelCorrectionAccepted": "Reading accepted as a correction.",
+  "@fuelCorrectionAccepted": {
+    "description": "Shown when a lower odometer reading has been allowed."
+  },
+  "fuelOdometerResetAction": "My odometer was reset or misread",
+  "@fuelOdometerResetAction": {
+    "description": "Button that opens the lower-reading confirmation dialog."
+  },
+  "fuelAllowLowerTitle": "Allow a lower reading?",
+  "@fuelAllowLowerTitle": {
+    "description": "Dialog title."
+  },
+  "fuelAllowLowerBody": "Jatra normally requires each reading to be higher than the last, because distance is measured between them.\n\nAllow a lower one only if the cluster was replaced or you mistyped a previous fill. Mileage across this gap will not be meaningful.",
+  "@fuelAllowLowerBody": {
+    "description": "Dialog body."
+  },
+  "fuelAllowLowerConfirm": "Allow it",
+  "@fuelAllowLowerConfirm": {
+    "description": "Confirm button on the lower-reading dialog."
+  },
+  "statsNoBikeBody": "Add a bike to see statistics.",
+  "@statsNoBikeBody": {
+    "description": "Empty state on the statistics screen when no bike is selected."
+  },
+  "statsCostPerDistance": "Cost per distance",
+  "@statsCostPerDistance": {
+    "description": "Section label above the three cost-per-distance figures."
+  },
+  "statsNoDistanceMeasured": "No distance measured in this period.",
+  "@statsNoDistanceMeasured": {
+    "description": "Shown when the selected range contains no measurable distance."
+  },
+  "statsRunningCostPer": "Running cost {unit}",
+  "@statsRunningCostPer": {
+    "description": "Chart title. {unit} is already formatted, e.g. '/km'."
+  },
+  "statsRunningCostSubtitle": "Fuel, service and fixed costs — excludes depreciation",
+  "@statsRunningCostSubtitle": {
+    "description": "Chart subtitle."
+  },
+  "statsFuelPriceSubtitle": "What you actually paid per {unit}",
+  "@statsFuelPriceSubtitle": {
+    "description": "Chart subtitle. {unit} is litres or gallons."
+  },
+  "statsTripHint": "40",
+  "@statsTripHint": {
+    "description": "Example trip distance, shown as a hint in the input."
+  },
+  "serviceItemNew": "New service item",
+  "@serviceItemNew": {
+    "description": "Title when creating a service item."
+  },
+  "serviceItemEdit": "Edit item",
+  "@serviceItemEdit": {
+    "description": "Title when editing a service item."
+  },
+  "serviceItemDelete": "Delete item",
+  "@serviceItemDelete": {
+    "description": "Deletes a service item."
+  },
+  "serviceItemAdd": "Add item",
+  "@serviceItemAdd": {
+    "description": "Submit label when creating a service item."
+  },
+  "serviceItemJob": "The job",
+  "@serviceItemJob": {
+    "description": "Section label above the service item's name and icon."
+  },
+  "serviceItemName": "Name",
+  "@serviceItemName": {
+    "description": "Service item name field."
+  },
+  "serviceItemNameHint": "Engine oil",
+  "@serviceItemNameHint": {
+    "description": "Example service item name."
+  },
+  "serviceItemIcon": "Icon",
+  "@serviceItemIcon": {
+    "description": "Section label above the icon picker."
+  },
+  "serviceItemTrack": "Track this item",
+  "@serviceItemTrack": {
+    "description": "Switch that enables reminders for a service item."
+  },
+  "serviceItemTrackExplain": "Switch off to keep the history but stop Jatra reminding you.",
+  "@serviceItemTrackExplain": {
+    "description": "Subtitle under the tracking switch."
+  },
+  "serviceItemDeleteTitle": "Delete {name}?",
+  "@serviceItemDeleteTitle": {
+    "description": "Confirmation dialog title. {name} is the service item's name."
+  },
+  "serviceItemDeleteBody": "Jatra stops tracking this job. Services you have already logged against it stay in your history.",
+  "@serviceItemDeleteBody": {
+    "description": "Confirmation dialog body."
+  },
+  "serviceItemKeep": "Keep it",
+  "@serviceItemKeep": {
+    "description": "Cancel button on the delete-item dialog."
+  },
+  "serviceItemHowOften": "How often",
+  "@serviceItemHowOften": {
+    "description": "Section label above the interval fields."
+  },
+  "serviceItemHowOftenExplain": "Set either, or both. With both, whichever comes first wins.",
+  "@serviceItemHowOftenExplain": {
+    "description": "Explains the two interval fields."
+  },
+  "serviceItemEvery": "Every",
+  "@serviceItemEvery": {
+    "description": "Distance interval field label."
+  },
+  "serviceItemOrEvery": "Or every",
+  "@serviceItemOrEvery": {
+    "description": "Time interval field label."
+  },
+  "serviceItemDays": "DAYS",
+  "@serviceItemDays": {
+    "description": "Suffix on the time interval field. Uppercase in English by design."
+  },
+  "serviceItemLastDone": "Last done",
+  "@serviceItemLastDone": {
+    "description": "Section label above the last-done fields."
+  },
+  "serviceItemLastDoneExplain": "Where Jatra counts the next interval from. Logging a service updates this for you.",
+  "@serviceItemLastDoneExplain": {
+    "description": "Explains the last-done fields."
+  },
+  "serviceItemAtOdometer": "At odometer",
+  "@serviceItemAtOdometer": {
+    "description": "Last-done odometer field label."
+  },
+  "serviceItemOnDate": "On date",
+  "@serviceItemOnDate": {
+    "description": "Last-done date field label."
+  },
+  "actionClear": "Clear",
+  "@actionClear": {
+    "description": "Clears an optional field."
+  },
+  "serviceItemNameError": "Give the job a name.",
+  "@serviceItemNameError": {
+    "description": "Validation error for an empty service item name."
+  },
+  "serviceItemIntervalError": "Set a distance interval, a time interval, or both.",
+  "@serviceItemIntervalError": {
+    "description": "Validation error when neither interval is set."
+  },
+  "serviceLogWhatError": "What was done?",
+  "@serviceLogWhatError": {
+    "description": "Validation error for an empty service log description."
+  },
+  "serviceLogOdometerError": "Enter the odometer reading.",
+  "@serviceLogOdometerError": {
+    "description": "Validation error for an empty odometer field."
+  },
+  "serviceLogOdometerNumberError": "Odometer must be a number.",
+  "@serviceLogOdometerNumberError": {
+    "description": "Validation error for a non-numeric odometer."
+  },
+  "serviceLogOdometerNegativeError": "Odometer cannot be negative.",
+  "@serviceLogOdometerNegativeError": {
+    "description": "Validation error for a negative odometer."
+  },
+  "serviceLogged": "Service logged",
+  "@serviceLogged": {
+    "description": "Snackbar title after saving a new service log."
+  },
+  "serviceUpdated": "Service updated",
+  "@serviceUpdated": {
+    "description": "Snackbar title after editing a service log."
+  },
+  "serviceNextDueMoved": "Next due point moved forward.",
+  "@serviceNextDueMoved": {
+    "description": "Snackbar body after logging a service."
+  },
+  "categoryInsurance": "Insurance",
+  "@categoryInsurance": {
+    "description": "Expense category."
+  },
+  "categoryTaxToken": "Tax token",
+  "@categoryTaxToken": {
+    "description": "Expense category."
+  },
+  "categoryFitness": "Fitness",
+  "@categoryFitness": {
+    "description": "Expense category — the roadworthiness certificate."
+  },
+  "categoryRegistration": "Registration",
+  "@categoryRegistration": {
+    "description": "Expense category."
+  },
+  "categoryAccessories": "Accessories",
+  "@categoryAccessories": {
+    "description": "Expense category."
+  },
+  "categoryFine": "Fine",
+  "@categoryFine": {
+    "description": "Expense category."
+  },
+  "categoryParking": "Parking",
+  "@categoryParking": {
+    "description": "Expense category."
+  },
+  "categoryWashing": "Washing",
+  "@categoryWashing": {
+    "description": "Expense category."
+  },
+  "categoryOther": "Other",
+  "@categoryOther": {
+    "description": "Expense category."
+  },
+  "reminderService": "Service",
+  "@reminderService": {
+    "description": "Reminder type."
+  },
+  "reminderDocumentExpiry": "Document expiry",
+  "@reminderDocumentExpiry": {
+    "description": "Reminder type."
+  },
+  "reminderCustom": "Reminder",
+  "@reminderCustom": {
+    "description": "Reminder type."
+  },
+  "dateToday": "today",
+  "@dateToday": {
+    "description": "Relative day, used mid-sentence: 'Due today'."
+  },
+  "dateTomorrow": "tomorrow",
+  "@dateTomorrow": {
+    "description": "Relative day, used mid-sentence."
+  },
+  "dateYesterday": "yesterday",
+  "@dateYesterday": {
+    "description": "Relative day, used mid-sentence."
+  },
+  "dateInDays": "in {count} days",
+  "@dateInDays": {
+    "description": "Relative day in the future."
+  },
+  "dateDaysAgo": "{count} days ago",
+  "@dateDaysAgo": {
+    "description": "Relative day in the past."
+  },
+  "dateRoughly": "roughly {when}",
+  "@dateRoughly": {
+    "description": "Wraps a relative day that is an estimate."
+  },
+  "serviceDueOn": "Due {when}",
+  "@serviceDueOn": {
+    "description": "Next-service card. {when} is a relative day."
+  },
+  "serviceIntervalUsed": "{percent}% of the interval used",
+  "@serviceIntervalUsed": {
+    "description": "Fallback detail line on a service item."
+  },
+  "expensesEdit": "Edit expense",
+  "@expensesEdit": {
+    "description": "Title when editing an expense."
+  },
+  "expensesAddTitle": "Add expense",
+  "@expensesAddTitle": {
+    "description": "Title when adding an expense."
+  },
+  "expensesSave": "Save expense",
+  "@expensesSave": {
+    "description": "Submit label when adding an expense."
+  },
+  "expensesWhatFor": "What for",
+  "@expensesWhatFor": {
+    "description": "Section label above category and amount."
+  },
+  "expensesAmount": "Amount",
+  "@expensesAmount": {
+    "description": "Expense amount field."
+  },
+  "expensesPaidOn": "Paid on",
+  "@expensesPaidOn": {
+    "description": "Expense date field."
+  },
+  "expensesNotes": "Notes",
+  "@expensesNotes": {
+    "description": "Expense notes field."
+  },
+  "expensesCoverPeriod": "Cover period",
+  "@expensesCoverPeriod": {
+    "description": "Section label for document validity dates."
+  },
+  "expensesCoverExplain": "Jatra counts down to the end date and reminds you a fortnight before.",
+  "@expensesCoverExplain": {
+    "description": "Explains the cover period fields."
+  },
+  "expensesValidFrom": "Valid from",
+  "@expensesValidFrom": {
+    "description": "Document validity start date."
+  },
+  "expensesValidUntil": "Valid until",
+  "@expensesValidUntil": {
+    "description": "Document validity end date."
+  },
+  "expensesUntil": "Until {date}",
+  "@expensesUntil": {
+    "description": "Subtitle on a document row."
+  },
+  "expensesShowThisBike": "Show this bike only",
+  "@expensesShowThisBike": {
+    "description": "Toggle tooltip."
+  },
+  "expensesShowAllBikes": "Show all bikes",
+  "@expensesShowAllBikes": {
+    "description": "Toggle tooltip."
+  },
+  "expensesDeletedSnack": "Deleted {category} · {amount}",
+  "@expensesDeletedSnack": {
+    "description": "Undo snackbar after swiping an expense away."
+  },
+  "expensesAmountError": "Enter what it cost.",
+  "@expensesAmountError": {
+    "description": "Validation error for an empty amount."
+  },
+  "expensesAmountNumberError": "Amount must be a number, like 1450.00.",
+  "@expensesAmountNumberError": {
+    "description": "Validation error for a non-numeric amount."
+  },
+  "expensesAmountNegativeError": "Amount cannot be negative.",
+  "@expensesAmountNegativeError": {
+    "description": "Validation error for a negative amount."
+  },
+  "expensesCoverOrderError": "Cover cannot end before it starts.",
+  "@expensesCoverOrderError": {
+    "description": "Validation error when validity dates are reversed."
+  },
+  "expensesSaved": "Expense saved",
+  "@expensesSaved": {
+    "description": "Snackbar after saving a new expense."
+  },
+  "expensesUpdated": "Expense updated",
+  "@expensesUpdated": {
+    "description": "Snackbar after editing an expense."
+  },
+  "vehiclesTitle": "Bikes",
+  "@vehiclesTitle": {
+    "description": "Title of the bike list screen."
+  },
+  "vehiclesAdd": "Add a bike",
+  "@vehiclesAdd": {
+    "description": "Empty-state action on the bike list."
+  },
+  "vehiclesAddShort": "Add bike",
+  "@vehiclesAddShort": {
+    "description": "Floating action button on the bike list."
+  },
+  "vehiclesEdit": "Edit bike",
+  "@vehiclesEdit": {
+    "description": "Title when editing a bike."
+  },
+  "vehiclesNoneTitle": "No bikes yet",
+  "@vehiclesNoneTitle": {
+    "description": "Empty state on the bike list."
+  },
+  "vehiclesArchived": "Archived",
+  "@vehiclesArchived": {
+    "description": "Section label above archived bikes."
+  },
+  "vehiclesDefault": "Default",
+  "@vehiclesDefault": {
+    "description": "Pill on the bike Jatra opens with."
+  },
+  "vehiclesMakeDefault": "Open Jatra on this bike",
+  "@vehiclesMakeDefault": {
+    "description": "Menu action that makes a bike the default."
+  },
+  "vehiclesArchive": "Archive",
+  "@vehiclesArchive": {
+    "description": "Menu action."
+  },
+  "vehiclesUnarchive": "Unarchive",
+  "@vehiclesUnarchive": {
+    "description": "Menu action."
+  },
+  "vehiclesOptionsFor": "Options for {name}",
+  "@vehiclesOptionsFor": {
+    "description": "Tooltip on a bike's overflow menu."
+  },
+  "vehiclesDeleteTitle": "Delete {name}?",
+  "@vehiclesDeleteTitle": {
+    "description": "Confirmation dialog title."
+  },
+  "vehiclesDeleteEmptyBody": "This bike has no records yet. Deleting it cannot be undone.",
+  "@vehiclesDeleteEmptyBody": {
+    "description": "Delete confirmation for a bike with no records."
+  },
+  "vehiclesDeleteBody": "This deletes {records}. It cannot be undone.\n\nExport a backup first if you might want this data back.",
+  "@vehiclesDeleteBody": {
+    "description": "Delete confirmation. {records} lists the record counts."
+  },
+  "vehiclesDeleteConfirm": "Delete bike",
+  "@vehiclesDeleteConfirm": {
+    "description": "Confirm button on the delete-bike dialog."
+  },
+  "vehiclesDeleted": "Deleted",
+  "@vehiclesDeleted": {
+    "description": "Snackbar title after deleting a bike."
+  },
+  "vehiclesDeletedBody": "{name} and its records are gone.",
+  "@vehiclesDeletedBody": {
+    "description": "Snackbar body after deleting a bike."
+  },
+  "vehiclesTheBike": "The bike",
+  "@vehiclesTheBike": {
+    "description": "Section label on the bike form."
+  },
+  "vehiclesName": "Name",
+  "@vehiclesName": {
+    "description": "Bike name field."
+  },
+  "vehiclesNameHint": "Pulsar",
+  "@vehiclesNameHint": {
+    "description": "Example bike name."
+  },
+  "vehiclesMake": "Make",
+  "@vehiclesMake": {
+    "description": "Bike manufacturer field."
+  },
+  "vehiclesModel": "Model",
+  "@vehiclesModel": {
+    "description": "Bike model field."
+  },
+  "vehiclesYear": "Year",
+  "@vehiclesYear": {
+    "description": "Bike year field."
+  },
+  "vehiclesEngine": "Engine",
+  "@vehiclesEngine": {
+    "description": "Bike engine capacity field."
+  },
+  "vehiclesRegistration": "Registration number",
+  "@vehiclesRegistration": {
+    "description": "Bike registration field."
+  },
+  "vehiclesRegistrationHint": "DHAKA METRO-L 12-3456",
+  "@vehiclesRegistrationHint": {
+    "description": "Example Bangladeshi registration plate."
+  },
+  "vehiclesUnitsCurrency": "Units and currency",
+  "@vehiclesUnitsCurrency": {
+    "description": "Section label on the bike form."
+  },
+  "vehiclesCurrency": "Currency",
+  "@vehiclesCurrency": {
+    "description": "Currency picker label."
+  },
+  "vehiclesOwnership": "Ownership",
+  "@vehiclesOwnership": {
+    "description": "Section label on the bike form."
+  },
+  "vehiclesOwnershipExplain": "Used to work out depreciation and true cost per kilometre. Leave blank if you would rather not.",
+  "@vehiclesOwnershipExplain": {
+    "description": "Explains the optional ownership fields."
+  },
+  "vehiclesStartingOdometer": "Odometer when you started logging",
+  "@vehiclesStartingOdometer": {
+    "description": "Starting odometer field."
+  },
+  "vehiclesTankCapacity": "Tank capacity",
+  "@vehiclesTankCapacity": {
+    "description": "Tank capacity field."
+  },
+  "vehiclesPurchaseDate": "Purchase date",
+  "@vehiclesPurchaseDate": {
+    "description": "Purchase date field."
+  },
+  "ridesNotFoundTitle": "Ride not found",
+  "@ridesNotFoundTitle": {
+    "description": "Empty state when a ride cannot be loaded."
+  },
+  "ridesNotFoundBody": "It may have been deleted.",
+  "@ridesNotFoundBody": {
+    "description": "Empty state body."
+  },
+  "ridesFallbackTitle": "Ride",
+  "@ridesFallbackTitle": {
+    "description": "Fallback title for a ride with no name or date."
+  },
+  "mapTitle": "Map",
+  "@mapTitle": {
+    "description": "Title of the map screen."
+  },
+  "mapAllRides": "All rides",
+  "@mapAllRides": {
+    "description": "Tooltip on the button opening the ride list."
+  },
+  "mapShowMyLocation": "Show my location",
+  "@mapShowMyLocation": {
+    "description": "Tooltip on the locate button when the dot is off."
+  },
+  "mapRecentre": "Recentre on my location",
+  "@mapRecentre": {
+    "description": "Tooltip on the locate button when the dot is on."
+  },
+  "mapYourLocation": "Your location",
+  "@mapYourLocation": {
+    "description": "Accessibility label for the current-location dot."
+  },
+  "mapDetails": "Details",
+  "@mapDetails": {
+    "description": "Opens the detail screen for the ride on the map."
+  },
+  "mapNoRidesHint": "No rides yet — start one and the path is drawn here as you go.",
+  "@mapNoRidesHint": {
+    "description": "Hint above the map when no ride has been recorded."
+  },
+  "mapTrackingOffHint": "Ride tracking is off. Nothing is recorded until you turn it on.",
+  "@mapTrackingOffHint": {
+    "description": "Hint above the map when tracking is off."
+  },
+  "mapSetUp": "Set up",
+  "@mapSetUp": {
+    "description": "Short action that opens tracking settings from the map."
+  },
+  "mapLocationNeeded": "Jatra needs location permission to show where you are.",
+  "@mapLocationNeeded": {
+    "description": "Shown when location permission is refused."
+  },
+  "mapLocationServicesOff": "Location is switched off on this phone.",
+  "@mapLocationServicesOff": {
+    "description": "Shown when device location services are disabled."
+  },
+  "mapLocationBlocked": "Jatra is blocked from using location. It can only be re-enabled in Android settings.",
+  "@mapLocationBlocked": {
+    "description": "Shown when location permission is permanently denied."
+  },
+  "mapTurnOn": "Turn on",
+  "@mapTurnOn": {
+    "description": "Snackbar action opening the device location settings."
+  },
+  "mapOpenSettings": "Settings",
+  "@mapOpenSettings": {
+    "description": "Snackbar action opening the app settings page."
+  },
+  "rideCouldNotStart": "Jatra could not start recording. Check that location is on and allowed for Jatra.",
+  "@rideCouldNotStart": {
+    "description": "Snackbar when starting a ride fails."
+  },
+  "ridesDiscardedEmpty": "Ride discarded — no distance was recorded.",
+  "@ridesDiscardedEmpty": {
+    "description": "Snackbar when a ride is finished with zero distance."
+  },
+  "ridesDiscardTitle": "Discard this ride?",
+  "@ridesDiscardTitle": {
+    "description": "Confirmation dialog title."
+  },
+  "ridesDiscardBody": "The recorded path and distance are deleted. This cannot be undone.",
+  "@ridesDiscardBody": {
+    "description": "Confirmation dialog body."
+  },
+  "serviceLoggedCount": "{count} logged",
+  "@serviceLoggedCount": {
+    "description": "Count of service history entries."
+  },
+  "onboardingMakeHint": "Bajaj",
+  "@onboardingMakeHint": {
+    "description": "Example motorcycle manufacturer."
+  },
+  "onboardingOdometerHint": "24180",
+  "@onboardingOdometerHint": {
+    "description": "Example odometer reading. Digits stay Latin in every language."
+  },
+  "ridesGapOnce": "Recording stopped once during this ride, so the path has a break in it. Distance across the break is not counted.",
+  "@ridesGapOnce": {
+    "description": "Explains a single gap in a recorded ride."
+  },
+  "ridesGapMany": "Recording stopped {count} times during this ride. Distance across those breaks is not counted.",
+  "@ridesGapMany": {
+    "description": "Explains several gaps in a recorded ride."
+  },
+  "ridesDetails": "Details",
+  "@ridesDetails": {
+    "description": "Section label on the ride detail screen."
+  },
+  "ridesStarted": "Started",
+  "@ridesStarted": {
+    "description": "Ride start time."
+  },
+  "ridesFinished": "Finished",
+  "@ridesFinished": {
+    "description": "Ride end time."
+  },
+  "ridesGpsPoints": "GPS points",
+  "@ridesGpsPoints": {
+    "description": "Number of recorded GPS samples."
+  },
+  "ridesOdometer": "Odometer",
+  "@ridesOdometer": {
+    "description": "Odometer range covered by a ride."
+  },
+  "ridesNotes": "Notes",
+  "@ridesNotes": {
+    "description": "Ride notes."
+  },
+  "mileageDropCauses2": "Common causes: {causes}.",
+  "@mileageDropCauses2": {
+    "description": "Lists likely reasons for a mileage drop."
+  },
+  "serviceLogEdit": "Edit service",
+  "@serviceLogEdit": {
+    "description": "Title when editing a service log."
+  },
+  "serviceLogWhatDone": "What was done",
+  "@serviceLogWhatDone": {
+    "description": "Section label on the service log form."
+  },
+  "serviceLogItem": "Service item",
+  "@serviceLogItem": {
+    "description": "Picker linking a log to a tracked item."
+  },
+  "serviceLogItemHelp": "Linking it moves that item’s next due point forward.",
+  "@serviceLogItemHelp": {
+    "description": "Help text under the service item picker."
+  },
+  "serviceLogOneOff": "One-off repair",
+  "@serviceLogOneOff": {
+    "description": "Picker option for a log not tied to a tracked item."
+  },
+  "serviceLogDescription": "Description",
+  "@serviceLogDescription": {
+    "description": "Service log description field."
+  },
+  "serviceLogDescriptionHint": "Engine oil + filter",
+  "@serviceLogDescriptionHint": {
+    "description": "Example service description."
+  },
+  "serviceLogCost": "Cost",
+  "@serviceLogCost": {
+    "description": "Section label above the cost fields."
+  },
+  "serviceLogParts": "Parts",
+  "@serviceLogParts": {
+    "description": "Parts cost field."
+  },
+  "serviceLogLabour": "Labour",
+  "@serviceLogLabour": {
+    "description": "Labour cost field."
+  },
+  "serviceLogTotalHelp": "Adds up from parts and labour, or type a bundled bill.",
+  "@serviceLogTotalHelp": {
+    "description": "Help text under the total cost field."
+  },
+  "serviceLogWorkshop": "Workshop",
+  "@serviceLogWorkshop": {
+    "description": "Workshop name field."
+  },
+  "serviceLogWorkshopHint": "Rahman Motors, Mirpur",
+  "@serviceLogWorkshopHint": {
+    "description": "Example workshop name."
+  },
+  "serviceLogPartBrand": "Part brand",
+  "@serviceLogPartBrand": {
+    "description": "Part brand field."
+  },
+  "serviceLogPartBrandHint": "Motul 10W-40",
+  "@serviceLogPartBrandHint": {
+    "description": "Example part brand."
+  },
+  "vehiclesSwitch": "Switch bike",
+  "@vehiclesSwitch": {
+    "description": "Tooltip on the bike switcher."
+  },
+  "vehiclesManage": "Manage bikes",
+  "@vehiclesManage": {
+    "description": "Menu item opening the bike list."
+  },
+  "mapStart": "Start",
+  "@mapStart": {
+    "description": "Accessibility label for the start marker on a ride path."
+  },
+  "mapEnd": "End",
+  "@mapEnd": {
+    "description": "Accessibility label for the end marker on a ride path."
+  },
+  "mapScaleAcross": "≈ {distance} {unit} across",
+  "@mapScaleAcross": {
+    "description": "Scale bar on the map."
+  },
+  "mapGapCount": "{count, plural, =1{1 GAP} other{{count} GAPS}}",
+  "@mapGapCount": {
+    "description": "Badge showing breaks in a recorded path."
+  },
+  "backupTitle": "Backup and export",
+  "@backupTitle": {
+    "description": "Title of the backup screen."
+  },
+  "backupExport": "Export",
+  "@backupExport": {
+    "description": "Section label."
+  },
+  "backupExportExplain": "A full JSON backup restores everything exactly, on any device.",
+  "@backupExportExplain": {
+    "description": "Explains the JSON backup."
+  },
+  "backupIncludeGps": "Include ride GPS data",
+  "@backupIncludeGps": {
+    "description": "Switch controlling whether ride points are exported."
+  },
+  "backupIncludeGpsExplain": "Off keeps the file small — usually a few hundred KB. On can run to tens of megabytes.",
+  "@backupIncludeGpsExplain": {
+    "description": "Explains the GPS export switch."
+  },
+  "backupReadable": "Readable formatting",
+  "@backupReadable": {
+    "description": "Switch controlling pretty-printed JSON."
+  },
+  "backupReadableExplain": "Off produces a smaller file that is harder to read.",
+  "@backupReadableExplain": {
+    "description": "Explains the formatting switch."
+  },
+  "backupExportBackup": "Export backup",
+  "@backupExportBackup": {
+    "description": "Button that shares a JSON backup."
+  },
+  "backupExportCsv": "Export spreadsheets (CSV)",
+  "@backupExportCsv": {
+    "description": "Button that shares CSV files."
+  },
+  "backupImport": "Import",
+  "@backupImport": {
+    "description": "Section label."
+  },
+  "backupImportExplain": "Jatra checks the whole file before changing anything. If there is a problem, nothing is imported.",
+  "@backupImportExplain": {
+    "description": "Explains the import safety check."
+  },
+  "backupChooseFile": "Choose a backup file",
+  "@backupChooseFile": {
+    "description": "Button that opens the file picker."
+  },
+  "backupCancelImport": "Cancel import",
+  "@backupCancelImport": {
+    "description": "Tooltip that discards a staged import."
+  },
+  "backupContains": "Contains",
+  "@backupContains": {
+    "description": "Label above the record counts in an import preview."
+  },
+  "backupNothing": "nothing",
+  "@backupNothing": {
+    "description": "Shown when a backup file contains no records."
+  },
+  "backupCovers": "Covers",
+  "@backupCovers": {
+    "description": "Date range covered by a backup."
+  },
+  "backupExported": "Exported",
+  "@backupExported": {
+    "description": "When the backup file was made."
+  },
+  "backupGpsData": "GPS data",
+  "@backupGpsData": {
+    "description": "Whether a backup includes ride points."
+  },
+  "backupIncluded": "included",
+  "@backupIncluded": {
+    "description": "GPS data is present in the backup."
+  },
+  "backupNotIncluded": "not included",
+  "@backupNotIncluded": {
+    "description": "GPS data is absent from the backup."
+  },
+  "backupMergeQuestion": "How should Jatra merge this?",
+  "@backupMergeQuestion": {
+    "description": "Section label above the merge strategy options."
+  },
+  "backupReplaceTitle": "Replace everything?",
+  "@backupReplaceTitle": {
+    "description": "Confirmation dialog title for a destructive restore."
+  },
+  "backupDismiss": "Dismiss",
+  "@backupDismiss": {
+    "description": "Dismisses an error message."
+  },
+  "backupCountBikes": "bikes",
+  "@backupCountBikes": {
+    "description": "Record type in an import preview."
+  },
+  "backupCountFills": "fills",
+  "@backupCountFills": {
+    "description": "Record type in an import preview."
+  },
+  "backupCountServiceItems": "service items",
+  "@backupCountServiceItems": {
+    "description": "Record type in an import preview."
+  },
+  "backupCountServices": "services",
+  "@backupCountServices": {
+    "description": "Record type in an import preview."
+  },
+  "backupCountExpenses": "expenses",
+  "@backupCountExpenses": {
+    "description": "Record type in an import preview."
+  },
+  "backupCountRides": "rides",
+  "@backupCountRides": {
+    "description": "Record type in an import preview."
+  },
+  "backupCountGpsPoints": "GPS points",
+  "@backupCountGpsPoints": {
+    "description": "Record type in an import preview."
+  },
+  "onboardingModelHint": "NS160",
+  "@onboardingModelHint": {
+    "description": "Example motorcycle model."
+  },
+  "vehiclesPurchasePrice": "Purchase price",
+  "@vehiclesPurchasePrice": {
+    "description": "What the bike cost."
+  },
+  "vehiclesCurrentValue": "What it is worth now",
+  "@vehiclesCurrentValue": {
+    "description": "The bike's current estimated value."
+  },
+  "settingsDeleteAllTitle": "Delete everything?",
+  "@settingsDeleteAllTitle": {
+    "description": "Confirmation dialog title."
+  },
+  "settingsKeepMyData": "Keep my data",
+  "@settingsKeepMyData": {
+    "description": "Cancel button on the delete-everything dialog."
+  },
+  "settingsDeleteEverything": "Delete everything",
+  "@settingsDeleteEverything": {
+    "description": "Confirm button on the delete-everything dialog."
+  },
+  "settingsDeleteRoutesTitle": "Delete every recorded route?",
+  "@settingsDeleteRoutesTitle": {
+    "description": "Confirmation dialog title."
+  },
+  "settingsKeepThem": "Keep them",
+  "@settingsKeepThem": {
+    "description": "Cancel button on the delete-routes dialog."
+  },
+  "settingsDeleteRoutes": "Delete routes",
+  "@settingsDeleteRoutes": {
+    "description": "Confirm button on the delete-routes dialog."
+  },
+  "backupReplaceConfirm": "Replace everything",
+  "@backupReplaceConfirm": {
+    "description": "Confirm button on the replace dialog."
+  },
+  "backupCopyDatabase": "Copy database out",
+  "@backupCopyDatabase": {
+    "description": "Exports the raw database file."
+  },
+  "backupRestoreDatabase": "Restore a database file",
+  "@backupRestoreDatabase": {
+    "description": "Restores from a raw database file."
+  },
+  "backupRestoreTitle": "Restore a database file?",
+  "@backupRestoreTitle": {
+    "description": "Confirmation dialog title."
+  },
+  "backupPickFile": "Pick a file",
+  "@backupPickFile": {
+    "description": "Opens the file picker."
+  },
+  "backupRestoredTitle": "Database restored",
+  "@backupRestoredTitle": {
+    "description": "Dialog title after a successful raw restore."
+  },
+  "vehiclesDepreciationHelp": "Blank ⇒ Jatra estimates 12% lost per year.",
+  "@vehiclesDepreciationHelp": {
+    "description": "Helper text under the current-value field."
+  },
+  "vehiclesColourN": "Colour {number}",
+  "@vehiclesColourN": {
+    "description": "Accessibility label for a colour swatch."
+  },
+  "ridesForegroundNotification": "Tap to return to Jatra",
+  "@ridesForegroundNotification": {
+    "description": "Text of the Android notification shown while a ride records in the background."
+  },
+  "reminderServiceTitle": "{item} — {status}",
+  "@reminderServiceTitle": {
+    "description": "Notification title for a due service. {status} is a lowercased status word."
+  },
+  "homeTapForDetails": "Tap for details",
+  "@homeTapForDetails": {
+    "description": "Fallback detail line on the next-service card."
+  },
+  "homeMoreCount": "+{count} more",
+  "@homeMoreCount": {
+    "description": "Count of further service items not shown."
+  }
+}
