@@ -10,6 +10,8 @@
 [![Release](https://img.shields.io/github/v/release/firadfd/jatra?label=release)](https://github.com/firadfd/jatra/releases/latest)
 [![Licence: GPL v3](https://img.shields.io/badge/licence-GPL--3.0-blue.svg)](LICENSE)
 
+[![Get it on Google Play](https://img.shields.io/badge/Google%20Play-Install-3DDC84?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.firad.jatra)
+
 </div>
 
 Log every refuel and every service. Jatra works out true mileage
@@ -23,8 +25,12 @@ Android permissions until you switch on a feature that needs one.
 
 ## Install
 
-Grab the latest APK from the
-[releases page](https://github.com/firadfd/jatra/releases/latest).
+**[Get it on Google Play](https://play.google.com/store/apps/details?id=com.firad.jatra)**
+— the easiest route, and it keeps itself updated.
+
+Or grab the latest APK from the
+[releases page](https://github.com/firadfd/jatra/releases/latest) if you would
+rather not go through Play.
 
 **If you are not sure which file to take, take the `universal` one** — it
 works on every phone, at ~70 MB. The per-ABI builds are a third of the size:
