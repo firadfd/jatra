@@ -66,6 +66,11 @@ dependencies:
   # reason INTERNET is in the manifest.
   flutter_map: ^8.3.1
   latlong2: ^0.10.1
+  # Already in the tree as flutter_map's own HTTP client. Declared directly
+  # because `map_tile_cache.dart` wraps that client to learn whether the tile
+  # server is reachable, and depending on a package you import is not
+  # something to leave to a transitive edge.
+  http: ^1.2.0
 
   # permission_handler is deliberately *not* used either. Geolocator already
   # exposes openAppSettings()/openLocationSettings(), and

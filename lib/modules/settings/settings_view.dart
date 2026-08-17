@@ -10,6 +10,7 @@ import '../../core/widgets/jatra_widgets.dart';
 import '../../l10n/app_localizations.dart';
 import '../../data/repositories/ride_repo.dart';
 import '../../services/notification_service.dart';
+import 'widgets/map_cache_section.dart';
 import 'widgets/tracking_section.dart';
 import 'settings_controller.dart';
 
@@ -37,6 +38,10 @@ class SettingsView extends GetView<SettingsController> {
             _DepreciationSection(),
             SizedBox(height: Gap.lg),
             TrackingSection(),
+            SizedBox(height: Gap.lg),
+            // Directly after tracking: the map is what tracking produces, and
+            // its storage is the question that follows from using it.
+            MapCacheSection(),
             SizedBox(height: Gap.lg),
             _BikesSection(),
             SizedBox(height: Gap.lg),

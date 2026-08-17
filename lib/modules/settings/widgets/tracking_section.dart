@@ -124,19 +124,18 @@ class _TrackingSectionState extends State<TrackingSection>
     final agreed = await _explain(mode);
     if (!agreed) return;
 
-    final state = mode == TrackingMode.background
-        ? await _location.requestBackground()
-        : await _location.requestForeground();
+    final state = await _location.requestBackground();
 
-    // Falling back rather than leaving a mode selected that cannot work:
-    // background asked for but only foreground granted still gives a useful
-    // app-open mode, and the notice below explains the shortfall.
-    if (mode == TrackingMode.background && !state.allowsBackground) {
-      _settings.trackingMode.value = state.allowsForeground
-          ? TrackingMode.appOpen
-          : TrackingMode.off;
-      return;
-    }
+    // Foreground is the hard requirement: without it nothing can be recorded
+    // at all, so the mode goes back to Off rather than sitting on a setting
+    // that cannot work.
+    //
+    // "Allow all the time" is *not* a hard requirement. A location foreground
+    // service started while the app is on screen keeps receiving fixes on a
+    // while-in-use grant, which covers a ride begun by tapping Start. The
+    // grant only matters for the edges — a service the system restarts on its
+    // own — so a shortfall leaves tracking on and is explained by the notice
+    // below instead of silently downgrading what the user asked for.
     if (!state.allowsForeground) {
       _settings.trackingMode.value = TrackingMode.off;
       return;
@@ -147,21 +146,11 @@ class _TrackingSectionState extends State<TrackingSection>
 
   /// The plain-language explanation, shown *before* the system dialog.
   Future<bool> _explain(TrackingMode mode) async {
-    final background = mode == TrackingMode.background;
-
     final agreed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(
-          background
-              ? L.of(context).trackingAskBackgroundTitle
-              : L.of(context).trackingAskForegroundTitle,
-        ),
-        content: Text(
-          background
-              ? L.of(context).trackingAskBackgroundBody
-              : L.of(context).trackingAskForegroundBody,
-        ),
+        title: Text(L.of(context).trackingAskBackgroundTitle),
+        content: Text(L.of(context).trackingAskBackgroundBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -182,14 +171,12 @@ class _TrackingSectionState extends State<TrackingSection>
 /// reads these instead, so the data type stays free of presentation.
 String _modeLabel(BuildContext context, TrackingMode mode) => switch (mode) {
   TrackingMode.off => L.of(context).trackingOff,
-  TrackingMode.appOpen => L.of(context).trackingAppOpen,
   TrackingMode.background => L.of(context).trackingBackground,
 };
 
 String _modeDescription(BuildContext context, TrackingMode mode) =>
     switch (mode) {
       TrackingMode.off => L.of(context).trackingOffExplain,
-      TrackingMode.appOpen => L.of(context).trackingAppOpenExplain,
       TrackingMode.background => L.of(context).trackingBackgroundExplain,
     };
 
@@ -311,6 +298,8 @@ class _PermissionNotice extends StatelessWidget {
           ),
           (TrackingMode.background, LocationPermissionState.whileInUse) => (
             // The Android 11+ reality: this cannot be granted from a dialog.
+            // Rides still record without it — see `_select` — so this is a
+            // "make it more reliable" notice, not a broken-state one.
             message: L.of(context).trackingBackgroundNeedsSettings,
             action: L.of(context).trackingOpenAppSettings,
             locationSettings: false,

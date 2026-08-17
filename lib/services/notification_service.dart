@@ -5,6 +5,8 @@ import 'package:get/get.dart' hide Value;
 import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../app/theme/app_colors.dart';
+
 /// Thin wrapper over the local-notification plugin.
 ///
 /// Every notification this app posts is local. There is no push service, no
@@ -19,6 +21,25 @@ class NotificationService extends GetxService {
   static const _channelDescription =
       'Tells you when a service is coming due or a document is about to '
       'expire.';
+
+  /// The live ride notification gets a channel of its own.
+  ///
+  /// Not shared with reminders: they are different kinds of interruption, and
+  /// a rider who silences one should not thereby silence the other.
+  ///
+  /// This exists because geolocator's foreground-service notification cannot
+  /// be made visible. It hardcodes `IMPORTANCE_NONE` on its own channel and
+  /// recreates it on every service start, and Android only lets an app *lower*
+  /// an existing channel's importance — so there is no way to raise it from
+  /// Dart. That notification stays, minimised, because Android requires a
+  /// foreground service to have one. This is the one the rider actually sees.
+  static const _rideChannelId = 'ride_recording';
+
+  /// Reminder notification ids are `reminders` table row ids, which start at 1
+  /// and count up. This sits far above anything that table will reach, so the
+  /// ride notification can never overwrite a reminder or be overwritten by
+  /// one.
+  static const _rideNotificationId = 999000001;
 
   final _plugin = FlutterLocalNotificationsPlugin();
 
@@ -87,10 +108,32 @@ class NotificationService extends GetxService {
     }
   }
 
+  /// Makes sure the platform will actually *display* a notification, asking
+  /// for permission only if it will not.
+  ///
+  /// This exists for the ride-recording notification, which is not posted by
+  /// this service at all — Android posts it on behalf of the location
+  /// foreground service. That distinction is invisible to POST_NOTIFICATIONS:
+  /// since Android 13 a foreground service notification is suppressed like any
+  /// other when the permission is missing. The service keeps running and the
+  /// ride keeps recording, but the rider is given no sign of it, which is the
+  /// one thing a background recorder must never do.
+  ///
+  /// Returns whether notifications will be shown. Callers should not treat
+  /// `false` as a failure worth stopping for: an unseen notification is a
+  /// worse ride, not a broken one.
+  Future<bool> ensureAllowed() async {
+    await init();
+    await refreshAuthorisation();
+    if (isAuthorised.value) return true;
+    return requestPermission();
+  }
+
   /// Asks the platform for permission.
   ///
-  /// Called at exactly one moment: when the user switches service reminders
-  /// on. Never at launch, never speculatively.
+  /// Called at two moments, both of them things the user just did: switching
+  /// service reminders on, and starting a ride (via [ensureAllowed]). Never at
+  /// launch, never speculatively.
   Future<bool> requestPermission() async {
     await init();
 
@@ -171,6 +214,87 @@ class NotificationService extends GetxService {
         iOS: DarwinNotificationDetails(),
       ),
     );
+  }
+
+  // -------------------------------------------------------------------
+  // The live ride notification
+  // -------------------------------------------------------------------
+
+  /// Name the ride channel was last created with, so a locale change
+  /// re-registers it instead of leaving an English label on a Bangla phone.
+  String? _rideChannelName;
+
+  /// Posts or updates the "recording your ride" notification.
+  ///
+  /// Called on every accepted GPS point, so two things matter:
+  ///
+  /// * `onlyAlertOnce` — the channel is loud enough to announce the *start* of
+  ///   a ride, and would otherwise chime every few seconds for the rest of it.
+  /// * `usesChronometer` — Android ticks the elapsed time itself from [startedAtMs].
+  ///   The alternative is re-posting once a second purely to advance a clock.
+  ///   Switched off when paused, where a running timer would be a lie.
+  Future<void> showRideProgress({
+    required String channelName,
+    required String title,
+    required String body,
+    required int startedAtMs,
+    required bool paused,
+  }) async {
+    if (!_initialised || !isAuthorised.value) return;
+
+    await _ensureRideChannel(channelName);
+
+    await _plugin.show(
+      id: _rideNotificationId,
+      title: title,
+      body: body,
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          _rideChannelId,
+          channelName,
+          importance: Importance.defaultImportance,
+          priority: Priority.defaultPriority,
+          // Survives a swipe. A ride ends with Finish, not with a gesture
+          // that leaves it recording invisibly.
+          ongoing: true,
+          autoCancel: false,
+          onlyAlertOnce: true,
+          usesChronometer: !paused,
+          when: startedAtMs,
+          showWhen: true,
+          category: AndroidNotificationCategory.workout,
+          color: Palette.signal,
+        ),
+        iOS: const DarwinNotificationDetails(
+          // iOS has no ongoing notification, so this is a single quiet post
+          // rather than a live tile. Better than nothing, and not worth
+          // pretending otherwise.
+          presentSound: false,
+        ),
+      ),
+    );
+  }
+
+  /// Clears the ride notification. Safe to call when none is showing.
+  Future<void> cancelRideProgress() async {
+    if (!_initialised) return;
+    await _plugin.cancel(id: _rideNotificationId);
+  }
+
+  Future<void> _ensureRideChannel(String name) async {
+    if (_rideChannelName == name) return;
+
+    await _android?.createNotificationChannel(
+      AndroidNotificationChannel(
+        _rideChannelId,
+        name,
+        // Default rather than low: the point of this notification is that
+        // geolocator's is inaudible and has no status-bar icon. Low would
+        // reproduce the problem it exists to solve.
+        importance: Importance.defaultImportance,
+      ),
+    );
+    _rideChannelName = name;
   }
 
   Future<void> cancel(int id) async {

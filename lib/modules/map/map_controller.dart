@@ -84,22 +84,50 @@ class MapController extends GetxController {
   /// because `RideMap` is stateless and rebuilds on every new fix.
   final camera = fm.MapController();
 
-  /// Centres the map on the latest fix, if there is one.
+  /// Whether the camera chases the dot.
+  ///
+  /// On, every new fix recentres the map, so a moving rider stays in the
+  /// middle of the screen instead of walking off the edge of a static view.
+  /// It is switched on by the locate button and off by the first drag —
+  /// see [breakFollow]. A map that snaps back while you are trying to look at
+  /// the road ahead is worse than one that does not follow at all.
+  final followMe = false.obs;
+
+  /// Centres the map on the latest fix, if there is one, and starts
+  /// following.
   ///
   /// Zooms in only when currently further out than street level — someone who
   /// has deliberately zoomed in past that should not be yanked back out.
   void recentreOnMe() {
+    followMe.value = true;
+    _centreOnMe(zoomIn: true);
+  }
+
+  /// Stops the camera chasing the dot. Called when the user drags the map:
+  /// a deliberate pan is a statement about where they want to be looking.
+  void breakFollow() {
+    if (followMe.value) followMe.value = false;
+  }
+
+  void _centreOnMe({required bool zoomIn}) {
     final me = myLocation.value;
     if (me == null) return;
 
     try {
       final zoom = camera.camera.zoom;
-      camera.move(LatLng(me.lat, me.lng), zoom < 16 ? 16 : zoom);
+      camera.move(
+        LatLng(me.lat, me.lng),
+        zoomIn && zoom < _followZoom ? _followZoom : zoom,
+      );
     } on Object {
       // `camera` throws until a FlutterMap has attached to it. Nothing to
       // recentre in that case, and it is not worth an error.
     }
   }
+
+  /// Street level — close enough to tell which road you are on, wide enough
+  /// to see the next junction coming.
+  static const _followZoom = 16.0;
 
   @override
   void onInit() {
@@ -111,7 +139,42 @@ class MapController extends GetxController {
     // The shell keeps this tab alive forever, so without this the dot would
     // hold the GPS open for the life of the process.
     ever(_shell.tab, (_) => _syncLocationStream());
+    // A recording ride is already streaming positions behind its foreground
+    // service. The dot rides along on those rather than opening a second
+    // location client to ask the same hardware the same question.
+    ever(_tracker.isRecording, _onRecordingChanged);
+    ever(_tracker.lastPoint, (point) {
+      if (point != null && _tracker.isRecording.value) _onFix(point);
+    });
     _bindRides();
+  }
+
+  /// Starting a ride turns the dot and follow mode on by itself.
+  ///
+  /// No permission is requested here and none is needed: a ride cannot be
+  /// recording without location already granted. Someone who has just tapped
+  /// Start and opened the map wants to watch themselves move, and making them
+  /// tap a second button for a GPS that is already running is friction for
+  /// its own sake.
+  void _onRecordingChanged(bool recording) {
+    if (recording) {
+      showMyLocation.value = true;
+      followMe.value = true;
+      final point = _tracker.lastPoint.value;
+      if (point != null) _onFix(point);
+    }
+    // Swaps between the tracker's stream and the map's own, in whichever
+    // direction the ride just went.
+    _syncLocationStream();
+  }
+
+  /// One new fix, from whichever source is live.
+  void _onFix(GeoPoint point) {
+    myLocation.value = point;
+    locating.value = false;
+    // Zoom is left alone here. The rider set it; a camera that re-zooms on
+    // every sample is unusable.
+    if (followMe.value) _centreOnMe(zoomIn: false);
   }
 
   @override
@@ -138,13 +201,14 @@ class MapController extends GetxController {
     }
 
     showMyLocation.value = true;
+    followMe.value = true;
     _syncLocationStream();
 
     // The stream can take a few seconds to produce its first sample, so a
     // one-shot fix fills the dot in immediately where one is available.
     locating.value = myLocation.value == null;
     final fix = await _location.currentPosition();
-    if (fix != null) myLocation.value = fix;
+    if (fix != null) _onFix(fix);
     locating.value = false;
 
     return state;
@@ -152,17 +216,25 @@ class MapController extends GetxController {
 
   void disableMyLocation() {
     showMyLocation.value = false;
+    followMe.value = false;
     myLocation.value = null;
     locating.value = false;
     _syncLocationStream();
   }
 
-  /// The dot streams only while it is switched on *and* the map is the tab on
-  /// screen. Both conditions matter: this runs in a shell that never disposes
-  /// the tab, so "is it visible" is the only thing standing between a live GPS
-  /// subscription and one that outlives the user's interest in it.
+  /// The dot streams only while it is switched on, the map is the tab on
+  /// screen, **and** no ride is supplying fixes already.
+  ///
+  /// All three conditions matter. This runs in a shell that never disposes the
+  /// tab, so "is it visible" is the only thing standing between a live GPS
+  /// subscription and one that outlives the user's interest in it — and during
+  /// a ride the tracker's own stream is already running, so opening a second
+  /// one would double the battery cost for an identical answer.
   void _syncLocationStream() {
-    final wanted = showMyLocation.value && _shell.tab.value == ShellTab.map;
+    final wanted =
+        showMyLocation.value &&
+        _shell.tab.value == ShellTab.map &&
+        !_tracker.isRecording.value;
 
     if (!wanted) {
       _meSub?.cancel();
@@ -172,10 +244,7 @@ class MapController extends GetxController {
     if (_meSub != null) return;
 
     _meSub = _location.watchForeground().listen(
-      (point) {
-        myLocation.value = point;
-        locating.value = false;
-      },
+      _onFix,
       onError: (_) {
         // Permission revoked from the notification shade, or GPS switched
         // off mid-session. Drop the dot rather than leave a stale one

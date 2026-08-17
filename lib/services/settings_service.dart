@@ -39,9 +39,7 @@ class SettingsService extends GetxService {
     activeVehicleId.value = _box.read<int>(_kActiveVehicleId) ?? 0;
     onboardingComplete.value = _box.read<bool>(_kOnboardingComplete) ?? false;
     mileageDropThreshold.value = _box.read<int>(_kMileageDropThreshold) ?? 12;
-    trackingMode.value = TrackingMode.values.byName(
-      _box.read<String>(_kTrackingMode) ?? TrackingMode.off.name,
-    );
+    trackingMode.value = _readTrackingMode();
     keepScreenOnDuringRides.value = _box.read<bool>(_kKeepScreenOn) ?? false;
     notificationsEnabled.value =
         _box.read<bool>(_kNotificationsEnabled) ?? false;
@@ -71,6 +69,26 @@ class SettingsService extends GetxService {
     );
 
     return this;
+  }
+
+  TrackingMode _readTrackingMode() =>
+      trackingModeFromStored(_box.read<String>(_kTrackingMode));
+
+  /// Maps a stored tracking-mode name to a value this build has, tolerating
+  /// names it no longer does.
+  ///
+  /// `appOpen` was removed once recording moved to a foreground service for
+  /// every ride. An install storing it had tracking deliberately switched
+  /// **on**, so it maps to [TrackingMode.background] rather than silently
+  /// turning a rider's tracking off on upgrade. `byName` would throw on it,
+  /// which where this is called — partway through `init` — would take the
+  /// whole launch down.
+  ///
+  /// Static and pure so the upgrade path is testable without a storage box.
+  static TrackingMode trackingModeFromStored(String? stored) {
+    if (stored == null) return TrackingMode.off;
+    if (stored == 'appOpen') return TrackingMode.background;
+    return TrackingMode.values.asNameMap()[stored] ?? TrackingMode.off;
   }
 
   /// Dark is the default: this app is used at dusk, in a garage, at a fuel

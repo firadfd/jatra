@@ -119,23 +119,28 @@ enum ServiceStatus {
 
 /// Ride tracking mode. Default is [off] — the app is fully usable by someone
 /// who never grants location permission.
+///
+/// There used to be a third value, `appOpen`, which stopped recording the
+/// moment the app left the screen. It is gone: a ride is a thing that happens
+/// while the phone is in a pocket, and a tracker that quietly stops when the
+/// screen locks records the wrong distance without ever saying so. Recording
+/// now always runs behind a foreground service, so [background] is simply
+/// what "on" means. The name is kept because it is what the value has always
+/// been persisted as; [label] is what the user reads.
 enum TrackingMode {
   off,
-  appOpen,
   background;
 
   String get label => switch (this) {
     TrackingMode.off => 'Off',
-    TrackingMode.appOpen => 'While app is open',
-    TrackingMode.background => 'Background',
+    TrackingMode.background => 'On',
   };
 
   String get description => switch (this) {
     TrackingMode.off =>
       'No GPS. Enter ride distances by hand. Everything else works.',
-    TrackingMode.appOpen =>
-      'Records while Jatra is on screen. Pauses when you switch away.',
     TrackingMode.background =>
-      'Keeps recording with the screen off, using a notification.',
+      'Records the whole ride — screen off, another app in front, phone in a '
+          'pocket — until you tap Finish. A notification shows while recording.',
   };
 }

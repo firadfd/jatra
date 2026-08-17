@@ -1453,22 +1453,46 @@ abstract class L {
   /// **'Typeset in Barlow Condensed, Inter, JetBrains Mono and Hind Siliguri, all under the SIL Open Font License.'**
   String get settingsFontCredit;
 
+  /// No description provided for @settingsMapCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline maps'**
+  String get settingsMapCache;
+
+  /// No description provided for @settingsMapCacheBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Map areas you look at are kept on this phone, so a route you have already seen still draws with no connection. Nothing is downloaded ahead of time.'**
+  String get settingsMapCacheBody;
+
+  /// How much disk the cached map tiles take up.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} stored'**
+  String settingsMapCacheStored(String size);
+
+  /// No description provided for @settingsMapCacheClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get settingsMapCacheClear;
+
+  /// No description provided for @settingsMapCacheCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline map tiles cleared'**
+  String get settingsMapCacheCleared;
+
   /// No description provided for @trackingOff.
   ///
   /// In en, this message translates to:
   /// **'Off'**
   String get trackingOff;
 
-  /// No description provided for @trackingAppOpen.
-  ///
-  /// In en, this message translates to:
-  /// **'While app is open'**
-  String get trackingAppOpen;
-
   /// No description provided for @trackingBackground.
   ///
   /// In en, this message translates to:
-  /// **'Background'**
+  /// **'On'**
   String get trackingBackground;
 
   /// No description provided for @trackingOffExplain.
@@ -1477,16 +1501,10 @@ abstract class L {
   /// **'No GPS. Enter ride distances by hand. Everything else works.'**
   String get trackingOffExplain;
 
-  /// No description provided for @trackingAppOpenExplain.
-  ///
-  /// In en, this message translates to:
-  /// **'Records while Jatra is on screen. Pauses when you switch away.'**
-  String get trackingAppOpenExplain;
-
   /// No description provided for @trackingBackgroundExplain.
   ///
   /// In en, this message translates to:
-  /// **'Keeps recording with the screen off, using a notification.'**
+  /// **'Records the whole ride — screen off, another app in front, phone in a pocket — until you tap Finish. A notification shows while recording.'**
   String get trackingBackgroundExplain;
 
   /// No description provided for @trackingDefault.
@@ -1495,28 +1513,16 @@ abstract class L {
   /// **'Default'**
   String get trackingDefault;
 
-  /// No description provided for @trackingAskForegroundTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Use your location?'**
-  String get trackingAskForegroundTitle;
-
-  /// No description provided for @trackingAskForegroundBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Jatra will read your location while a ride is recording and you have the app open, to trace your route and measure distance.\n\nYour route is saved on this phone and sent nowhere.'**
-  String get trackingAskForegroundBody;
-
   /// No description provided for @trackingAskBackgroundTitle.
   ///
   /// In en, this message translates to:
-  /// **'Record with the screen off?'**
+  /// **'Record the whole ride?'**
   String get trackingAskBackgroundTitle;
 
   /// No description provided for @trackingAskBackgroundBody.
   ///
   /// In en, this message translates to:
-  /// **'Android will ask you to allow location \"all the time\". Jatra uses it only while you are recording a ride, and shows a notification the whole time it is running.\n\nYour route is saved on this phone and sent nowhere.'**
+  /// **'A ride keeps recording after you leave the app or lock the screen, so the distance is the distance you actually rode. A notification shows the whole time it is running, and it stops when you tap Finish.\n\nAndroid will ask you to allow location \"all the time\". Jatra reads it only while a ride is recording.\n\nYour route is saved on this phone and sent nowhere.'**
   String get trackingAskBackgroundBody;
 
   /// No description provided for @trackingServicesDisabled.
@@ -1546,7 +1552,7 @@ abstract class L {
   /// No description provided for @trackingBackgroundNeedsSettings.
   ///
   /// In en, this message translates to:
-  /// **'Android only allows \"all the time\" access to be granted from Settings. Until then Jatra records while the app is open. Choose Jatra → Permissions → Location → Allow all the time.'**
+  /// **'Rides still record in the background. But Android only grants \"all the time\" access from Settings, and without it a long ride can be cut short. Choose Jatra → Permissions → Location → Allow all the time.'**
   String get trackingBackgroundNeedsSettings;
 
   /// No description provided for @trackingOpenAppSettings.
@@ -2353,11 +2359,17 @@ abstract class L {
   /// **'Show my location'**
   String get mapShowMyLocation;
 
-  /// Tooltip on the locate button when the dot is on.
+  /// Tooltip on the locate button when the dot is on but the camera is not following.
   ///
   /// In en, this message translates to:
   /// **'Recentre on my location'**
   String get mapRecentre;
+
+  /// Tooltip on the locate button while the camera is following the rider.
+  ///
+  /// In en, this message translates to:
+  /// **'Following you — drag the map to stop'**
+  String get mapFollowing;
 
   /// Accessibility label for the current-location dot.
   ///
@@ -2923,11 +2935,35 @@ abstract class L {
   /// **'Colour {number}'**
   String vehiclesColourN(Object number);
 
-  /// Text of the Android notification shown while a ride records in the background.
+  /// Title of the Android notification shown for as long as a ride is being recorded.
   ///
   /// In en, this message translates to:
-  /// **'Tap to return to Jatra'**
+  /// **'Recording your ride'**
+  String get ridesNotificationTitle;
+
+  /// Title of geolocator's foreground-service notification. Deliberately different from ridesNotificationTitle: both can appear in the shade at once, and two identical entries read as a bug.
+  ///
+  /// In en, this message translates to:
+  /// **'Jatra is using your location'**
+  String get ridesLocationServiceTitle;
+
+  /// Text of geolocator's foreground-service notification.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps your ride recording while the app is in the background.'**
   String get ridesForegroundNotification;
+
+  /// Title of the ride notification while recording is paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride paused'**
+  String get ridesNotificationPaused;
+
+  /// Name of the Android notification channel, as it appears in the system notification settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride recording'**
+  String get ridesNotificationChannel;
 
   /// Notification title for a due service. {status} is a lowercased status word.
   ///

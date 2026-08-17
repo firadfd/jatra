@@ -103,6 +103,10 @@ class InitialBinding extends Bindings {
         Get.find<LocationService>(),
         Get.find<VehicleController>(),
         Get.find<SettingsService>(),
+        // Not to post anything — the recording notification comes from the
+        // location foreground service. Only to make sure Android is allowed
+        // to show it. See `RideTrackerController.start`.
+        Get.find<NotificationService>(),
       ),
       permanent: true,
     );

@@ -31,6 +31,11 @@ import '../../l10n/app_localizations.dart';
 ///
 /// Location is requested only when the rider taps the locate button. Opening
 /// this tab touches no GPS.
+///
+/// The one exception is a ride in progress: that already holds a granted
+/// permission and a running position stream, so the dot switches itself on
+/// and the camera follows the rider without a second ask. The map reads that
+/// ride's fixes rather than opening a stream of its own.
 class MapView extends GetView<MapController> {
   const MapView({super.key});
 
@@ -107,11 +112,16 @@ class MapView extends GetView<MapController> {
   }
 }
 
-/// Turns the "you are here" dot on, and recentres on it once it is on.
+/// Turns the "you are here" dot on, and follows it once it is on.
 ///
 /// The first tap is what triggers the permission request — Jatra asks for
 /// location when the rider asks to be located, and at no other time. Tapping
-/// it again while the dot is showing recentres; long-pressing turns it off.
+/// it again while the dot is showing recentres and resumes following;
+/// long-pressing turns the dot off altogether.
+///
+/// The icon carries the follow state, the way it does in every map app:
+/// filled crosshair while the camera is chasing the rider, outline once they
+/// have dragged the map somewhere else.
 class _MyLocationButton extends GetView<MapController> {
   const _MyLocationButton();
 
@@ -121,6 +131,7 @@ class _MyLocationButton extends GetView<MapController> {
 
     return Obx(() {
       final on = controller.showMyLocation.value;
+      final following = controller.followMe.value;
       final busy = controller.locating.value;
 
       // FloatingActionButton has no long-press of its own, so the gesture is
@@ -132,9 +143,11 @@ class _MyLocationButton extends GetView<MapController> {
           heroTag: 'fab-map-locate',
           backgroundColor: c.surfaceElevated,
           foregroundColor: on ? c.signal : c.textSecondary,
-          tooltip: on
-              ? L.of(context).mapRecentre
-              : L.of(context).mapShowMyLocation,
+          tooltip: switch ((on, following)) {
+            (true, true) => L.of(context).mapFollowing,
+            (true, false) => L.of(context).mapRecentre,
+            _ => L.of(context).mapShowMyLocation,
+          },
           onPressed: busy ? null : () => _tap(context),
           child: busy
               ? SizedBox(
@@ -145,7 +158,11 @@ class _MyLocationButton extends GetView<MapController> {
                     color: c.textSecondary,
                   ),
                 )
-              : Icon(on ? Icons.my_location : Icons.location_searching),
+              : Icon(switch ((on, following)) {
+                  (true, true) => Icons.my_location,
+                  (true, false) => Icons.location_searching,
+                  _ => Icons.location_disabled_outlined,
+                }),
         ),
       );
     });
@@ -305,6 +322,7 @@ class _MapPanel extends GetView<MapController> {
                   fallbackCentre: _defaultCentre,
                   myLocation: me,
                   mapController: controller.camera,
+                  onUserMovedMap: controller.breakFollow,
                 ),
               );
             }),

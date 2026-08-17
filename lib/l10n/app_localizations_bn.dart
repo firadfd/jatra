@@ -769,42 +769,46 @@ class LBn extends L {
       'Barlow Condensed, Inter, JetBrains Mono ও Hind Siliguri ফন্টে তৈরি, সবই SIL Open Font License-এর অধীনে।';
 
   @override
+  String get settingsMapCache => 'অফলাইন ম্যাপ';
+
+  @override
+  String get settingsMapCacheBody =>
+      'আপনি ম্যাপে যে এলাকা দেখেন তা এই ফোনেই রাখা হয়, তাই আগে দেখা পথ ইন্টারনেট ছাড়াও আঁকা হয়। আগেভাগে কিছু ডাউনলোড করা হয় না।';
+
+  @override
+  String settingsMapCacheStored(String size) {
+    return '$size জমা আছে';
+  }
+
+  @override
+  String get settingsMapCacheClear => 'মুছে ফেলুন';
+
+  @override
+  String get settingsMapCacheCleared => 'অফলাইন ম্যাপের টাইল মুছে ফেলা হয়েছে';
+
+  @override
   String get trackingOff => 'বন্ধ';
 
   @override
-  String get trackingAppOpen => 'অ্যাপ খোলা থাকলে';
-
-  @override
-  String get trackingBackground => 'ব্যাকগ্রাউন্ডে';
+  String get trackingBackground => 'চালু';
 
   @override
   String get trackingOffExplain =>
       'জিপিএস নেই। দূরত্ব নিজে লিখবেন। বাকি সব কাজ করবে।';
 
   @override
-  String get trackingAppOpenExplain =>
-      'Jatra স্ক্রিনে থাকলে রেকর্ড হয়। অন্য অ্যাপে গেলে থেমে যায়।';
-
-  @override
   String get trackingBackgroundExplain =>
-      'স্ক্রিন বন্ধ থাকলেও একটি নোটিফিকেশন দেখিয়ে রেকর্ড চালু থাকে।';
+      'স্ক্রিন বন্ধ থাকলেও, অন্য অ্যাপে গেলেও, ফোন পকেটে থাকলেও — \"শেষ\" চাপা পর্যন্ত পুরো যাত্রা রেকর্ড হয়। রেকর্ড চলাকালে একটি নোটিফিকেশন দেখা যায়।';
 
   @override
   String get trackingDefault => 'ডিফল্ট';
 
   @override
-  String get trackingAskForegroundTitle => 'আপনার লোকেশন ব্যবহার করব?';
-
-  @override
-  String get trackingAskForegroundBody =>
-      'যাত্রা রেকর্ড চলাকালে এবং অ্যাপ খোলা থাকলে Jatra আপনার লোকেশন পড়বে, পথ আঁকতে ও দূরত্ব মাপতে।\n\nআপনার পথ এই ফোনেই সংরক্ষিত থাকে, কোথাও পাঠানো হয় না।';
-
-  @override
-  String get trackingAskBackgroundTitle => 'স্ক্রিন বন্ধ রেখে রেকর্ড করব?';
+  String get trackingAskBackgroundTitle => 'পুরো যাত্রা রেকর্ড করব?';
 
   @override
   String get trackingAskBackgroundBody =>
-      'অ্যান্ড্রয়েড আপনাকে \"সবসময়\" লোকেশনের অনুমতি দিতে বলবে। Jatra শুধু যাত্রা রেকর্ডের সময়ই এটি ব্যবহার করে এবং পুরো সময় একটি নোটিফিকেশন দেখায়।\n\nআপনার পথ এই ফোনেই সংরক্ষিত থাকে, কোথাও পাঠানো হয় না।';
+      'অ্যাপ থেকে বেরিয়ে গেলে বা স্ক্রিন বন্ধ করলেও যাত্রার রেকর্ড চলতে থাকে, তাই দূরত্ব হবে আপনি সত্যিই যতটা চালিয়েছেন ততটাই। পুরো সময় একটি নোটিফিকেশন দেখা যায়, আর \"শেষ\" চাপলেই থেমে যায়।\n\nঅ্যান্ড্রয়েড আপনাকে \"সবসময়\" লোকেশনের অনুমতি দিতে বলবে। Jatra শুধু যাত্রা রেকর্ডের সময়ই এটি পড়ে।\n\nআপনার পথ এই ফোনেই সংরক্ষিত থাকে, কোথাও পাঠানো হয় না।';
 
   @override
   String get trackingServicesDisabled =>
@@ -823,7 +827,7 @@ class LBn extends L {
 
   @override
   String get trackingBackgroundNeedsSettings =>
-      'অ্যান্ড্রয়েড \"সবসময়\" অনুমতি শুধু সেটিংস থেকেই দিতে দেয়। ততক্ষণ Jatra অ্যাপ খোলা থাকলে রেকর্ড করবে। বেছে নিন: Jatra → Permissions → Location → Allow all the time।';
+      'যাত্রা ব্যাকগ্রাউন্ডেও রেকর্ড হবে। তবে অ্যান্ড্রয়েড \"সবসময়\" অনুমতি শুধু সেটিংস থেকেই দিতে দেয়, আর সেটি ছাড়া দীর্ঘ যাত্রার রেকর্ড মাঝপথে থেমে যেতে পারে। বেছে নিন: Jatra → Permissions → Location → Allow all the time।';
 
   @override
   String get trackingOpenAppSettings => 'অ্যাপ সেটিংস খুলুন';
@@ -1281,6 +1285,9 @@ class LBn extends L {
   String get mapRecentre => 'আমার অবস্থানে ফিরে যান';
 
   @override
+  String get mapFollowing => 'আপনাকে অনুসরণ করছে — থামাতে ম্যাপ টানুন';
+
+  @override
   String get mapYourLocation => 'আপনার অবস্থান';
 
   @override
@@ -1593,7 +1600,20 @@ class LBn extends L {
   }
 
   @override
-  String get ridesForegroundNotification => 'Jatra-তে ফিরতে ট্যাপ করুন';
+  String get ridesNotificationTitle => 'আপনার যাত্রা রেকর্ড হচ্ছে';
+
+  @override
+  String get ridesLocationServiceTitle => 'Jatra আপনার লোকেশন ব্যবহার করছে';
+
+  @override
+  String get ridesForegroundNotification =>
+      'অ্যাপ ব্যাকগ্রাউন্ডে থাকলেও যাত্রার রেকর্ড চালু রাখে।';
+
+  @override
+  String get ridesNotificationPaused => 'যাত্রা থামানো আছে';
+
+  @override
+  String get ridesNotificationChannel => 'যাত্রা রেকর্ডিং';
 
   @override
   String reminderServiceTitle(Object item, Object status) {

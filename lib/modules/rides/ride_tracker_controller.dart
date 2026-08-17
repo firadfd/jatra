@@ -7,10 +7,12 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../core/utils/clock.dart';
 import '../../core/utils/geo_utils.dart';
+import '../../core/utils/l10n.dart';
 import '../../data/db/database.dart';
 import '../../data/repositories/fuel_repo.dart';
 import '../../data/repositories/ride_repo.dart';
 import '../../services/location_service.dart';
+import '../../services/notification_service.dart';
 import '../../services/settings_service.dart';
 import '../vehicles/vehicle_controller.dart';
 
@@ -19,7 +21,7 @@ enum InterruptedRideChoice { resume, save, discard }
 
 /// Records a ride.
 ///
-/// Two rules shape everything here:
+/// Three rules shape everything here:
 ///
 /// 1. **Every accepted point is written to the database immediately.** The
 ///    path is never held in memory alone, so killing the app mid-ride costs
@@ -27,6 +29,11 @@ enum InterruptedRideChoice { resume, save, discard }
 /// 2. **Gaps are shown, not smoothed over.** When recording stops and
 ///    resumes, the next point is flagged so the polyline breaks rather than
 ///    drawing a straight line across a stretch that was never ridden.
+/// 3. **A ride runs from Start to Finish, not from foreground to
+///    background.** The position stream is opened behind an Android
+///    foreground service and is cancelled by [stop], by [pause] and by
+///    nothing else. Leaving the app, locking the screen or taking a call
+///    does not touch it.
 class RideTrackerController extends GetxController with WidgetsBindingObserver {
   RideTrackerController(
     this._rides,
@@ -34,6 +41,7 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
     this._location,
     this._vehicles,
     this._settings,
+    this._notifications,
   );
 
   final RideRepo _rides;
@@ -41,6 +49,7 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
   final LocationService _location;
   final VehicleController _vehicles;
   final SettingsService _settings;
+  final NotificationService _notifications;
 
   StreamSubscription<GeoPoint>? _positionSub;
 
@@ -58,9 +67,18 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
   final maxSpeedMps = 0.0.obs;
   final pointCount = 0.obs;
 
-  /// Set when the app was backgrounded mid-ride in "app open" mode, so the
-  /// UI can say so honestly rather than pretending nothing happened.
+  /// How long the ride has spent paused, so the UI can say plainly that a
+  /// stretch is missing rather than pretending nothing happened.
   final pausedGapSeconds = 0.obs;
+
+  /// The most recent accepted fix, published for the map to draw its "you are
+  /// here" dot from.
+  ///
+  /// While a ride is recording this is the only GPS subscription the app
+  /// needs — the map reads it instead of opening a second stream of its own,
+  /// which would mean two location clients running against the same hardware
+  /// for the same answer.
+  final lastPoint = Rxn<GeoPoint>();
 
   /// A ride found unfinished at launch, awaiting the user's choice.
   final interrupted = Rxn<RideRow>();
@@ -85,6 +103,12 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
+    // An ongoing notification outlives the process that posted it, so a ride
+    // killed by the system leaves "Recording your ride" sitting in the shade
+    // claiming something that stopped hours ago. Nothing is recording at this
+    // point by definition; `_resume` reposts it if the rider picks the ride
+    // back up.
+    unawaited(_notifications.cancelRideProgress());
     unawaited(checkForInterruptedRide());
   }
 
@@ -141,6 +165,16 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
     final state = await _location.check();
     if (!state.allowsForeground) return false;
 
+    // Android suppresses the recording notification without
+    // POST_NOTIFICATIONS, and a ride recording invisibly in the background is
+    // the one outcome this feature must never produce. Asked here, at the
+    // moment the user taps Start, and before the clock starts below so a slow
+    // answer to the dialog does not land inside the ride's duration.
+    //
+    // A refusal is not a reason to refuse the ride — the recording still
+    // works, the rider just has nothing in the shade to look at.
+    await _notifications.ensureAllowed();
+
     final now = Clock.nowMs;
     final id = await _rides.create(
       RidesCompanion.insert(
@@ -163,6 +197,7 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
     maxSpeedMps.value = 0;
     pointCount.value = 0;
     pausedGapSeconds.value = 0;
+    lastPoint.value = null;
 
     isRecording.value = true;
     isPaused.value = false;
@@ -170,6 +205,11 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
     await _listen();
     _startTicker();
     await _applyWakelock();
+    // Posted straight away rather than waiting for the first GPS point, which
+    // can be twenty seconds out in a covered car park. "Recording your ride ·
+    // 0.0 km" is the honest state, and the rider gets confirmation that the
+    // tap worked.
+    await _publishNotification();
     return true;
   }
 
@@ -192,6 +232,7 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
     // Whatever happened between then and now was not recorded, so the path
     // must break here.
     _startNewSegment = true;
+    lastPoint.value = _lastAccepted;
 
     distanceM.value = ride.distanceMeters;
     movingSeconds.value = ride.movingSeconds;
@@ -205,21 +246,29 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
     await _listen();
     _startTicker();
     await _applyWakelock();
+    await _publishNotification();
   }
 
+  /// Opens the position stream for the ride.
+  ///
+  /// This runs behind a foreground service for the whole ride, so it is
+  /// deliberately *not* tied to the app lifecycle. The only things that close
+  /// it are [stop] and [onClose] — [pause] leaves it open and drops the
+  /// samples instead, because tearing the service down would mean *starting*
+  /// one again on unpause, and Android 12+ forbids starting a foreground
+  /// service from the background. A paused ride is usually a paused ride in a
+  /// pocket.
   Future<void> _listen() async {
     await _positionSub?.cancel();
-    _positionSub = _location
-        .watch(mode: mode)
-        .listen(
-          _onPoint,
-          onError: (_) {
-            // A revoked permission or a disabled GPS mid-ride. Pause rather
-            // than tear down: the ride so far is worth keeping, and the
-            // user may re-enable it.
-            pause();
-          },
-        );
+    _positionSub = _location.watchRide().listen(
+      _onPoint,
+      onError: (_) {
+        // A revoked permission or a disabled GPS mid-ride. Pause rather
+        // than tear down: the ride so far is worth keeping, and the
+        // user may re-enable it.
+        pause();
+      },
+    );
   }
 
   void _startTicker() {
@@ -279,6 +328,8 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
 
     _lastAccepted = point;
     _startNewSegment = false;
+    lastPoint.value = point;
+    unawaited(_publishNotification());
 
     // The ride summary is refreshed on a point rather than on the ticker, so
     // a crash loses at most the last sample's worth of totals.
@@ -305,6 +356,34 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
   }
 
   // -------------------------------------------------------------------
+  // The ride notification
+  // -------------------------------------------------------------------
+
+  /// Posts the notification the rider actually sees while a ride runs.
+  ///
+  /// Android forces geolocator's foreground-service notification into the
+  /// shade, but geolocator hardcodes `IMPORTANCE_NONE` on its channel and
+  /// recreates it on every start, so it cannot be given a sound or a
+  /// status-bar icon from here. This is the visible one, and unlike
+  /// geolocator's it can carry the distance so far.
+  Future<void> _publishNotification() async {
+    if (!isRecording.value) return;
+
+    final fmt = _vehicles.fmt.value;
+    await _notifications.showRideProgress(
+      channelName: l10n.ridesNotificationChannel,
+      title: isPaused.value
+          ? l10n.ridesNotificationPaused
+          : l10n.ridesNotificationTitle,
+      body:
+          '${fmt.distancePrecise(distanceM.value)} '
+          '${fmt.distanceLabel.toLowerCase()}',
+      startedAtMs: _startedAtMs,
+      paused: isPaused.value,
+    );
+  }
+
+  // -------------------------------------------------------------------
   // Pause, resume, stop
   // -------------------------------------------------------------------
 
@@ -314,6 +393,10 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
     _pausedAtMs = Clock.nowMs;
     // The next point after a pause starts a new segment.
     _startNewSegment = true;
+    // Republished immediately rather than on the next point: paused means no
+    // more points are coming, so this is the last chance to stop the
+    // notification claiming the ride is still running.
+    unawaited(_publishNotification());
   }
 
   void unpause() {
@@ -324,12 +407,16 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
     }
     isPaused.value = false;
     _pausedAtMs = null;
+    unawaited(_publishNotification());
   }
 
   Future<RideRow?> stop() async {
     final ride = activeRide.value;
     if (ride == null) return null;
 
+    // Cancelling the subscription is what stops the foreground service and
+    // clears its notification. Do it first, so nothing can land in the
+    // database after the ride has been finalised.
     await _positionSub?.cancel();
     _positionSub = null;
     _ticker?.cancel();
@@ -337,6 +424,10 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
 
     isRecording.value = false;
     isPaused.value = false;
+    lastPoint.value = null;
+    // Cleared here rather than in `_finalise`, so a ride that turns out to be
+    // empty and gets discarded still takes its notification with it.
+    await _notifications.cancelRideProgress();
 
     final finished = await _finalise(ride, endMs: Clock.nowMs);
     activeRide.value = null;
@@ -379,39 +470,39 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
   }
 
   // -------------------------------------------------------------------
-  // App lifecycle — "app open" mode
+  // App lifecycle
   // -------------------------------------------------------------------
 
+  /// Backgrounding no longer stops anything.
+  ///
+  /// This observer used to pause the ride whenever the app left the screen,
+  /// which is what made recording a foreground-only affair. It now does the
+  /// opposite job: on the way back in, it checks the stream is still there
+  /// and re-opens it if the platform tore it down while the app was away.
+  /// Everything else about the ride carries on untouched.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (!isRecording.value) return;
+    if (state != AppLifecycleState.resumed) return;
+    if (!isRecording.value || isPaused.value) return;
+    if (_positionSub != null) return;
 
-    // Background mode keeps its foreground service running, so it ignores
-    // the lifecycle entirely. App-open mode must stop and say so.
-    if (mode != TrackingMode.appOpen) return;
-
-    switch (state) {
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-      case AppLifecycleState.hidden:
-        pause();
-      case AppLifecycleState.resumed:
-        unpause();
-      case AppLifecycleState.inactive:
-        break;
-    }
+    // No subscription while recording means the stream died out of sight —
+    // a killed service, a revoked permission that came back. The next point
+    // starts a new segment, so the break is drawn rather than papered over.
+    _startNewSegment = true;
+    unawaited(_listen());
   }
 
-  /// The honest message for a ride that was paused while the app was away.
-  /// Null when nothing was missed.
+  /// The honest message for a ride that spent time paused. Null when nothing
+  /// was missed.
   String? get gapNotice {
     final seconds = pausedGapSeconds.value;
     if (seconds < 60) return null;
 
     final minutes = (seconds / 60).round();
-    return 'Ride paused while the app was closed — $minutes min gap. '
-        'Turn on background tracking to keep recording with the screen off.';
+    return 'Paused for $minutes min — that stretch is not part of the '
+        'recorded distance.';
   }
 
   // -------------------------------------------------------------------

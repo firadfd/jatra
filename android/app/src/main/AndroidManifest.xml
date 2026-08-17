@@ -3,9 +3,16 @@
 
     <!--
       Jatra requests no permission of its own. Service reminders are posted by
-      flutter_local_notifications, which contributes POST_NOTIFICATIONS
-      (asked for only when the user switches reminders on) plus the two
-      below, which we do not use and therefore remove:
+      flutter_local_notifications, which contributes POST_NOTIFICATIONS plus
+      the two below, which we do not use and therefore remove.
+
+      POST_NOTIFICATIONS is asked for at two moments, both of them things the
+      user just did: switching service reminders on, and starting a ride.
+      The second is not obvious — the recording notification is posted by the
+      location foreground service, not by us — but since Android 13 a
+      foreground service notification is suppressed like any other when the
+      permission is missing. The ride would record with nothing in the shade
+      to show for it. See `NotificationService.ensureAllowed`.
 
         SCHEDULE_EXACT_ALARM / USE_EXACT_ALARM — reminders are scheduled with
         AndroidScheduleMode.inexactAllowWhileIdle. A service due "sometime
@@ -40,14 +47,22 @@
 
     <!--
       Ride tracking (Phase 6). All of these are runtime permissions and none
-      is requested until the user picks a tracking mode in settings — the
+      is requested until the user switches tracking on in settings — the
       default is Off, and the app is fully usable that way.
 
+      A ride records from Start to Finish, not from foreground to background:
+      the position stream runs behind geolocator's GeolocatorLocationService,
+      which its own manifest declares with foregroundServiceType="location".
+      FOREGROUND_SERVICE_LOCATION is what Android 14+ requires to start a
+      service of that type, so both lines below are load-bearing.
+
       ACCESS_BACKGROUND_LOCATION triggers a manual Play Store review with a
-      declaration form and a demo video. It is here because "record with the
-      screen off" cannot work without it. Removing this one line, and the
-      background option from TrackingMode, is all it takes to go back to a
-      near-instant review.
+      declaration form and a demo video. Strictly, a location foreground
+      service started while the app is on screen keeps receiving fixes on a
+      while-in-use grant alone — which covers a ride begun by tapping Start.
+      This is here for the edges that grant does not cover, and its absence
+      degrades reliability rather than breaking recording; see
+      `tracking_section.dart`.
 
       GPS only — Jatra has no use for the network-based coarse location, and
       asking for less is asking for less.
@@ -56,6 +71,25 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+    <!--
+      Required by `enableWakeLock` in the ForegroundNotificationConfig that
+      starts the recording service — geolocator asks the system for a
+      PowerManager wake lock and the platform throws a SecurityException
+      ("Neither user nor current process has android.permission.WAKE_LOCK")
+      the moment the position stream opens without this line. geolocator does
+      not declare it in its own manifest, and wakelock_plus does not
+      contribute it either: that plugin only sets FLAG_KEEP_SCREEN_ON on the
+      window, which needs no permission.
+
+      The wake lock is what keeps the CPU awake between fixes. Without it the
+      device sleeps mid-ride and location events arrive in a clump at the next
+      wake, which is the batched, lurching track this feature exists to avoid.
+
+      Normal protection level: granted at install, no runtime prompt, no Play
+      Store declaration.
+    -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!--
       Jatra does not use coarse location, and geolocator contributes it by

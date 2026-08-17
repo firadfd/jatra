@@ -45,7 +45,7 @@ abstract final class DemoSeed {
     // unreachable. Nothing is requested by flipping this — the permission
     // prompt only ever fires from the tracking control in Settings — so the
     // demo build can show the map while a real install still starts Off.
-    settings.trackingMode.value = TrackingMode.appOpen;
+    settings.trackingMode.value = TrackingMode.background;
   }
 
   /// Writes the dataset and returns the vehicle id.

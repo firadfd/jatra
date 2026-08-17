@@ -11,6 +11,7 @@ import 'app/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
 import 'data/db/database.dart';
 import 'data/db/demo_seed.dart';
+import 'services/map_tile_cache.dart';
 import 'services/notification_service.dart';
 import 'services/settings_service.dart';
 
@@ -62,6 +63,13 @@ Future<void> main() async {
   // Sets up the notification channel and reads back whether the user has
   // already allowed notifications. Asks for nothing.
   await Get.putAsync(() => NotificationService().init(), permanent: true);
+
+  // Before anything can draw a map: flutter_map's tile cache is a singleton
+  // whose configuration is fixed by whoever creates it first, and it creates
+  // a default one on the first tile it fetches. Registered here rather than
+  // in InitialBinding for that reason. Touches the filesystem and nothing
+  // else — no network, no permission.
+  await Get.putAsync(() => MapTileCache().init(), permanent: true);
 
   if (kDebugMode && kSeedDemo) {
     await DemoSeed.ensureSeeded(db, settings);

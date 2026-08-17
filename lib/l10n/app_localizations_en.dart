@@ -764,42 +764,46 @@ class LEn extends L {
       'Typeset in Barlow Condensed, Inter, JetBrains Mono and Hind Siliguri, all under the SIL Open Font License.';
 
   @override
+  String get settingsMapCache => 'Offline maps';
+
+  @override
+  String get settingsMapCacheBody =>
+      'Map areas you look at are kept on this phone, so a route you have already seen still draws with no connection. Nothing is downloaded ahead of time.';
+
+  @override
+  String settingsMapCacheStored(String size) {
+    return '$size stored';
+  }
+
+  @override
+  String get settingsMapCacheClear => 'Clear';
+
+  @override
+  String get settingsMapCacheCleared => 'Offline map tiles cleared';
+
+  @override
   String get trackingOff => 'Off';
 
   @override
-  String get trackingAppOpen => 'While app is open';
-
-  @override
-  String get trackingBackground => 'Background';
+  String get trackingBackground => 'On';
 
   @override
   String get trackingOffExplain =>
       'No GPS. Enter ride distances by hand. Everything else works.';
 
   @override
-  String get trackingAppOpenExplain =>
-      'Records while Jatra is on screen. Pauses when you switch away.';
-
-  @override
   String get trackingBackgroundExplain =>
-      'Keeps recording with the screen off, using a notification.';
+      'Records the whole ride — screen off, another app in front, phone in a pocket — until you tap Finish. A notification shows while recording.';
 
   @override
   String get trackingDefault => 'Default';
 
   @override
-  String get trackingAskForegroundTitle => 'Use your location?';
-
-  @override
-  String get trackingAskForegroundBody =>
-      'Jatra will read your location while a ride is recording and you have the app open, to trace your route and measure distance.\n\nYour route is saved on this phone and sent nowhere.';
-
-  @override
-  String get trackingAskBackgroundTitle => 'Record with the screen off?';
+  String get trackingAskBackgroundTitle => 'Record the whole ride?';
 
   @override
   String get trackingAskBackgroundBody =>
-      'Android will ask you to allow location \"all the time\". Jatra uses it only while you are recording a ride, and shows a notification the whole time it is running.\n\nYour route is saved on this phone and sent nowhere.';
+      'A ride keeps recording after you leave the app or lock the screen, so the distance is the distance you actually rode. A notification shows the whole time it is running, and it stops when you tap Finish.\n\nAndroid will ask you to allow location \"all the time\". Jatra reads it only while a ride is recording.\n\nYour route is saved on this phone and sent nowhere.';
 
   @override
   String get trackingServicesDisabled =>
@@ -818,7 +822,7 @@ class LEn extends L {
 
   @override
   String get trackingBackgroundNeedsSettings =>
-      'Android only allows \"all the time\" access to be granted from Settings. Until then Jatra records while the app is open. Choose Jatra → Permissions → Location → Allow all the time.';
+      'Rides still record in the background. But Android only grants \"all the time\" access from Settings, and without it a long ride can be cut short. Choose Jatra → Permissions → Location → Allow all the time.';
 
   @override
   String get trackingOpenAppSettings => 'Open app settings';
@@ -1271,6 +1275,9 @@ class LEn extends L {
   String get mapRecentre => 'Recentre on my location';
 
   @override
+  String get mapFollowing => 'Following you — drag the map to stop';
+
+  @override
   String get mapYourLocation => 'Your location';
 
   @override
@@ -1587,7 +1594,20 @@ class LEn extends L {
   }
 
   @override
-  String get ridesForegroundNotification => 'Tap to return to Jatra';
+  String get ridesNotificationTitle => 'Recording your ride';
+
+  @override
+  String get ridesLocationServiceTitle => 'Jatra is using your location';
+
+  @override
+  String get ridesForegroundNotification =>
+      'Keeps your ride recording while the app is in the background.';
+
+  @override
+  String get ridesNotificationPaused => 'Ride paused';
+
+  @override
+  String get ridesNotificationChannel => 'Ride recording';
 
   @override
   String reminderServiceTitle(Object item, Object status) {

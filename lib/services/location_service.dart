@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart' hide Value;
 
+import '../app/theme/app_colors.dart';
 import '../core/utils/geo_utils.dart';
-import '../data/models/enums.dart';
 import '../core/utils/l10n.dart';
 
 /// Where a permission request ended up.
@@ -53,8 +53,10 @@ class LocationService extends GetxService {
   ///
   /// The critical detail is [ForegroundNotificationConfig]: supplying it
   /// starts an Android foreground service, and passing `null` means no
-  /// service and no notification at all. "While app is open" must not show
-  /// a persistent notification, so it passes null.
+  /// service and no notification at all. A recording ride always passes one —
+  /// it is the only thing that keeps location flowing once the app is no
+  /// longer on screen. The "you are here" dot on the map passes null, because
+  /// looking at a map is not a reason to hold a service open.
   static LocationSettings buildSettings({required bool backgroundEnabled}) {
     if (!Platform.isAndroid) {
       return const LocationSettings(
@@ -69,11 +71,42 @@ class LocationService extends GetxService {
       // jitter rule. The platform one saves battery; the app's one is what
       // keeps distances honest.
       distanceFilter: 10,
+      // Without an interval the platform is free to batch samples up and
+      // deliver them in a clump once the device wakes, which makes the live
+      // readout and the map dot lurch. Paired with the distance filter above
+      // this is "at most every 2 s, and only if you have actually moved".
+      intervalDuration: const Duration(seconds: 2),
       foregroundNotificationConfig: backgroundEnabled
           ? ForegroundNotificationConfig(
-              notificationTitle: l10n.ridesRecording,
+              // This is the plumbing notification, not the ride one.
+              //
+              // geolocator hardcodes IMPORTANCE_NONE on its channel and
+              // recreates it on every service start, so it cannot be given a
+              // sound or a status-bar icon from here — Android only lets an
+              // app lower an existing channel's importance. Android still
+              // forces it into the shade, collapsed under "Silent", which is
+              // why `NotificationService.showRideProgress` posts the visible
+              // one. The copy here is about *why the service is running*, so
+              // the two entries never read as the same notification twice.
+              notificationTitle: l10n.ridesLocationServiceTitle,
               notificationText: l10n.ridesForegroundNotification,
+              // Named, so the system notification settings show "Ride
+              // recording" rather than geolocator's generic "Background
+              // Location" default. That row is where a user goes to silence
+              // it, and it should be obvious which app feature it belongs to.
+              notificationChannelName: l10n.ridesNotificationChannel,
+              // The one warm accent the app answers to. A notification with no
+              // colour reads as the system's, not as Jatra's.
+              color: Palette.signal,
+              // Holds the CPU awake between fixes. Without it the system
+              // sleeps and the samples arrive in a batch at the next wake,
+              // which is exactly the "it only worked in the foreground"
+              // symptom.
               enableWakeLock: true,
+              // Not dismissible. A swiped-away notification is a killed
+              // service, and a killed service mid-ride loses the rest of the
+              // ride — the user ends a ride with Finish, not with a swipe.
+              setOngoing: true,
             )
           : null,
     );
@@ -129,17 +162,19 @@ class LocationService extends GetxService {
   /// Opens the device location settings, for when GPS is off entirely.
   Future<bool> openLocationSettings() => Geolocator.openLocationSettings();
 
-  /// The position stream, already mapped to the app's own [GeoPoint].
+  /// The position stream for a ride being recorded, already mapped to the
+  /// app's own [GeoPoint].
+  ///
+  /// Always starts the Android foreground service, so the stream survives the
+  /// app being backgrounded, the screen locking and another app coming to the
+  /// front. It stops when the subscription is cancelled, which the tracker
+  /// does on Finish and nowhere else.
   ///
   /// Unfiltered — quality rules live in [GpsFilter] and are applied by the
   /// tracker, so they stay testable without a GPS.
-  Stream<GeoPoint> watch({required TrackingMode mode}) {
-    if (mode == TrackingMode.off) return const Stream.empty();
-
+  Stream<GeoPoint> watchRide() {
     return Geolocator.getPositionStream(
-      locationSettings: buildSettings(
-        backgroundEnabled: mode == TrackingMode.background,
-      ),
+      locationSettings: buildSettings(backgroundEnabled: true),
     ).map(toGeoPoint);
   }
 

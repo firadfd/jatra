@@ -10,6 +10,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'package:jatra/app/theme/app_theme.dart';
 import 'package:jatra/core/utils/formatters.dart';
@@ -81,5 +82,54 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.byType(FlutterMap), findsNothing);
     expect(find.text('No path recorded for this ride.'), findsOneWidget);
+  });
+
+  // The Map tab follows the rider by recentring the camera on every fix, and
+  // stops the moment they drag the map somewhere else. That hinges entirely
+  // on telling a user's gesture apart from the app's own camera moves — get
+  // it wrong and follow mode switches itself off on the first frame it works.
+  group('onUserMovedMap', () {
+    testWidgets('fires when the user drags the map', (tester) async {
+      var moves = 0;
+
+      await tester.pumpWidget(
+        host(
+          RideMap(points: path(), fmt: Fmt(), onUserMovedMap: () => moves++),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      await tester.drag(find.byType(FlutterMap), const Offset(-80, -60));
+      await tester.pumpAndSettle();
+
+      expect(moves, greaterThan(0));
+    });
+
+    testWidgets('stays silent when the app moves the camera itself', (
+      tester,
+    ) async {
+      var moves = 0;
+      final camera = MapController();
+      addTearDown(camera.dispose);
+
+      await tester.pumpWidget(
+        host(
+          RideMap(
+            points: path(),
+            fmt: Fmt(),
+            mapController: camera,
+            onUserMovedMap: () => moves++,
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // This is what recentring on a new GPS fix does. Reporting it as user
+      // intent would have the map stop following the moment it started.
+      camera.move(const LatLng(23.8203, 90.4225), 16);
+      await tester.pumpAndSettle();
+
+      expect(moves, 0);
+    });
   });
 }

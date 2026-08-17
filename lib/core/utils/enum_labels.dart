@@ -36,13 +36,11 @@ extension ServiceStatusL10n on ServiceStatus {
 extension TrackingModeL10n on TrackingMode {
   String labelOf(L l) => switch (this) {
     TrackingMode.off => l.trackingOff,
-    TrackingMode.appOpen => l.trackingAppOpen,
     TrackingMode.background => l.trackingBackground,
   };
 
   String descriptionOf(L l) => switch (this) {
     TrackingMode.off => l.trackingOffExplain,
-    TrackingMode.appOpen => l.trackingAppOpenExplain,
     TrackingMode.background => l.trackingBackgroundExplain,
   };
 }

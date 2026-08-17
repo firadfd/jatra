@@ -10,6 +10,7 @@ import '../../../core/utils/formatters.dart';
 import '../../../core/utils/geo_utils.dart';
 import '../../../data/db/database.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../services/map_tile_cache.dart';
 
 /// Renders a ride path over OpenStreetMap tiles.
 ///
@@ -19,9 +20,11 @@ import '../../../l10n/app_localizations.dart';
 /// attribution.
 ///
 /// **Offline still works.** Tiles are the only part of this screen that needs
-/// a network. When they fail to load, flutter_map simply draws nothing for
-/// them and the faint grid behind shows through — so the polyline, the
-/// endpoints and the scale bar are all still readable with no connection.
+/// a network, and [MapTileCache] keeps the ones already drawn on disk, so
+/// ground the rider has looked at before still renders with the radio off.
+/// Where a tile is neither cached nor reachable, flutter_map draws nothing for
+/// it and the faint grid behind shows through — so the polyline, the
+/// endpoints and the scale bar are all still readable regardless.
 ///
 /// The path is simplified for display only — the database always keeps every
 /// point.
@@ -35,6 +38,7 @@ class RideMap extends StatelessWidget {
     this.fallbackCentre,
     this.myLocation,
     this.mapController,
+    this.onUserMovedMap,
   });
 
   final List<RidePointRow> points;
@@ -51,6 +55,14 @@ class RideMap extends StatelessWidget {
   /// Lets the caller drive the camera (recentre on the dot, for instance).
   /// flutter_map expects this to be owned and disposed by whoever creates it.
   final MapController? mapController;
+
+  /// Called when the *user* moves the camera — a drag or a pinch, never a
+  /// programmatic [MapController.move].
+  ///
+  /// The Map tab uses it to stop following the rider: once someone has
+  /// deliberately panned somewhere, snapping them back on the next GPS sample
+  /// is the map arguing with them.
+  final VoidCallback? onUserMovedMap;
 
   /// Where to point the camera when there is no path to fit.
   ///
@@ -135,6 +147,15 @@ class RideMap extends StatelessWidget {
                       ? InteractiveFlag.pinchZoom | InteractiveFlag.drag
                       : InteractiveFlag.none,
                 ),
+                // `hasGesture` is the whole point: this fires for
+                // programmatic moves too, and reporting those as user intent
+                // would have follow mode switch itself off on the first
+                // frame it worked.
+                onPositionChanged: onUserMovedMap == null
+                    ? null
+                    : (_, hasGesture) {
+                        if (hasGesture) onUserMovedMap!();
+                      },
                 backgroundColor: Colors.transparent,
               ),
               children: [
@@ -211,13 +232,19 @@ class RideMap extends StatelessWidget {
   /// Tiles stop at zoom 19 because that is as far as the standard style is
   /// rendered; `maxNativeZoom` lets the camera go closer by upscaling the
   /// last real tile rather than requesting one that does not exist.
+  ///
+  /// The provider comes from [MapTileCache], which serves tiles from disk
+  /// when there is no connection — so a route you have already looked at
+  /// still draws with the radio off. It is null in tests and previews, where
+  /// flutter_map's plain network provider is used instead.
   static Widget _tileLayer() => TileLayer(
     urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     userAgentPackageName: 'com.firad.jatra',
     maxNativeZoom: 19,
-    // A failed tile leaves a hole the grid shows through, which is the
-    // offline fallback. Retrying harder would only queue requests that
-    // cannot succeed.
+    tileProvider: MapTileCache.providerOrNull(),
+    // A tile that is neither cached nor reachable leaves a hole the grid
+    // shows through. Retrying harder would only queue requests that cannot
+    // succeed.
     errorImage: null,
   );
 
