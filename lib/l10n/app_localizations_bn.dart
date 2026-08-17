@@ -1368,9 +1368,6 @@ class LBn extends L {
   String get ridesGpsPoints => 'জিপিএস পয়েন্ট';
 
   @override
-  String get ridesOdometer => 'ওডোমিটার';
-
-  @override
   String get ridesNotes => 'নোট';
 
   @override

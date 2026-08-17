@@ -1360,9 +1360,6 @@ class LEn extends L {
   String get ridesGpsPoints => 'GPS points';
 
   @override
-  String get ridesOdometer => 'Odometer';
-
-  @override
   String get ridesNotes => 'Notes';
 
   @override

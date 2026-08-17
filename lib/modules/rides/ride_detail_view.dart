@@ -147,16 +147,6 @@ class _RideBody extends StatelessWidget {
                     style: AppText.bodySm.copyWith(color: c.textSecondary),
                   ),
                 ),
-                if (ride.startOdometerM != null && ride.endOdometerM != null)
-                  DetailRow(
-                    label: L.of(context).ridesOdometer,
-                    value: Text(
-                      '${fmt.distance(ride.startOdometerM!)} → '
-                      '${fmt.distance(ride.endOdometerM!)} '
-                      '${fmt.distanceLabel.toLowerCase()}',
-                      style: AppText.bodySm.copyWith(color: c.textSecondary),
-                    ),
-                  ),
                 if (ride.notes != null)
                   DetailRow(
                     label: L.of(context).ridesNotes,

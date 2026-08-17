@@ -159,8 +159,9 @@ void main() {
     expect(ride!.distanceMeters, 12400);
   });
 
-  test('a completed ride advances the odometer history', () async {
-    // Rides are odometer observations too, so service prediction sees them.
+  test('a completed ride leaves the odometer alone', () async {
+    // GPS distance and the dashboard reading are separate measurements. A
+    // ride records its own kilometres and moves nothing else.
     final id = await startRide();
     await rides.update(
       id,
@@ -173,10 +174,11 @@ void main() {
     );
 
     final fuel = FuelRepo(db);
-    expect(await fuel.latestOdometerM(vehicleId), 20015000);
+    // Still the vehicle's initial reading, not 20,015 km.
+    expect(await fuel.latestOdometerM(vehicleId), 20000000);
 
     final observations = await fuel.odometerObservations(vehicleId);
-    expect(observations.map((o) => o.odometerM), contains(20015000));
+    expect(observations.map((o) => o.odometerM), isNot(contains(20015000)));
   });
 
   test(

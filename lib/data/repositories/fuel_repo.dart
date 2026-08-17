@@ -58,9 +58,15 @@ class FuelRepo {
     )..where((f) => f.id.equals(id) & f.deletedAt.isNull())).getSingleOrNull();
   }
 
-  /// The highest odometer reading recorded for this vehicle in *any* table
-  /// that carries one — fuel entries, service logs and completed rides all
-  /// count as odometer observations.
+  /// The highest odometer reading the *rider* has recorded for this vehicle —
+  /// fuel entries, service logs and the vehicle's initial reading.
+  ///
+  /// Recorded rides are deliberately not in here. A ride measures distance
+  /// with GPS, which drifts, misses tunnels and stops when the app is killed;
+  /// the odometer is a number read off the dashboard. Feeding one into the
+  /// other means a rider who tracks some trips and not others ends up with an
+  /// odometer that matches neither. Ride distance lives on the ride, the
+  /// odometer moves only when the rider logs a reading.
   ///
   /// This is what the add-fuel form pre-fills and validates against, and what
   /// service due prediction measures from. Returns the vehicle's initial
@@ -76,19 +82,11 @@ class FuelRepo {
         SELECT MAX(odometer_m) FROM service_logs
           WHERE vehicle_id = ? AND deleted_at IS NULL
         UNION ALL
-        SELECT MAX(end_odometer_m) FROM rides
-          WHERE vehicle_id = ? AND deleted_at IS NULL
-        UNION ALL
         SELECT initial_odometer_m FROM vehicles WHERE id = ?
       )
       ''',
-          variables: List.filled(4, Variable.withInt(vehicleId)),
-          readsFrom: {
-            _db.fuelEntries,
-            _db.serviceLogs,
-            _db.rides,
-            _db.vehicles,
-          },
+          variables: List.filled(3, Variable.withInt(vehicleId)),
+          readsFrom: {_db.fuelEntries, _db.serviceLogs, _db.vehicles},
         )
         .getSingle();
     return row.read<int?>('max_o') ?? 0;
@@ -100,12 +98,7 @@ class FuelRepo {
     return _db
         .customSelect(
           'SELECT 1',
-          readsFrom: {
-            _db.fuelEntries,
-            _db.serviceLogs,
-            _db.rides,
-            _db.vehicles,
-          },
+          readsFrom: {_db.fuelEntries, _db.serviceLogs, _db.vehicles},
         )
         .watch()
         .asyncMap((_) => latestOdometerM(vehicleId));
@@ -123,8 +116,10 @@ class FuelRepo {
         .getSingleOrNull();
   }
 
-  /// Odometer observations from every source, ascending by date. Feeds the
-  /// daily-km estimate behind service due dates.
+  /// Logged odometer readings, ascending by date. Feeds the daily-km estimate
+  /// behind service due dates.
+  ///
+  /// Rides are not observations — see [latestOdometerM] for why.
   Future<List<({int dateMs, int odometerM})>> odometerObservations(
     int vehicleId, {
     int? sinceMs,
@@ -138,20 +133,15 @@ class FuelRepo {
       UNION ALL
       SELECT date_ms, odometer_m FROM service_logs
         WHERE vehicle_id = ? AND deleted_at IS NULL AND date_ms >= ?
-      UNION ALL
-      SELECT end_time_ms, end_odometer_m FROM rides
-        WHERE vehicle_id = ? AND deleted_at IS NULL
-          AND end_time_ms IS NOT NULL AND end_odometer_m IS NOT NULL
-          AND end_time_ms >= ?
       ORDER BY d ASC
       ''',
           variables: [
-            for (var i = 0; i < 3; i++) ...[
+            for (var i = 0; i < 2; i++) ...[
               Variable.withInt(vehicleId),
               Variable.withInt(since),
             ],
           ],
-          readsFrom: {_db.fuelEntries, _db.serviceLogs, _db.rides},
+          readsFrom: {_db.fuelEntries, _db.serviceLogs},
         )
         .get();
 

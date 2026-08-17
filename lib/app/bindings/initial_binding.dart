@@ -99,7 +99,6 @@ class InitialBinding extends Bindings {
     Get.put<RideTrackerController>(
       RideTrackerController(
         Get.find<RideRepo>(),
-        Get.find<FuelRepo>(),
         Get.find<LocationService>(),
         Get.find<VehicleController>(),
         Get.find<SettingsService>(),

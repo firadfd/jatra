@@ -402,7 +402,6 @@
   "ridesStarted": "শুরু",
   "ridesFinished": "শেষ",
   "ridesGpsPoints": "জিপিএস পয়েন্ট",
-  "ridesOdometer": "ওডোমিটার",
   "ridesNotes": "নোট",
   "mileageDropCauses2": "সাধারণ কারণ: {causes}।",
   "serviceLogEdit": "সার্ভিস সম্পাদনা",

@@ -1037,10 +1037,6 @@
   "@ridesGpsPoints": {
     "description": "Number of recorded GPS samples."
   },
-  "ridesOdometer": "Odometer",
-  "@ridesOdometer": {
-    "description": "Odometer range covered by a ride."
-  },
   "ridesNotes": "Notes",
   "@ridesNotes": {
     "description": "Ride notes."

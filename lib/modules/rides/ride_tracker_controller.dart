@@ -9,7 +9,6 @@ import '../../core/utils/clock.dart';
 import '../../core/utils/geo_utils.dart';
 import '../../core/utils/l10n.dart';
 import '../../data/db/database.dart';
-import '../../data/repositories/fuel_repo.dart';
 import '../../data/repositories/ride_repo.dart';
 import '../../services/location_service.dart';
 import '../../services/notification_service.dart';
@@ -37,7 +36,6 @@ enum InterruptedRideChoice { resume, save, discard }
 class RideTrackerController extends GetxController with WidgetsBindingObserver {
   RideTrackerController(
     this._rides,
-    this._fuel,
     this._location,
     this._vehicles,
     this._settings,
@@ -45,7 +43,6 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
   );
 
   final RideRepo _rides;
-  final FuelRepo _fuel;
   final LocationService _location;
   final VehicleController _vehicles;
   final SettingsService _settings;
@@ -176,13 +173,15 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
     await _notifications.ensureAllowed();
 
     final now = Clock.nowMs;
+    // No odometer is stamped on the ride. GPS distance and the dashboard
+    // reading are two different measurements of two different things, and the
+    // odometer only moves when the rider logs a reading of their own.
     final id = await _rides.create(
       RidesCompanion.insert(
         vehicleId: vehicleId,
         startTimeMs: now,
         createdAt: now,
         updatedAt: now,
-        startOdometerM: Value(await _fuel.latestOdometerM(vehicleId)),
       ),
     );
 
@@ -435,8 +434,6 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<RideRow?> _finalise(RideRow ride, {required int endMs}) async {
-    final startOdometer = ride.startOdometerM;
-
     await _rides.update(
       ride.id,
       RidesCompanion(
@@ -447,20 +444,13 @@ class RideTrackerController extends GetxController with WidgetsBindingObserver {
         totalSeconds: Value(((endMs - ride.startTimeMs) / 1000).round()),
         maxSpeed: Value(maxSpeedMps.value),
         avgSpeed: Value(_averageSpeed),
-        // Advancing the odometer by the ride's distance keeps rides feeding
-        // the same odometer history as fills and services — which is what
-        // service prediction reads.
-        endOdometerM: Value(
-          startOdometer == null ? null : startOdometer + distanceM.value,
-        ),
       ),
     );
 
     final saved = await _rides.getById(ride.id);
 
-    // A ride that recorded nothing is noise in the list and moves the
-    // odometer nowhere — usually a mis-tap on Start. Drop it rather than
-    // leave an empty row behind.
+    // A ride that recorded nothing is noise in the list — usually a mis-tap
+    // on Start. Drop it rather than leave an empty row behind.
     if (saved != null && saved.distanceMeters == 0) {
       await _rides.hardDelete(ride.id);
       return null;

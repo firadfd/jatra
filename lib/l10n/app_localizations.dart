@@ -2509,12 +2509,6 @@ abstract class L {
   /// **'GPS points'**
   String get ridesGpsPoints;
 
-  /// Odometer range covered by a ride.
-  ///
-  /// In en, this message translates to:
-  /// **'Odometer'**
-  String get ridesOdometer;
-
   /// Ride notes.
   ///
   /// In en, this message translates to:
