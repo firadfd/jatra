@@ -3,7 +3,7 @@ description: "Jatra — offline-first fuel, service and ride-cost tracker for mo
 publish_to: 'none'
 
 # versionName+versionCode. Keep in sync with the `appVersion` written into JSON backups.
-version: 1.1.1+7
+version: 1.1.2+8
 
 environment:
   sdk: ^3.12.2
