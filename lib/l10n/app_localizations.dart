@@ -2976,6 +2976,258 @@ abstract class L {
   /// In en, this message translates to:
   /// **'+{count} more'**
   String homeMoreCount(Object count);
+
+  /// No description provided for @backupAutoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic backup'**
+  String get backupAutoTitle;
+
+  /// No description provided for @backupAutoExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'While Jatra is in use, it saves a backup to a folder you choose after every 5 changes, or weekly if anything changed. The latest 5 are kept. Pick a folder synced to Drive or similar to survive losing the phone.'**
+  String get backupAutoExplain;
+
+  /// No description provided for @backupAutoChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folder'**
+  String get backupAutoChoose;
+
+  /// No description provided for @backupAutoChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change folder'**
+  String get backupAutoChange;
+
+  /// No description provided for @backupAutoTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get backupAutoTurnOff;
+
+  /// No description provided for @backupAutoNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get backupAutoNow;
+
+  /// No description provided for @backupAutoFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get backupAutoFolder;
+
+  /// No description provided for @backupAutoLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup'**
+  String get backupAutoLast;
+
+  /// No description provided for @backupAutoNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get backupAutoNever;
+
+  /// No description provided for @backupAutoErrorAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Jatra can no longer reach this folder. Choose it again.'**
+  String get backupAutoErrorAccess;
+
+  /// No description provided for @backupAutoErrorWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'The last automatic backup failed. Try Back up now.'**
+  String get backupAutoErrorWrite;
+
+  /// No description provided for @statsStationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mileage by station'**
+  String get statsStationsTitle;
+
+  /// No description provided for @statsStationsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Name the station on your fills. A station appears here after 2 full tanks that used only its fuel.'**
+  String get statsStationsEmpty;
+
+  /// No description provided for @statsStationsCaveat.
+  ///
+  /// In en, this message translates to:
+  /// **'Route, load and weather affect mileage too, so treat small gaps as noise.'**
+  String get statsStationsCaveat;
+
+  /// No description provided for @statsStationsTanks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} tanks'**
+  String statsStationsTanks(int count);
+
+  /// No description provided for @reportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create PDF for this bike'**
+  String get reportAction;
+
+  /// No description provided for @reportExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'A service record, odometer timeline and total spend to show a buyer. It leaves out your purchase price, notes and ride routes.'**
+  String get reportExplain;
+
+  /// No description provided for @reportBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Building report…'**
+  String get reportBuilding;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bike history report'**
+  String get reportTitle;
+
+  /// No description provided for @reportDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Compiled from records the owner entered in Jatra. Not independently verified.'**
+  String get reportDisclaimer;
+
+  /// No description provided for @reportGeneratedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Report date'**
+  String get reportGeneratedLabel;
+
+  /// No description provided for @reportPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {current} of {total}'**
+  String reportPage(int current, int total);
+
+  /// No description provided for @reportLatestOdometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest odometer'**
+  String get reportLatestOdometer;
+
+  /// No description provided for @reportStartOdometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Odometer when logging began'**
+  String get reportStartOdometer;
+
+  /// No description provided for @reportRecordsSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Records since'**
+  String get reportRecordsSince;
+
+  /// No description provided for @reportFuelSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel'**
+  String get reportFuelSpend;
+
+  /// No description provided for @reportServiceSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Service and repairs'**
+  String get reportServiceSpend;
+
+  /// No description provided for @reportOtherSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Other costs'**
+  String get reportOtherSpend;
+
+  /// No description provided for @reportTotalSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Total spend'**
+  String get reportTotalSpend;
+
+  /// No description provided for @reportServiceHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Service history'**
+  String get reportServiceHistory;
+
+  /// No description provided for @reportPartsReplaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Parts replaced'**
+  String get reportPartsReplaced;
+
+  /// No description provided for @reportOdometerTimeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Odometer timeline'**
+  String get reportOdometerTimeline;
+
+  /// No description provided for @reportDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get reportDate;
+
+  /// No description provided for @reportOdometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Odometer'**
+  String get reportOdometer;
+
+  /// No description provided for @reportService.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get reportService;
+
+  /// No description provided for @reportWorkshop.
+  ///
+  /// In en, this message translates to:
+  /// **'Workshop'**
+  String get reportWorkshop;
+
+  /// No description provided for @reportPart.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get reportPart;
+
+  /// No description provided for @reportBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Part brand'**
+  String get reportBrand;
+
+  /// No description provided for @reportCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost'**
+  String get reportCost;
+
+  /// No description provided for @reportLowerReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower than an earlier reading'**
+  String get reportLowerReading;
+
+  /// No description provided for @reportLowerReadingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Readings lower than an earlier one: {count}. See the odometer timeline.'**
+  String reportLowerReadingCount(int count);
+
+  /// No description provided for @reportNoRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'None recorded'**
+  String get reportNoRecords;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

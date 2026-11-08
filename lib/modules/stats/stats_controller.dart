@@ -4,6 +4,7 @@ import '../../core/calc/cost_calc.dart';
 import '../../core/calc/date_range.dart';
 import '../../core/calc/mileage_calc.dart';
 import '../../core/calc/monthly_rollup.dart';
+import '../../core/calc/station_ranking.dart';
 import '../../core/utils/clock.dart';
 import '../../core/utils/money.dart';
 import '../../data/db/database.dart';
@@ -53,6 +54,9 @@ class StatsController extends GetxController {
 
   /// Price actually paid per volume unit, per fill. People love watching this.
   final priceSeries = <SeriesPoint>[].obs;
+
+  /// Best first. Stations with too few clean tanks are absent.
+  final stationRanking = <StationStat>[].obs;
 
   final totalFills = 0.obs;
   final daysOwned = 0.obs;
@@ -118,9 +122,17 @@ class StatsController extends GetxController {
     // The mileage engine runs over the *whole* log, not the range, because a
     // window needs the full tank before the range started to measure
     // against. Points outside the range are filtered afterwards.
+    final allFuel = await _fuel.getForVehicle(vehicle.id);
     mileageReport.value = MileageEngine.compute(
-      await _fuel.getForVehicle(vehicle.id),
+      allFuel,
       dropThresholdPercent: _settings.mileageDropThreshold.value,
+    );
+    stationRanking.assignAll(
+      StationRanking.compute(
+        allFuel,
+        mileageReport.value.windows,
+        closedWithin: r.contains,
+      ),
     );
 
     _buildSeries(fuelEntries, r);

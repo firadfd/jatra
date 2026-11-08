@@ -1348,5 +1348,71 @@
   "homeMoreCount": "+{count} more",
   "@homeMoreCount": {
     "description": "Count of further service items not shown."
-  }
+  },
+  "backupAutoTitle": "Automatic backup",
+  "backupAutoExplain": "While Jatra is in use, it saves a backup to a folder you choose after every 5 changes, or weekly if anything changed. The latest 5 are kept. Pick a folder synced to Drive or similar to survive losing the phone.",
+  "backupAutoChoose": "Choose folder",
+  "backupAutoChange": "Change folder",
+  "backupAutoTurnOff": "Turn off",
+  "backupAutoNow": "Back up now",
+  "backupAutoFolder": "Folder",
+  "backupAutoLast": "Last backup",
+  "backupAutoNever": "Not yet",
+  "backupAutoErrorAccess": "Jatra can no longer reach this folder. Choose it again.",
+  "backupAutoErrorWrite": "The last automatic backup failed. Try Back up now.",
+  "statsStationsTitle": "Mileage by station",
+  "statsStationsEmpty": "Name the station on your fills. A station appears here after 2 full tanks that used only its fuel.",
+  "statsStationsCaveat": "Route, load and weather affect mileage too, so treat small gaps as noise.",
+  "statsStationsTanks": "{count} tanks",
+  "@statsStationsTanks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportAction": "Create PDF for this bike",
+  "reportExplain": "A service record, odometer timeline and total spend to show a buyer. It leaves out your purchase price, notes and ride routes.",
+  "reportBuilding": "Building report…",
+  "reportTitle": "Bike history report",
+  "reportDisclaimer": "Compiled from records the owner entered in Jatra. Not independently verified.",
+  "reportGeneratedLabel": "Report date",
+  "reportPage": "Page {current} of {total}",
+  "@reportPage": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reportLatestOdometer": "Latest odometer",
+  "reportStartOdometer": "Odometer when logging began",
+  "reportRecordsSince": "Records since",
+  "reportFuelSpend": "Fuel",
+  "reportServiceSpend": "Service and repairs",
+  "reportOtherSpend": "Other costs",
+  "reportTotalSpend": "Total spend",
+  "reportServiceHistory": "Service history",
+  "reportPartsReplaced": "Parts replaced",
+  "reportOdometerTimeline": "Odometer timeline",
+  "reportDate": "Date",
+  "reportOdometer": "Odometer",
+  "reportService": "Service",
+  "reportWorkshop": "Workshop",
+  "reportPart": "Work",
+  "reportBrand": "Part brand",
+  "reportCost": "Cost",
+  "reportLowerReading": "Lower than an earlier reading",
+  "reportLowerReadingCount": "Readings lower than an earlier one: {count}. See the odometer timeline.",
+  "@reportLowerReadingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportNoRecords": "None recorded"
 }

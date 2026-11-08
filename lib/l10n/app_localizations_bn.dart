@@ -1624,4 +1624,143 @@ class LBn extends L {
   String homeMoreCount(Object count) {
     return '+আরও $countটি';
   }
+
+  @override
+  String get backupAutoTitle => 'স্বয়ংক্রিয় ব্যাকআপ';
+
+  @override
+  String get backupAutoExplain =>
+      'যাত্রা ব্যবহারের সময় প্রতি ৫টি পরিবর্তনের পর, অথবা কিছু বদলালে সপ্তাহে একবার, আপনার বেছে নেওয়া ফোল্ডারে ব্যাকআপ সংরক্ষণ হয়। সর্বশেষ ৫টি রাখা হয়। ফোন হারালেও ডেটা পেতে Drive বা এমন কিছুর সাথে সিঙ্ক হওয়া ফোল্ডার বেছে নিন।';
+
+  @override
+  String get backupAutoChoose => 'ফোল্ডার বেছে নিন';
+
+  @override
+  String get backupAutoChange => 'ফোল্ডার বদলান';
+
+  @override
+  String get backupAutoTurnOff => 'বন্ধ করুন';
+
+  @override
+  String get backupAutoNow => 'এখনই ব্যাকআপ নিন';
+
+  @override
+  String get backupAutoFolder => 'ফোল্ডার';
+
+  @override
+  String get backupAutoLast => 'সর্বশেষ ব্যাকআপ';
+
+  @override
+  String get backupAutoNever => 'এখনও হয়নি';
+
+  @override
+  String get backupAutoErrorAccess =>
+      'যাত্রা আর এই ফোল্ডারে যেতে পারছে না। আবার বেছে নিন।';
+
+  @override
+  String get backupAutoErrorWrite =>
+      'সর্বশেষ স্বয়ংক্রিয় ব্যাকআপ ব্যর্থ হয়েছে। এখনই ব্যাকআপ নিন চেপে দেখুন।';
+
+  @override
+  String get statsStationsTitle => 'পাম্প অনুযায়ী মাইলেজ';
+
+  @override
+  String get statsStationsEmpty =>
+      'তেল ভরার সময় পাম্পের নাম লিখুন। শুধু একটি পাম্পের তেলে চলা ২টি ফুল ট্যাংকের পর পাম্পটি এখানে দেখাবে।';
+
+  @override
+  String get statsStationsCaveat =>
+      'রাস্তা, ওজন ও আবহাওয়াও মাইলেজে প্রভাব ফেলে, তাই সামান্য পার্থক্য ধরবেন না।';
+
+  @override
+  String statsStationsTanks(int count) {
+    return '$countটি ট্যাংক';
+  }
+
+  @override
+  String get reportAction => 'এই বাইকের PDF তৈরি করুন';
+
+  @override
+  String get reportExplain =>
+      'ক্রেতাকে দেখানোর জন্য সার্ভিস রেকর্ড, ওডোমিটারের সময়রেখা ও মোট খরচ। আপনার কেনার দাম, নোট ও যাত্রার পথ এতে থাকে না।';
+
+  @override
+  String get reportBuilding => 'রিপোর্ট তৈরি হচ্ছে…';
+
+  @override
+  String get reportTitle => 'বাইকের ইতিহাস রিপোর্ট';
+
+  @override
+  String get reportDisclaimer =>
+      'মালিকের যাত্রা অ্যাপে লেখা তথ্য থেকে তৈরি। স্বাধীনভাবে যাচাই করা হয়নি।';
+
+  @override
+  String get reportGeneratedLabel => 'রিপোর্টের তারিখ';
+
+  @override
+  String reportPage(int current, int total) {
+    return 'পৃষ্ঠা $current / $total';
+  }
+
+  @override
+  String get reportLatestOdometer => 'সর্বশেষ ওডোমিটার';
+
+  @override
+  String get reportStartOdometer => 'লগ শুরুর সময় ওডোমিটার';
+
+  @override
+  String get reportRecordsSince => 'রেকর্ড শুরু';
+
+  @override
+  String get reportFuelSpend => 'জ্বালানি';
+
+  @override
+  String get reportServiceSpend => 'সার্ভিস ও মেরামত';
+
+  @override
+  String get reportOtherSpend => 'অন্যান্য খরচ';
+
+  @override
+  String get reportTotalSpend => 'মোট খরচ';
+
+  @override
+  String get reportServiceHistory => 'সার্ভিসের ইতিহাস';
+
+  @override
+  String get reportPartsReplaced => 'বদলানো যন্ত্রাংশ';
+
+  @override
+  String get reportOdometerTimeline => 'ওডোমিটারের সময়রেখা';
+
+  @override
+  String get reportDate => 'তারিখ';
+
+  @override
+  String get reportOdometer => 'ওডোমিটার';
+
+  @override
+  String get reportService => 'সার্ভিস';
+
+  @override
+  String get reportWorkshop => 'ওয়ার্কশপ';
+
+  @override
+  String get reportPart => 'কাজ';
+
+  @override
+  String get reportBrand => 'যন্ত্রাংশের ব্র্যান্ড';
+
+  @override
+  String get reportCost => 'খরচ';
+
+  @override
+  String get reportLowerReading => 'আগের রিডিংয়ের চেয়ে কম';
+
+  @override
+  String reportLowerReadingCount(int count) {
+    return 'আগের চেয়ে কম রিডিং: $countটি। ওডোমিটারের সময়রেখা দেখুন।';
+  }
+
+  @override
+  String get reportNoRecords => 'কোনো রেকর্ড নেই';
 }

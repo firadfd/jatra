@@ -7,6 +7,8 @@ import '../../app/theme/app_theme.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/jatra_widgets.dart';
 import '../../data/models/backup.dart';
+import '../../services/auto_backup_service.dart';
+import '../vehicles/vehicle_controller.dart';
 import 'backup_controller.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -30,9 +32,12 @@ class BackupView extends GetView<BackupController> {
               children: const [
                 _ErrorBanner(),
                 _PendingImport(),
+                _AutoBackupSection(),
                 _ExportSection(),
                 SizedBox(height: Gap.lg),
                 _ImportSection(),
+                SizedBox(height: Gap.lg),
+                _BikeReportSection(),
                 SizedBox(height: Gap.lg),
                 _RawDatabaseSection(),
               ],
@@ -113,6 +118,162 @@ class _ErrorBanner extends GetView<BackupController> {
         ),
       );
     });
+  }
+}
+
+/// Android only: the folder is a Storage Access Framework grant.
+class _AutoBackupSection extends GetView<BackupController> {
+  const _AutoBackupSection();
+
+  @override
+  Widget build(BuildContext context) {
+    if (!AutoBackupService.isSupported) return const SizedBox.shrink();
+
+    final c = context.jatra;
+    final l = L.of(context);
+    final auto = Get.find<AutoBackupService>();
+    final settings = controller.settings;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Gap.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionLabel(l.backupAutoTitle),
+          const SizedBox(height: Gap.sm),
+          JatraCard(
+            child: Obx(() {
+              final folder = settings.autoBackupFolderUri.value;
+              final lastMs = settings.autoBackupLastMs.value;
+              final failure = settings.autoBackupFailure.value;
+              final busy = auto.isRunning.value;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l.backupAutoExplain,
+                    style: AppText.bodySm.copyWith(color: c.textMuted),
+                  ),
+                  const SizedBox(height: Gap.md),
+                  if (folder != null) ...[
+                    DetailRow(
+                      label: l.backupAutoFolder,
+                      value: Flexible(
+                        child: Text(
+                          settings.autoBackupFolderLabel.value ?? '',
+                          textAlign: TextAlign.right,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.bodySm.copyWith(
+                            color: c.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                    DetailRow(
+                      label: l.backupAutoLast,
+                      value: Text(
+                        lastMs == null ? l.backupAutoNever : Fmt().date(lastMs),
+                        style: AppText.bodySm.copyWith(color: c.textSecondary),
+                      ),
+                    ),
+                    if (failure != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: Gap.sm),
+                        child: Text(
+                          failure == AutoBackupFailure.folderAccess.name
+                              ? l.backupAutoErrorAccess
+                              : l.backupAutoErrorWrite,
+                          style: AppText.bodySm.copyWith(color: c.danger),
+                        ),
+                      ),
+                    const SizedBox(height: Gap.md),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: busy ? null : auto.backUpNow,
+                        icon: const Icon(Icons.backup_outlined),
+                        label: Text(l.backupAutoNow),
+                      ),
+                    ),
+                    const SizedBox(height: Gap.sm),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: busy ? null : auto.chooseFolder,
+                            child: Text(l.backupAutoChange),
+                          ),
+                        ),
+                        const SizedBox(width: Gap.sm),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: busy ? null : auto.turnOff,
+                            child: Text(l.backupAutoTurnOff),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ] else
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: auto.chooseFolder,
+                        icon: const Icon(Icons.folder_open_outlined),
+                        label: Text(l.backupAutoChoose),
+                      ),
+                    ),
+                ],
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The resale PDF for the active bike.
+class _BikeReportSection extends GetView<BackupController> {
+  const _BikeReportSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.jatra;
+    final l = L.of(context);
+    final vehicles = Get.find<VehicleController>();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionLabel(l.reportTitle),
+        const SizedBox(height: Gap.sm),
+        JatraCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l.reportExplain,
+                style: AppText.bodySm.copyWith(color: c.textMuted),
+              ),
+              const SizedBox(height: Gap.md),
+              Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: vehicles.active.value == null
+                        ? null
+                        : () => controller.exportBikeReport(l.reportBuilding),
+                    icon: const Icon(Icons.picture_as_pdf_outlined),
+                    label: Text(l.reportAction),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
 

@@ -324,6 +324,24 @@ class _NotesCard extends GetView<FuelFormController> {
               hintText: L.of(context).fuelStationHint,
             ),
           ),
+          Obx(() {
+            if (controller.recentStations.isEmpty) {
+              return const SizedBox.shrink();
+            }
+            return Padding(
+              padding: const EdgeInsets.only(top: Gap.sm),
+              child: Wrap(
+                spacing: Gap.sm,
+                children: [
+                  for (final name in controller.recentStations)
+                    ActionChip(
+                      label: Text(name),
+                      onPressed: () => controller.stationCtrl.text = name,
+                    ),
+                ],
+              ),
+            );
+          }),
           const SizedBox(height: Gap.md),
           TextFormField(
             controller: controller.notesCtrl,

@@ -200,11 +200,7 @@ abstract final class MileageEngine {
   }) {
     if (entries.isEmpty) return MileageReport.empty;
 
-    final sorted = [...entries]
-      ..sort((a, b) {
-        final byOdometer = a.odometerM.compareTo(b.odometerM);
-        return byOdometer != 0 ? byOdometer : a.dateMs.compareTo(b.dateMs);
-      });
+    final sorted = inWindowOrder(entries);
 
     final windows = <MileageWindow>[];
 
@@ -284,6 +280,15 @@ abstract final class MileageEngine {
       totalVolumeMl: totalVolumeMl,
       totalFuelCost: totalCost,
     );
+  }
+
+  /// The order windows are walked in. Public so anything that needs to say
+  /// which fills sit inside a window agrees with the engine about it.
+  static List<FuelEntryRow> inWindowOrder(List<FuelEntryRow> entries) {
+    return [...entries]..sort((a, b) {
+      final byOdometer = a.odometerM.compareTo(b.odometerM);
+      return byOdometer != 0 ? byOdometer : a.dateMs.compareTo(b.dateMs);
+    });
   }
 
   /// How many previous readings the median is taken over, at most.

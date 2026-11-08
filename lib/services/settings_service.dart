@@ -27,6 +27,10 @@ class SettingsService extends GetxService {
   static const _kIncludeRidePointsInExport = 'includeRidePointsInExport';
   static const _kPrettyPrintExport = 'prettyPrintExport';
   static const _kDefaultDepreciationPercent = 'defaultDepreciationPercent';
+  static const _kAutoBackupFolderUri = 'autoBackupFolderUri';
+  static const _kAutoBackupFolderLabel = 'autoBackupFolderLabel';
+  static const _kAutoBackupLastMs = 'autoBackupLastMs';
+  static const _kAutoBackupFailure = 'autoBackupFailure';
 
   Future<SettingsService> init() async {
     await GetStorage.init(_boxName);
@@ -48,6 +52,10 @@ class SettingsService extends GetxService {
     prettyPrintExport.value = _box.read<bool>(_kPrettyPrintExport) ?? true;
     defaultDepreciationPercent.value =
         _box.read<double>(_kDefaultDepreciationPercent) ?? 12.0;
+    autoBackupFolderUri.value = _box.read<String>(_kAutoBackupFolderUri);
+    autoBackupFolderLabel.value = _box.read<String>(_kAutoBackupFolderLabel);
+    autoBackupLastMs.value = _box.read<int>(_kAutoBackupLastMs);
+    autoBackupFailure.value = _box.read<String>(_kAutoBackupFailure);
 
     // Persist on change, so no caller has to remember to save.
     ever(themeMode, (v) => _box.write(_kThemeMode, v.name));
@@ -67,6 +75,10 @@ class SettingsService extends GetxService {
       defaultDepreciationPercent,
       (v) => _box.write(_kDefaultDepreciationPercent, v),
     );
+    ever(autoBackupFolderUri, (v) => _box.write(_kAutoBackupFolderUri, v));
+    ever(autoBackupFolderLabel, (v) => _box.write(_kAutoBackupFolderLabel, v));
+    ever(autoBackupLastMs, (v) => _box.write(_kAutoBackupLastMs, v));
+    ever(autoBackupFailure, (v) => _box.write(_kAutoBackupFailure, v));
 
     return this;
   }
@@ -125,6 +137,14 @@ class SettingsService extends GetxService {
   /// `currentValueEstimate`.
   final defaultDepreciationPercent = 12.0.obs;
 
+  /// Android tree URI of the automatic backup folder. Null ⇒ feature off.
+  final autoBackupFolderUri = RxnString();
+  final autoBackupFolderLabel = RxnString();
+  final autoBackupLastMs = RxnInt();
+
+  /// An `AutoBackupFailure` name, or null when the last attempt succeeded.
+  final autoBackupFailure = RxnString();
+
   bool get mileageAlertEnabled => mileageDropThreshold.value > 0;
 
   Locale get locale => Locale(localeCode.value);
@@ -146,5 +166,9 @@ class SettingsService extends GetxService {
     includeRidePointsInExport.value = false;
     prettyPrintExport.value = true;
     defaultDepreciationPercent.value = 12.0;
+    autoBackupFolderUri.value = null;
+    autoBackupFolderLabel.value = null;
+    autoBackupLastMs.value = null;
+    autoBackupFailure.value = null;
   }
 }

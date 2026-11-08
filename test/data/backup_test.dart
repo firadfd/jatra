@@ -37,7 +37,7 @@ void main() {
   /// filesystem.
   Future<ParsedBackup> roundTrip({bool includeRidePoints = false}) async {
     final data = await repo.readAll(includeRidePoints: includeRidePoints);
-    final document = ExportService.buildDocument(data);
+    final document = ExportService.buildDocument(data, appVersion: '1.0.0');
     // Through a real string, so anything that fails to encode is caught.
     final decoded = jsonDecode(jsonEncode(document)) as Map<String, dynamic>;
     return importer.parseDocument(decoded);

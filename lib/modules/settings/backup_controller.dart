@@ -7,7 +7,9 @@ import '../../data/models/backup.dart';
 import '../../data/repositories/backup_repo.dart';
 import '../../services/export_service.dart';
 import '../../services/import_service.dart';
+import '../../services/report/bike_report_service.dart';
 import '../../services/settings_service.dart';
+import '../vehicles/vehicle_controller.dart';
 
 /// Backup, export and import.
 class BackupController extends GetxController {
@@ -95,6 +97,20 @@ class BackupController extends GetxController {
     if (result == null) return;
 
     await _export.share([result.file], subject: 'Jatra database');
+  }
+
+  /// Builds the resale report for the active bike and opens the share sheet.
+  Future<void> exportBikeReport(String busyMessage) async {
+    final vehicle = Get.find<VehicleController>().active.value;
+    if (vehicle == null) return;
+
+    final file = await _guarded(
+      busyMessage,
+      () => Get.find<BikeReportService>().build(vehicle),
+    );
+    if (file == null) return;
+
+    await _export.share([file], subject: vehicle.name);
   }
 
   // -------------------------------------------------------------------

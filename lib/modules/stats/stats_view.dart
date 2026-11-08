@@ -14,6 +14,7 @@ import '../vehicles/vehicle_controller.dart';
 import 'stats_controller.dart';
 import 'widgets/charts.dart';
 import 'widgets/cost_per_km_card.dart';
+import 'widgets/station_ranking_card.dart';
 import 'widgets/trip_calculator.dart';
 
 class StatsView extends GetView<StatsController> {
@@ -47,6 +48,8 @@ class StatsView extends GetView<StatsController> {
               _SummaryTiles(),
               SizedBox(height: Gap.md),
               _MileageChart(),
+              SizedBox(height: Gap.md),
+              StationRankingCard(),
               SizedBox(height: Gap.md),
               _SpendChart(),
               SizedBox(height: Gap.md),

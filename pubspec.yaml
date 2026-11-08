@@ -2,8 +2,8 @@ name: jatra
 description: "Jatra — offline-first fuel, service and ride-cost tracker for motorcycles."
 publish_to: 'none'
 
-# versionName+versionCode. Keep in sync with the `appVersion` written into JSON backups.
-version: 1.1.3+9
+# versionName+versionCode. JSON backups record this, read at runtime.
+version: 1.2.0+10
 
 environment:
   sdk: ^3.12.2
@@ -71,6 +71,7 @@ dependencies:
   # server is reachable, and depending on a package you import is not
   # something to leave to a transitive edge.
   http: ^1.2.0
+  package_info_plus: ^9.0.1
 
   # permission_handler is deliberately *not* used either. Geolocator already
   # exposes openAppSettings()/openLocationSettings(), and

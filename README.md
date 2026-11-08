@@ -71,6 +71,12 @@ it.
   you picked in the app.
 - **Backup and restore** to a plain, readable JSON file you own, plus CSV
   export and a raw `.sqlite` copy for same-version transfers.
+- **Automatic backups** (Android) to a folder you choose, such as one synced
+  to Drive, keeping the latest five.
+- **Mileage by fuel station**, ranked from tanks that burned only that
+  station's fuel.
+- **Bike history PDF** to show a buyer: service record, parts, odometer
+  timeline and total spend, labelled as owner-entered.
 - **English and Bangla**, switchable in settings.
 
 ## Privacy

@@ -1618,4 +1618,143 @@ class LEn extends L {
   String homeMoreCount(Object count) {
     return '+$count more';
   }
+
+  @override
+  String get backupAutoTitle => 'Automatic backup';
+
+  @override
+  String get backupAutoExplain =>
+      'While Jatra is in use, it saves a backup to a folder you choose after every 5 changes, or weekly if anything changed. The latest 5 are kept. Pick a folder synced to Drive or similar to survive losing the phone.';
+
+  @override
+  String get backupAutoChoose => 'Choose folder';
+
+  @override
+  String get backupAutoChange => 'Change folder';
+
+  @override
+  String get backupAutoTurnOff => 'Turn off';
+
+  @override
+  String get backupAutoNow => 'Back up now';
+
+  @override
+  String get backupAutoFolder => 'Folder';
+
+  @override
+  String get backupAutoLast => 'Last backup';
+
+  @override
+  String get backupAutoNever => 'Not yet';
+
+  @override
+  String get backupAutoErrorAccess =>
+      'Jatra can no longer reach this folder. Choose it again.';
+
+  @override
+  String get backupAutoErrorWrite =>
+      'The last automatic backup failed. Try Back up now.';
+
+  @override
+  String get statsStationsTitle => 'Mileage by station';
+
+  @override
+  String get statsStationsEmpty =>
+      'Name the station on your fills. A station appears here after 2 full tanks that used only its fuel.';
+
+  @override
+  String get statsStationsCaveat =>
+      'Route, load and weather affect mileage too, so treat small gaps as noise.';
+
+  @override
+  String statsStationsTanks(int count) {
+    return '$count tanks';
+  }
+
+  @override
+  String get reportAction => 'Create PDF for this bike';
+
+  @override
+  String get reportExplain =>
+      'A service record, odometer timeline and total spend to show a buyer. It leaves out your purchase price, notes and ride routes.';
+
+  @override
+  String get reportBuilding => 'Building report…';
+
+  @override
+  String get reportTitle => 'Bike history report';
+
+  @override
+  String get reportDisclaimer =>
+      'Compiled from records the owner entered in Jatra. Not independently verified.';
+
+  @override
+  String get reportGeneratedLabel => 'Report date';
+
+  @override
+  String reportPage(int current, int total) {
+    return 'Page $current of $total';
+  }
+
+  @override
+  String get reportLatestOdometer => 'Latest odometer';
+
+  @override
+  String get reportStartOdometer => 'Odometer when logging began';
+
+  @override
+  String get reportRecordsSince => 'Records since';
+
+  @override
+  String get reportFuelSpend => 'Fuel';
+
+  @override
+  String get reportServiceSpend => 'Service and repairs';
+
+  @override
+  String get reportOtherSpend => 'Other costs';
+
+  @override
+  String get reportTotalSpend => 'Total spend';
+
+  @override
+  String get reportServiceHistory => 'Service history';
+
+  @override
+  String get reportPartsReplaced => 'Parts replaced';
+
+  @override
+  String get reportOdometerTimeline => 'Odometer timeline';
+
+  @override
+  String get reportDate => 'Date';
+
+  @override
+  String get reportOdometer => 'Odometer';
+
+  @override
+  String get reportService => 'Service';
+
+  @override
+  String get reportWorkshop => 'Workshop';
+
+  @override
+  String get reportPart => 'Work';
+
+  @override
+  String get reportBrand => 'Part brand';
+
+  @override
+  String get reportCost => 'Cost';
+
+  @override
+  String get reportLowerReading => 'Lower than an earlier reading';
+
+  @override
+  String reportLowerReadingCount(int count) {
+    return 'Readings lower than an earlier one: $count. See the odometer timeline.';
+  }
+
+  @override
+  String get reportNoRecords => 'None recorded';
 }

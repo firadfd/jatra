@@ -51,6 +51,10 @@ class FuelFormController extends GetxController {
   /// rides. The odometer field pre-fills with it and validates against it.
   final previousOdometerM = 0.obs;
 
+  /// Names already used on this bike, newest first. One tap reuses a name,
+  /// which keeps a station's fills together in the station ranking.
+  final recentStations = <String>[].obs;
+
   /// Set once the user confirms a reading that goes backwards — a replaced
   /// cluster, or a digit misread last time.
   final odometerOverridden = false.obs;
@@ -114,6 +118,7 @@ class FuelFormController extends GetxController {
 
   Future<void> _load() async {
     previousOdometerM.value = await _repo.latestOdometerM(_vehicleId);
+    await _loadRecentStations();
 
     final id = editId;
     if (id != null) {
@@ -123,6 +128,22 @@ class FuelFormController extends GetxController {
     }
     isLoading.value = false;
   }
+
+  Future<void> _loadRecentStations() async {
+    final byNewest = [...await _repo.getForVehicle(_vehicleId)]
+      ..sort((a, b) => b.dateMs.compareTo(a.dateMs));
+
+    final seen = <String>{};
+    recentStations.assignAll(
+      [
+        for (final name in byNewest.map((e) => e.station?.trim()))
+          if (name != null && name.isNotEmpty && seen.add(name.toLowerCase()))
+            name,
+      ].take(_recentStationLimit),
+    );
+  }
+
+  static const _recentStationLimit = 5;
 
   Future<void> _loadExisting(int id) async {
     final row = await _repo.getById(id);

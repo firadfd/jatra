@@ -12,11 +12,13 @@ import '../../modules/fuel/fuel_controller.dart';
 import '../../modules/rides/ride_tracker_controller.dart';
 import '../../modules/service/service_controller.dart';
 import '../../modules/vehicles/vehicle_controller.dart';
+import '../../services/auto_backup_service.dart';
 import '../../services/export_service.dart';
 import '../../services/home_widget/home_widget_service.dart';
 import '../../services/import_service.dart';
 import '../../services/location_service.dart';
 import '../../services/notification_service.dart';
+import '../../services/report/bike_report_service.dart';
 import '../../services/reminder_service.dart';
 import '../../services/settings_service.dart';
 
@@ -50,6 +52,27 @@ class InitialBinding extends Bindings {
     );
     Get.put<ImportService>(
       ImportService(Get.find<BackupRepo>()),
+      permanent: true,
+    );
+
+    // Inert until the rider picks a folder.
+    Get.put<AutoBackupService>(
+      AutoBackupService(
+        db,
+        Get.find<BackupRepo>(),
+        Get.find<ExportService>(),
+        Get.find<SettingsService>(),
+        AndroidBackupFolder(),
+      ).init(),
+      permanent: true,
+    );
+    Get.put<BikeReportService>(
+      BikeReportService(
+        Get.find<FuelRepo>(),
+        Get.find<ServiceRepo>(),
+        Get.find<ExpenseRepo>(),
+        Get.find<SettingsService>(),
+      ),
       permanent: true,
     );
 

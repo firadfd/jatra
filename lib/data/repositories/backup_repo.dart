@@ -40,6 +40,28 @@ class BackupRepo {
     );
   }
 
+  /// Records created, edited or deleted after [sinceMs].
+  ///
+  /// Read from `updatedAt` rather than counted as edits happen, so the figure
+  /// survives the app being killed. Service items are left out because
+  /// logging a service also moves its item, which would count one act twice.
+  /// A ride counts once it has finished.
+  Future<int> changedRecordsSince(int sinceMs) async {
+    const query = '''
+      SELECT
+        (SELECT COUNT(*) FROM vehicles WHERE updated_at > ?1) +
+        (SELECT COUNT(*) FROM fuel_entries WHERE updated_at > ?1) +
+        (SELECT COUNT(*) FROM service_logs WHERE updated_at > ?1) +
+        (SELECT COUNT(*) FROM expenses WHERE updated_at > ?1) +
+        (SELECT COUNT(*) FROM rides
+          WHERE updated_at > ?1 AND end_time_ms IS NOT NULL) AS changed
+    ''';
+    final row = await _db
+        .customSelect(query, variables: [Variable.withInt(sinceMs)])
+        .getSingle();
+    return row.read<int>('changed');
+  }
+
   // -------------------------------------------------------------------
   // Writing
   // -------------------------------------------------------------------

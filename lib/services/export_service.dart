@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -50,7 +51,8 @@ class ExportService extends GetxService {
     bool pretty = true,
   }) async {
     final data = await _repo.readAll(includeRidePoints: includeRidePoints);
-    final document = buildDocument(data);
+    final info = await PackageInfo.fromPlatform();
+    final document = buildDocument(data, appVersion: info.version);
 
     final json = await compute(_encodeJson, (
       document: document,
@@ -72,7 +74,13 @@ class ExportService extends GetxService {
 
   /// The document structure, separated from encoding so it can be asserted
   /// on in tests without going near the filesystem.
-  static Map<String, dynamic> buildDocument(BackupData data) {
+  ///
+  /// [appVersion] traces a file to the build that produced it. It is passed
+  /// in because reading it needs the platform, which tests do not have.
+  static Map<String, dynamic> buildDocument(
+    BackupData data, {
+    String appVersion = 'unknown',
+  }) {
     return {
       'format': BackupFormat.magic,
       'schemaVersion': BackupFormat.currentVersion,
@@ -94,10 +102,6 @@ class ExportService extends GetxService {
       'ridePoints': data.ridePoints.map(BackupCodec.ridePointToJson).toList(),
     };
   }
-
-  /// Kept in step with `pubspec.yaml`. Written into every backup so a file
-  /// can be traced to the build that produced it.
-  static const appVersion = '1.0.0';
 
   /// Hands the file to the system share sheet. Where it goes from there is
   /// the user's call — Jatra never uploads anything itself.
