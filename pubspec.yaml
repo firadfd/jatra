@@ -94,6 +94,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  assets:
+    # District outlines for ride cards. Source and licence: assets/geo/NOTICE.txt
+    - assets/geo/bd_districts.json
+
   # Generates lib/l10n/app_localizations.dart from the .arb files.
   generate: true
 

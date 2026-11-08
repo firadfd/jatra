@@ -65,6 +65,17 @@ class _RideDetailViewState extends State<RideDetailView> {
                   ? L.of(context).ridesFallbackTitle
                   : fmt.dateShort(_ride!.startTimeMs)),
         ),
+        actions: [
+          if (_ride?.endTimeMs != null)
+            IconButton(
+              icon: const Icon(Icons.ios_share_outlined),
+              tooltip: L.of(context).ridesCardTitle,
+              onPressed: () => Get.toNamed(
+                Routes.rideCard,
+                arguments: {RouteArgs.rideId: _rideId},
+              ),
+            ),
+        ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())

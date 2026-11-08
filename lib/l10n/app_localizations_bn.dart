@@ -1763,4 +1763,157 @@ class LBn extends L {
 
   @override
   String get reportNoRecords => 'কোনো রেকর্ড নেই';
+
+  @override
+  String get ridesCardTitle => 'যাত্রার কার্ড';
+
+  @override
+  String get ridesCardFrom => 'কোথা থেকে';
+
+  @override
+  String get ridesCardTo => 'কোথায়';
+
+  @override
+  String get ridesCardUsername => 'আপনার নাম (ঐচ্ছিক)';
+
+  @override
+  String get ridesCardBike => 'বাইকের নাম (ঐচ্ছিক)';
+
+  @override
+  String get ridesCardPhoto => 'আমার ছবি ব্যবহার করুন';
+
+  @override
+  String get ridesCardChangePhoto => 'ছবি বদলান';
+
+  @override
+  String get ridesCardRemovePhoto => 'ছবি সরিয়ে মানচিত্র দেখান';
+
+  @override
+  String get ridesCardShowRoute => 'মানচিত্রে পথ দেখান';
+
+  @override
+  String get ridesCardRouteExplain =>
+      'শুরু ও শেষের ১ কিমি কখনও আঁকা হয় না, তাই আপনার বাড়ি গোপন থাকে।';
+
+  @override
+  String get ridesCardShare => 'শেয়ার করুন';
+
+  @override
+  String get ridesCardTrueCost => 'প্রকৃত খরচ';
+
+  @override
+  String get ridesCardFuelCost => 'জ্বালানি খরচ';
+
+  @override
+  String get ridesCardFailed => 'কার্ড তৈরি করা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get ridesCardPhotoFailed => 'ছবিটি খোলা যায়নি। অন্য ছবি চেষ্টা করুন।';
+
+  @override
+  String get navRoute => 'রুট';
+
+  @override
+  String get routeTitle => 'রুট পরিকল্পনা';
+
+  @override
+  String get routeStart => 'শুরুর জেলা';
+
+  @override
+  String get routeEnd => 'শেষের জেলা';
+
+  @override
+  String get routeDistance => 'দূরত্ব';
+
+  @override
+  String get routeEstimateHelp =>
+      'পথের জেলাগুলো থেকে আনুমানিক হিসাব। আসল দূরত্ব জানলে লিখে দিন।';
+
+  @override
+  String get routeEditedHelp => 'আপনার লেখা দূরত্ব ব্যবহার হচ্ছে।';
+
+  @override
+  String get routeUseEstimate => 'আনুমানিক হিসাব নিন';
+
+  @override
+  String get routeYourName => 'আপনার নাম (ঐচ্ছিক)';
+
+  @override
+  String get routeShare => 'কার্ড শেয়ার করুন';
+
+  @override
+  String get routeFailed => 'কার্ড তৈরি করা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get routeCardKicker => 'রুট ম্যাপ';
+
+  @override
+  String routeCardNamed(String name) {
+    return '$name-এর রুট';
+  }
+
+  @override
+  String get routeCardChoose => 'আপনার রুট বেছে নিন';
+
+  @override
+  String get routeCardDistance => 'দূরত্ব';
+
+  @override
+  String routeCardVia(String count) {
+    return '$countটি জেলা হয়ে';
+  }
+
+  @override
+  String get routeCardPrompt => 'পরের যাত্রার পরিকল্পনা করুন';
+
+  @override
+  String get routeCardPromptStrong => 'যাত্রা সাথে নিয়ে চলুন';
+
+  @override
+  String get routeCardTagline => 'বাইকের সঙ্গী অ্যাপ';
+
+  @override
+  String get routeStopsTitle => 'আপনার রুট';
+
+  @override
+  String get routeStopsHelp =>
+      'যোগ করতে বা সরাতে নিচের মানচিত্রে জেলায় ট্যাপ করুন। ক্রম বদলাতে টেনে সরান।';
+
+  @override
+  String get routeResetSuggested => 'আগের মতো করুন';
+
+  @override
+  String get routeRemoveStop => 'সরান';
+
+  @override
+  String get routeAddStop => 'পথের জেলা যোগ করুন';
+
+  @override
+  String get routeSearchHint => 'জেলা খুঁজুন';
+
+  @override
+  String get routeSearchNone => 'কোনো জেলা পাওয়া যায়নি';
+
+  @override
+  String get routeBikeName => 'বাইকের নাম (ঐচ্ছিক)';
+
+  @override
+  String get routeBikeHint => 'Honda XBlade';
+
+  @override
+  String get routeAddPhoto => 'প্রোফাইল ছবি যোগ করুন';
+
+  @override
+  String get routeChangePhoto => 'ছবি বদলান';
+
+  @override
+  String get routeRemovePhoto => 'ছবি সরান';
+
+  @override
+  String get routePhotoFailed => 'ছবিটি খোলা যায়নি। অন্য ছবি চেষ্টা করুন।';
+
+  @override
+  String routeCardRideWith(String bike) {
+    return '$bike নিয়ে যাত্রা';
+  }
 }

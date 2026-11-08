@@ -1,0 +1,6 @@
+bd_districts.json is derived from geoBoundaries (gbOpen, BGD, ADM2,
+release 9469f09), https://www.geoboundaries.org. Original data: Bangladesh
+Bureau of Statistics (BBS) and OCHA ROAP, licensed CC BY 3.0 IGO.
+
+Changes: geometry simplified and rounded, Bangla names added, and nine English
+names updated to current official spellings.

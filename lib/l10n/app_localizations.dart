@@ -3228,6 +3228,294 @@ abstract class L {
   /// In en, this message translates to:
   /// **'None recorded'**
   String get reportNoRecords;
+
+  /// No description provided for @ridesCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride card'**
+  String get ridesCardTitle;
+
+  /// No description provided for @ridesCardFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get ridesCardFrom;
+
+  /// No description provided for @ridesCardTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get ridesCardTo;
+
+  /// No description provided for @ridesCardUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name (optional)'**
+  String get ridesCardUsername;
+
+  /// No description provided for @ridesCardBike.
+  ///
+  /// In en, this message translates to:
+  /// **'Bike name (optional)'**
+  String get ridesCardBike;
+
+  /// No description provided for @ridesCardPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my photo'**
+  String get ridesCardPhoto;
+
+  /// No description provided for @ridesCardChangePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get ridesCardChangePhoto;
+
+  /// No description provided for @ridesCardRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo and show map'**
+  String get ridesCardRemovePhoto;
+
+  /// No description provided for @ridesCardShowRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Show route on map'**
+  String get ridesCardShowRoute;
+
+  /// No description provided for @ridesCardRouteExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'The first and last 1 km are never drawn, so your home stays private.'**
+  String get ridesCardRouteExplain;
+
+  /// No description provided for @ridesCardShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get ridesCardShare;
+
+  /// No description provided for @ridesCardTrueCost.
+  ///
+  /// In en, this message translates to:
+  /// **'True cost'**
+  String get ridesCardTrueCost;
+
+  /// No description provided for @ridesCardFuelCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel cost'**
+  String get ridesCardFuelCost;
+
+  /// No description provided for @ridesCardFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The card could not be created. Try again.'**
+  String get ridesCardFailed;
+
+  /// No description provided for @ridesCardPhotoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That photo could not be opened. Try another.'**
+  String get ridesCardPhotoFailed;
+
+  /// No description provided for @navRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Route'**
+  String get navRoute;
+
+  /// No description provided for @routeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan a route'**
+  String get routeTitle;
+
+  /// No description provided for @routeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start district'**
+  String get routeStart;
+
+  /// No description provided for @routeEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'End district'**
+  String get routeEnd;
+
+  /// No description provided for @routeDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get routeDistance;
+
+  /// No description provided for @routeEstimateHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated from the districts on the way. Type the real distance if you know it.'**
+  String get routeEstimateHelp;
+
+  /// No description provided for @routeEditedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Using the distance you entered.'**
+  String get routeEditedHelp;
+
+  /// No description provided for @routeUseEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Use estimate'**
+  String get routeUseEstimate;
+
+  /// No description provided for @routeYourName.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name (optional)'**
+  String get routeYourName;
+
+  /// No description provided for @routeShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share card'**
+  String get routeShare;
+
+  /// No description provided for @routeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The card could not be created. Try again.'**
+  String get routeFailed;
+
+  /// No description provided for @routeCardKicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Route map'**
+  String get routeCardKicker;
+
+  /// No description provided for @routeCardNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s route'**
+  String routeCardNamed(String name);
+
+  /// No description provided for @routeCardChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your route'**
+  String get routeCardChoose;
+
+  /// No description provided for @routeCardDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get routeCardDistance;
+
+  /// No description provided for @routeCardVia.
+  ///
+  /// In en, this message translates to:
+  /// **'Through {count} districts'**
+  String routeCardVia(String count);
+
+  /// No description provided for @routeCardPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your next ride'**
+  String get routeCardPrompt;
+
+  /// No description provided for @routeCardPromptStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride on with Jatra'**
+  String get routeCardPromptStrong;
+
+  /// No description provided for @routeCardTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Motorcycle tracker'**
+  String get routeCardTagline;
+
+  /// No description provided for @routeStopsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your route'**
+  String get routeStopsTitle;
+
+  /// No description provided for @routeStopsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a district on the map below to add or remove it. Drag to change the order.'**
+  String get routeStopsHelp;
+
+  /// No description provided for @routeResetSuggested.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get routeResetSuggested;
+
+  /// No description provided for @routeRemoveStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get routeRemoveStop;
+
+  /// No description provided for @routeAddStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a district on the way'**
+  String get routeAddStop;
+
+  /// No description provided for @routeSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search district'**
+  String get routeSearchHint;
+
+  /// No description provided for @routeSearchNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No district found'**
+  String get routeSearchNone;
+
+  /// No description provided for @routeBikeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bike name (optional)'**
+  String get routeBikeName;
+
+  /// No description provided for @routeBikeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Honda XBlade'**
+  String get routeBikeHint;
+
+  /// No description provided for @routeAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add profile photo'**
+  String get routeAddPhoto;
+
+  /// No description provided for @routeChangePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get routeChangePhoto;
+
+  /// No description provided for @routeRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get routeRemovePhoto;
+
+  /// No description provided for @routePhotoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That photo could not be opened. Try another.'**
+  String get routePhotoFailed;
+
+  /// No description provided for @routeCardRideWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride with {bike}'**
+  String routeCardRideWith(String bike);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

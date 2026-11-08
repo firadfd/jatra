@@ -1414,5 +1414,74 @@
       }
     }
   },
-  "reportNoRecords": "None recorded"
+  "reportNoRecords": "None recorded",
+  "ridesCardTitle": "Ride card",
+  "ridesCardFrom": "From",
+  "ridesCardTo": "To",
+  "ridesCardUsername": "Your name (optional)",
+  "ridesCardBike": "Bike name (optional)",
+  "ridesCardPhoto": "Use my photo",
+  "ridesCardChangePhoto": "Change photo",
+  "ridesCardRemovePhoto": "Remove photo and show map",
+  "ridesCardShowRoute": "Show route on map",
+  "ridesCardRouteExplain": "The first and last 1 km are never drawn, so your home stays private.",
+  "ridesCardShare": "Share",
+  "ridesCardTrueCost": "True cost",
+  "ridesCardFuelCost": "Fuel cost",
+  "ridesCardFailed": "The card could not be created. Try again.",
+  "ridesCardPhotoFailed": "That photo could not be opened. Try another.",
+  "navRoute": "Route",
+  "routeTitle": "Plan a route",
+  "routeStart": "Start district",
+  "routeEnd": "End district",
+  "routeDistance": "Distance",
+  "routeEstimateHelp": "Estimated from the districts on the way. Type the real distance if you know it.",
+  "routeEditedHelp": "Using the distance you entered.",
+  "routeUseEstimate": "Use estimate",
+  "routeYourName": "Your name (optional)",
+  "routeShare": "Share card",
+  "routeFailed": "The card could not be created. Try again.",
+  "routeCardKicker": "Route map",
+  "routeCardNamed": "{name}'s route",
+  "@routeCardNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "routeCardChoose": "Choose your route",
+  "routeCardDistance": "Distance",
+  "routeCardVia": "Through {count} districts",
+  "@routeCardVia": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "routeCardPrompt": "Plan your next ride",
+  "routeCardPromptStrong": "Ride on with Jatra",
+  "routeCardTagline": "Motorcycle tracker",
+  "routeStopsTitle": "Your route",
+  "routeStopsHelp": "Tap a district on the map below to add or remove it. Drag to change the order.",
+  "routeResetSuggested": "Reset",
+  "routeRemoveStop": "Remove",
+  "routeAddStop": "Add a district on the way",
+  "routeSearchHint": "Search district",
+  "routeSearchNone": "No district found",
+  "routeBikeName": "Bike name (optional)",
+  "routeBikeHint": "Honda XBlade",
+  "routeAddPhoto": "Add profile photo",
+  "routeChangePhoto": "Change photo",
+  "routeRemovePhoto": "Remove photo",
+  "routePhotoFailed": "That photo could not be opened. Try another.",
+  "routeCardRideWith": "Ride with {bike}",
+  "@routeCardRideWith": {
+    "placeholders": {
+      "bike": {
+        "type": "String"
+      }
+    }
+  }
 }

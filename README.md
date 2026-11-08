@@ -77,6 +77,10 @@ it.
   station's fuel.
 - **Bike history PDF** to show a buyer: service record, parts, odometer
   timeline and total spend, labelled as owner-entered.
+- **Shareable ride cards**: start and end districts, your stats, and your
+  own photo or a route map. The first and last kilometre are never drawn.
+- **Route planner**: pick a start and end district, see the route and an
+  estimated distance you can correct, and share it as a card.
 - **English and Bangla**, switchable in settings.
 
 ## Privacy

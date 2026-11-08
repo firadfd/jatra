@@ -19,10 +19,13 @@ import '../../modules/home/home_controller.dart';
 import '../../modules/map/map_controller.dart';
 import '../../modules/onboarding/onboarding_controller.dart';
 import '../../modules/onboarding/onboarding_view.dart';
+import '../../modules/rides/ride_card_controller.dart';
+import '../../modules/rides/ride_card_view.dart';
 import '../../modules/rides/ride_detail_view.dart';
 import '../../modules/rides/ride_tracker_controller.dart';
 import '../../modules/rides/rides_controller.dart';
 import '../../modules/rides/rides_view.dart';
+import '../../modules/route_planner/route_planner_controller.dart';
 import '../../modules/shell/shell_controller.dart';
 import '../../modules/shell/shell_view.dart';
 import '../../modules/service/service_item_form_controller.dart';
@@ -72,7 +75,7 @@ abstract final class AppPages {
       name: Routes.home,
       page: () => const ShellView(),
       binding: BindingsBuilder(() {
-        // The shell's `IndexedStack` builds all four tabs at once and keeps
+        // The shell's `IndexedStack` builds all five tabs at once and keeps
         // them alive across switches, so every tab's controller is registered
         // here and marked permanent.
         //
@@ -86,6 +89,14 @@ abstract final class AppPages {
         // swap in a second instance without closing the first one's database
         // subscriptions, leaking a stream per re-entry.
         _putOnce(() => ShellController());
+
+        _putOnce(
+          () => RoutePlannerController(
+            Get.find<VehicleController>(),
+            Get.find<SettingsService>(),
+            Get.find<ExportService>(),
+          ),
+        );
 
         _putOnce(
           () => HomeController(
@@ -222,6 +233,23 @@ abstract final class AppPages {
         Get.lazyPut(
           () => VehicleFormController(Get.find<VehicleRepo>()),
           fenix: true,
+        );
+      }),
+    ),
+    GetPage(
+      name: Routes.rideCard,
+      page: () => const RideCardView(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(
+          () => RideCardController(
+            Get.find<RideRepo>(),
+            Get.find<FuelRepo>(),
+            Get.find<ServiceRepo>(),
+            Get.find<ExpenseRepo>(),
+            Get.find<VehicleController>(),
+            Get.find<SettingsService>(),
+            Get.find<ExportService>(),
+          ),
         );
       }),
     ),

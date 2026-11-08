@@ -4,7 +4,7 @@ import 'package:get/get.dart' hide Value;
 ///
 /// An enum rather than a bare index so the tab a caller wants is named at the
 /// call site — `shell.go(ShellTab.map)` rather than `shell.index.value = 2`.
-enum ShellTab { home, fuel, map, stats }
+enum ShellTab { home, fuel, map, route, stats }
 
 /// Which tab the shell is showing.
 ///

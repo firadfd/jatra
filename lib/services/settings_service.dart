@@ -31,6 +31,9 @@ class SettingsService extends GetxService {
   static const _kAutoBackupFolderLabel = 'autoBackupFolderLabel';
   static const _kAutoBackupLastMs = 'autoBackupLastMs';
   static const _kAutoBackupFailure = 'autoBackupFailure';
+  static const _kRideCardUsername = 'rideCardUsername';
+  static const _kRouteCardBike = 'routeCardBike';
+  static const _kRouteCardPhoto = 'routeCardPhoto';
 
   Future<SettingsService> init() async {
     await GetStorage.init(_boxName);
@@ -56,6 +59,9 @@ class SettingsService extends GetxService {
     autoBackupFolderLabel.value = _box.read<String>(_kAutoBackupFolderLabel);
     autoBackupLastMs.value = _box.read<int>(_kAutoBackupLastMs);
     autoBackupFailure.value = _box.read<String>(_kAutoBackupFailure);
+    rideCardUsername.value = _box.read<String>(_kRideCardUsername) ?? '';
+    routeCardBike.value = _box.read<String>(_kRouteCardBike);
+    routeCardPhoto.value = _box.read<String>(_kRouteCardPhoto);
 
     // Persist on change, so no caller has to remember to save.
     ever(themeMode, (v) => _box.write(_kThemeMode, v.name));
@@ -79,6 +85,9 @@ class SettingsService extends GetxService {
     ever(autoBackupFolderLabel, (v) => _box.write(_kAutoBackupFolderLabel, v));
     ever(autoBackupLastMs, (v) => _box.write(_kAutoBackupLastMs, v));
     ever(autoBackupFailure, (v) => _box.write(_kAutoBackupFailure, v));
+    ever(rideCardUsername, (v) => _box.write(_kRideCardUsername, v));
+    ever(routeCardBike, (v) => _box.write(_kRouteCardBike, v));
+    ever(routeCardPhoto, (v) => _box.write(_kRouteCardPhoto, v));
 
     return this;
   }
@@ -145,6 +154,16 @@ class SettingsService extends GetxService {
   /// An `AutoBackupFailure` name, or null when the last attempt succeeded.
   final autoBackupFailure = RxnString();
 
+  /// Remembered so the rider types it once. Empty ⇒ left off the card.
+  final rideCardUsername = ''.obs;
+
+  /// Bike name on route cards. Null ⇒ the active bike. Empty ⇒ left off.
+  final routeCardBike = RxnString();
+
+  /// Small base64 PNG of the rider's profile photo. Kept here rather than as
+  /// a file so "delete all data" takes it along with the rest.
+  final routeCardPhoto = RxnString();
+
   bool get mileageAlertEnabled => mileageDropThreshold.value > 0;
 
   Locale get locale => Locale(localeCode.value);
@@ -170,5 +189,8 @@ class SettingsService extends GetxService {
     autoBackupFolderLabel.value = null;
     autoBackupLastMs.value = null;
     autoBackupFailure.value = null;
+    rideCardUsername.value = '';
+    routeCardBike.value = null;
+    routeCardPhoto.value = null;
   }
 }

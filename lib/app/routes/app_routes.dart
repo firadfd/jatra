@@ -19,6 +19,7 @@ abstract final class Routes {
 
   static const rides = '/rides';
   static const rideDetail = '/rides/detail';
+  static const rideCard = '/rides/card';
 
   static const stats = '/stats';
 

@@ -1757,4 +1757,158 @@ class LEn extends L {
 
   @override
   String get reportNoRecords => 'None recorded';
+
+  @override
+  String get ridesCardTitle => 'Ride card';
+
+  @override
+  String get ridesCardFrom => 'From';
+
+  @override
+  String get ridesCardTo => 'To';
+
+  @override
+  String get ridesCardUsername => 'Your name (optional)';
+
+  @override
+  String get ridesCardBike => 'Bike name (optional)';
+
+  @override
+  String get ridesCardPhoto => 'Use my photo';
+
+  @override
+  String get ridesCardChangePhoto => 'Change photo';
+
+  @override
+  String get ridesCardRemovePhoto => 'Remove photo and show map';
+
+  @override
+  String get ridesCardShowRoute => 'Show route on map';
+
+  @override
+  String get ridesCardRouteExplain =>
+      'The first and last 1 km are never drawn, so your home stays private.';
+
+  @override
+  String get ridesCardShare => 'Share';
+
+  @override
+  String get ridesCardTrueCost => 'True cost';
+
+  @override
+  String get ridesCardFuelCost => 'Fuel cost';
+
+  @override
+  String get ridesCardFailed => 'The card could not be created. Try again.';
+
+  @override
+  String get ridesCardPhotoFailed =>
+      'That photo could not be opened. Try another.';
+
+  @override
+  String get navRoute => 'Route';
+
+  @override
+  String get routeTitle => 'Plan a route';
+
+  @override
+  String get routeStart => 'Start district';
+
+  @override
+  String get routeEnd => 'End district';
+
+  @override
+  String get routeDistance => 'Distance';
+
+  @override
+  String get routeEstimateHelp =>
+      'Estimated from the districts on the way. Type the real distance if you know it.';
+
+  @override
+  String get routeEditedHelp => 'Using the distance you entered.';
+
+  @override
+  String get routeUseEstimate => 'Use estimate';
+
+  @override
+  String get routeYourName => 'Your name (optional)';
+
+  @override
+  String get routeShare => 'Share card';
+
+  @override
+  String get routeFailed => 'The card could not be created. Try again.';
+
+  @override
+  String get routeCardKicker => 'Route map';
+
+  @override
+  String routeCardNamed(String name) {
+    return '$name\'s route';
+  }
+
+  @override
+  String get routeCardChoose => 'Choose your route';
+
+  @override
+  String get routeCardDistance => 'Distance';
+
+  @override
+  String routeCardVia(String count) {
+    return 'Through $count districts';
+  }
+
+  @override
+  String get routeCardPrompt => 'Plan your next ride';
+
+  @override
+  String get routeCardPromptStrong => 'Ride on with Jatra';
+
+  @override
+  String get routeCardTagline => 'Motorcycle tracker';
+
+  @override
+  String get routeStopsTitle => 'Your route';
+
+  @override
+  String get routeStopsHelp =>
+      'Tap a district on the map below to add or remove it. Drag to change the order.';
+
+  @override
+  String get routeResetSuggested => 'Reset';
+
+  @override
+  String get routeRemoveStop => 'Remove';
+
+  @override
+  String get routeAddStop => 'Add a district on the way';
+
+  @override
+  String get routeSearchHint => 'Search district';
+
+  @override
+  String get routeSearchNone => 'No district found';
+
+  @override
+  String get routeBikeName => 'Bike name (optional)';
+
+  @override
+  String get routeBikeHint => 'Honda XBlade';
+
+  @override
+  String get routeAddPhoto => 'Add profile photo';
+
+  @override
+  String get routeChangePhoto => 'Change photo';
+
+  @override
+  String get routeRemovePhoto => 'Remove photo';
+
+  @override
+  String get routePhotoFailed => 'That photo could not be opened. Try another.';
+
+  @override
+  String routeCardRideWith(String bike) {
+    return 'Ride with $bike';
+  }
 }

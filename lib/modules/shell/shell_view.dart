@@ -7,10 +7,11 @@ import '../../l10n/app_localizations.dart';
 import '../fuel/fuel_history_view.dart';
 import '../home/home_view.dart';
 import '../map/map_view.dart';
+import '../route_planner/route_planner_view.dart';
 import '../stats/stats_view.dart';
 import 'shell_controller.dart';
 
-/// The app's main frame: four destinations behind one bottom nav bar.
+/// The app's main frame: five destinations behind one bottom nav bar.
 ///
 /// Each tab keeps its own `Scaffold` — and with it its own app bar and FAB —
 /// inside an [IndexedStack], so switching tabs preserves scroll position and
@@ -38,6 +39,7 @@ class ShellView extends GetView<ShellController> {
             HomeView(),
             FuelHistoryView(),
             MapView(),
+            RoutePlannerView(),
             StatsView(),
           ],
         ),
@@ -69,6 +71,11 @@ class ShellView extends GetView<ShellController> {
                 icon: const Icon(Icons.map_outlined),
                 selectedIcon: const Icon(Icons.map),
                 label: l.navMap,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.alt_route_outlined),
+                selectedIcon: const Icon(Icons.alt_route),
+                label: l.navRoute,
               ),
               NavigationDestination(
                 icon: const Icon(Icons.insights_outlined),
