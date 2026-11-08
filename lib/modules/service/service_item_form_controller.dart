@@ -4,6 +4,7 @@ import 'package:get/get.dart' hide Value;
 
 import '../../app/routes/app_routes.dart';
 import '../../core/utils/formatters.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/utils/units.dart';
 import '../../data/db/database.dart';
 import '../../data/repositories/service_repo.dart';
@@ -84,6 +85,20 @@ class ServiceItemFormController extends GetxController {
         lastDoneOdometerCtrl.text = item.lastDoneOdometerM == null
             ? ''
             : _trim(Units.metresTo(item.lastDoneOdometerM!, fmt.distanceUnit));
+        final intervalM = item.intervalM;
+        if (intervalM != null) {
+          _loadedInterval = LoadedQuantity(
+            intervalDistanceCtrl.text,
+            intervalM,
+          );
+        }
+        final lastDoneM = item.lastDoneOdometerM;
+        if (lastDoneM != null) {
+          _loadedLastDone = LoadedQuantity(
+            lastDoneOdometerCtrl.text,
+            lastDoneM,
+          );
+        }
         lastDoneDateMs.value = item.lastDoneDateMs;
         iconKey.value = item.iconKey;
         isActive.value = item.isActive;
@@ -108,6 +123,10 @@ class ServiceItemFormController extends GetxController {
 
   final intervalError = RxnString();
 
+  // Set when editing, so a field left alone keeps its exact stored value.
+  LoadedQuantity? _loadedInterval;
+  LoadedQuantity? _loadedLastDone;
+
   Future<void> save() async {
     intervalError.value = validateIntervals();
     if (!(formKey.currentState?.validate() ?? false)) return;
@@ -126,13 +145,19 @@ class ServiceItemFormController extends GetxController {
         intervalM: Value(
           distance == null || distance <= 0
               ? null
-              : Units.toMetres(distance, fmt.distanceUnit),
+              : _loadedInterval.resolve(
+                  intervalDistanceCtrl.text,
+                  () => Units.toMetres(distance, fmt.distanceUnit),
+                ),
         ),
         intervalDays: Value(days == null || days <= 0 ? null : days),
         lastDoneOdometerM: Value(
           lastOdometer == null
               ? null
-              : Units.toMetres(lastOdometer, fmt.distanceUnit),
+              : _loadedLastDone.resolve(
+                  lastDoneOdometerCtrl.text,
+                  () => Units.toMetres(lastOdometer, fmt.distanceUnit),
+                ),
         ),
         lastDoneDateMs: Value(lastDoneDateMs.value),
         iconKey: Value(iconKey.value),

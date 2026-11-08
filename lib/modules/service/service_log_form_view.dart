@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide Value;
 
 import '../../app/theme/app_dimens.dart';
 import '../../app/theme/app_text.dart';
 import '../../app/theme/app_theme.dart';
 import '../../core/utils/money.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/widgets/jatra_widgets.dart';
 import 'service_log_form_controller.dart';
 import '../../l10n/app_localizations.dart';
@@ -122,11 +122,7 @@ class ServiceLogFormView extends GetView<ServiceLogFormController> {
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'[0-9.]'),
-                            ),
-                          ],
+                          inputFormatters: [const DecimalInputFormatter()],
                           style: AppText.numeralMd.copyWith(
                             color: c.textPrimary,
                           ),
@@ -187,6 +183,7 @@ class _CostCard extends GetView<ServiceLogFormController> {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    inputFormatters: const [DecimalInputFormatter()],
                     decoration: InputDecoration(
                       labelText: L.of(context).serviceLogParts,
                       prefixText:
@@ -203,6 +200,7 @@ class _CostCard extends GetView<ServiceLogFormController> {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    inputFormatters: const [DecimalInputFormatter()],
                     decoration: InputDecoration(
                       labelText: L.of(context).serviceLogLabour,
                       prefixText:
@@ -220,6 +218,7 @@ class _CostCard extends GetView<ServiceLogFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: const [DecimalInputFormatter()],
               style: AppText.numeralMd.copyWith(color: c.textPrimary),
               decoration: InputDecoration(
                 labelText: L.of(context).expensesTotal,

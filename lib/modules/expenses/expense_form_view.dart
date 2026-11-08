@@ -6,6 +6,7 @@ import '../../app/theme/app_text.dart';
 import '../../app/theme/app_theme.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/utils/money.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/widgets/jatra_widgets.dart';
 import '../../data/models/enums.dart';
 import 'expense_form_controller.dart';
@@ -73,6 +74,7 @@ class ExpenseFormView extends GetView<ExpenseFormController> {
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
                           ),
+                          inputFormatters: const [DecimalInputFormatter()],
                           style: AppText.numeralMd.copyWith(
                             color: c.textPrimary,
                           ),

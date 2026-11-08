@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide Value;
 
 import '../../app/theme/app_dimens.dart';
 import '../../app/theme/app_text.dart';
 import '../../app/theme/app_theme.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/widgets/jatra_widgets.dart';
 import '../../l10n/app_localizations.dart';
 import 'fuel_form_controller.dart';
@@ -121,9 +121,7 @@ class _WhenAndWhere extends GetView<FuelFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-              ],
+              inputFormatters: [const DecimalInputFormatter()],
               style: AppText.numeralMd.copyWith(color: c.textPrimary),
               decoration: InputDecoration(
                 labelText: L.of(context).fuelOdometer,
@@ -213,9 +211,7 @@ class _AmountCard extends GetView<FuelFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-              ],
+              inputFormatters: [const DecimalInputFormatter()],
               style: AppText.numeralMd.copyWith(color: c.textPrimary),
               decoration: InputDecoration(
                 labelText: L.of(context).fuelAdded,
@@ -232,15 +228,15 @@ class _AmountCard extends GetView<FuelFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-              ],
+              inputFormatters: [const DecimalInputFormatter()],
               style: AppText.numeralMd.copyWith(color: c.textPrimary),
               decoration: InputDecoration(
                 labelText: L.of(context).fuelPrice,
                 prefixText: '${controller.fmt.currencySymbol} ',
                 suffixText: controller.fmt.perVolumeLabel,
               ),
+              validator: controller.validatePrice,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
             ),
           ),
           const SizedBox(height: Gap.md),
@@ -250,9 +246,7 @@ class _AmountCard extends GetView<FuelFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-              ],
+              inputFormatters: [const DecimalInputFormatter()],
               style: AppText.numeralMd.copyWith(color: c.textPrimary),
               decoration: InputDecoration(
                 labelText: L.of(context).fuelTotalPaid,

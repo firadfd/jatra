@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide Value;
 
 import '../../app/theme/app_dimens.dart';
 import '../../app/theme/app_text.dart';
 import '../../app/theme/app_theme.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/widgets/jatra_widgets.dart';
 import '../../core/widgets/odometer_strip.dart';
 import '../../data/models/enums.dart';
@@ -198,9 +198,7 @@ class _OdometerStep extends GetView<OnboardingController> {
           () => TextField(
             controller: controller.odometerCtrl,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-            ],
+            inputFormatters: [const DecimalInputFormatter()],
             style: AppText.numeralLg.copyWith(color: context.jatra.textPrimary),
             decoration: InputDecoration(
               labelText: L.of(context).onboardingOdometerLabel,

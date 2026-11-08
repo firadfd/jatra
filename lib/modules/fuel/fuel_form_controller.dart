@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value;
 
 import '../../app/routes/app_routes.dart';
+import '../../core/calc/fuel_pricing.dart';
 import '../../core/utils/clock.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/utils/money.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/utils/units.dart';
 import '../../data/db/database.dart';
 import '../../data/repositories/fuel_repo.dart';
@@ -72,6 +74,12 @@ class FuelFormController extends GetxController {
   /// Guards the listeners against the writes they themselves cause.
   bool _recomputing = false;
 
+  // Set when editing, so a field left alone keeps its exact stored value.
+  LoadedQuantity? _loadedOdometer;
+  LoadedQuantity? _loadedVolume;
+  LoadedQuantity? _loadedTotal;
+  LoadedQuantity? _loadedPrice;
+
   @override
   void onInit() {
     super.onInit();
@@ -131,16 +139,15 @@ class FuelFormController extends GetxController {
 
     _recomputing = true;
     odometerCtrl.text = _trim(Units.metresTo(row.odometerM, fmt.distanceUnit));
-    volumeCtrl.text = Units.mlTo(
-      row.volumeMl,
-      fmt.volumeUnit,
-    ).toStringAsFixed(2);
+    volumeCtrl.text = _volumeText(Units.mlTo(row.volumeMl, fmt.volumeUnit));
     totalCtrl.text = Money(row.totalCostMinor).asMajor.toStringAsFixed(2);
-    priceCtrl.text =
-        (Money(row.totalCostMinor).asMajor /
-                Units.mlTo(row.volumeMl, fmt.volumeUnit))
-            .toStringAsFixed(2);
+    priceCtrl.text = _priceTextOf(row);
     _recomputing = false;
+
+    _loadedOdometer = LoadedQuantity(odometerCtrl.text, row.odometerM);
+    _loadedVolume = LoadedQuantity(volumeCtrl.text, row.volumeMl);
+    _loadedTotal = LoadedQuantity(totalCtrl.text, row.totalCostMinor);
+    _loadedPrice = LoadedQuantity(priceCtrl.text, row.pricePerUnitMinor);
 
     stationCtrl.text = row.station ?? '';
     notesCtrl.text = row.notes ?? '';
@@ -156,17 +163,12 @@ class FuelFormController extends GetxController {
     // forgets to change it the validator catches it — better than a blank
     // field they have to reconstruct from memory at a pump.
     odometerCtrl.text = _trim(
-      Units.metresTo(previousOdometerM.value, fmt.distanceUnit),
+      Units.odometerPrefill(previousOdometerM.value, fmt.distanceUnit),
     );
 
     // Price per unit defaults to whatever they paid last time.
     final last = await _repo.latestEntry(_vehicleId);
-    if (last != null && last.volumeMl > 0) {
-      final perUnit =
-          Money(last.totalCostMinor).asMajor /
-          Units.mlTo(last.volumeMl, fmt.volumeUnit);
-      priceCtrl.text = perUnit.toStringAsFixed(2);
-    }
+    if (last != null) priceCtrl.text = _priceTextOf(last);
 
     _recomputing = false;
   }
@@ -200,10 +202,10 @@ class FuelFormController extends GetxController {
         // Guard every division — a zero volume is a half-typed number, not
         // an infinite unit price.
         if (volume == null || total == null || volume <= 0) return;
-        result = (total / volume).toStringAsFixed(2);
+        result = _priceText(total / volume);
       case _Trio.volume:
         if (price == null || total == null || price <= 0) return;
-        result = (total / price).toStringAsFixed(2);
+        result = _volumeText(total / price);
     }
 
     final controller = switch (target) {
@@ -246,8 +248,17 @@ class FuelFormController extends GetxController {
   String? validateVolume(String? value) {
     final parsed = _parseString(value);
     if (parsed == null) return 'Enter how much fuel you added.';
-    if (parsed <= 0) return 'Fuel added must be more than zero.';
+    if (Units.toMl(parsed, fmt.volumeUnit) <= 0) {
+      return 'Fuel added must be more than zero.';
+    }
     return null;
+  }
+
+  /// Optional, because any two of the three fields are enough — but a value
+  /// that cannot be read must not be saved past silently.
+  String? validatePrice(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    return _parseString(value) == null ? 'Price must be a number.' : null;
   }
 
   String? validateTotal(String? value) {
@@ -274,18 +285,36 @@ class FuelFormController extends GetxController {
     isSaving.value = true;
 
     try {
-      final volumeMl = Units.toMl(_parse(volumeCtrl) ?? 0, fmt.volumeUnit);
-      final total = Money.tryParse(totalCtrl.text) ?? Money.zero;
-      final odometerM = Units.toMetres(
-        _parse(odometerCtrl) ?? 0,
-        fmt.distanceUnit,
+      final volumeMl = _loadedVolume.resolve(
+        volumeCtrl.text,
+        () => Units.toMl(_parse(volumeCtrl) ?? 0, fmt.volumeUnit),
+      );
+      final total = Money(
+        _loadedTotal.resolve(
+          totalCtrl.text,
+          () => (Money.tryParse(totalCtrl.text) ?? Money.zero).minor,
+        ),
+      );
+      final odometerM = _loadedOdometer.resolve(
+        odometerCtrl.text,
+        () => Units.toMetres(_parse(odometerCtrl) ?? 0, fmt.distanceUnit),
       );
 
       // Canonical price is per *litre*, like every other stored quantity.
-      // Derived from the exact volume/total pair rather than from the price
-      // field, so the two can never disagree by a rounding step.
-      final perLitre =
-          Money.unitPrice(ml: volumeMl, total: total) ?? Money.zero;
+      final amountsUntouched =
+          _loadedVolume?.value == volumeMl &&
+          _loadedTotal?.value == total.minor;
+      final perLitre = Money(
+        (amountsUntouched ? _loadedPrice : null).resolve(
+          priceCtrl.text,
+          () => FuelPricing.perLitreToStore(
+            ml: volumeMl,
+            total: total,
+            enteredPerUnit: _parse(priceCtrl),
+            unit: fmt.volumeUnit,
+          ).minor,
+        ),
+      );
 
       final companion = FuelEntriesCompanion(
         vehicleId: Value(_vehicleId),
@@ -337,6 +366,21 @@ class FuelFormController extends GetxController {
   // -------------------------------------------------------------------
   // Helpers
   // -------------------------------------------------------------------
+
+  static String _volumeText(double value) =>
+      trimmedDecimal(value, minDecimals: 2, maxDecimals: 3);
+
+  static String _priceText(double value) =>
+      trimmedDecimal(value, minDecimals: 2, maxDecimals: 3);
+
+  String _priceTextOf(FuelEntryRow row) =>
+      FuelPricing.priceText(
+        ml: row.volumeMl,
+        total: Money(row.totalCostMinor),
+        storedPerLitre: Money(row.pricePerUnitMinor),
+        unit: fmt.volumeUnit,
+      ) ??
+      '';
 
   static double? _parse(TextEditingController c) => _parseString(c.text);
 

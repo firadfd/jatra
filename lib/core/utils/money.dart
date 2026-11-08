@@ -20,7 +20,12 @@ extension type const Money(int minor) implements Object {
   /// (refunds), commas as thousands separators, and both `.` and `٫`-free
   /// plain decimal points.
   static Money? tryParse(String input, {int decimals = 2}) {
-    final cleaned = input.replaceAll(',', '').replaceAll(' ', '').trim();
+    final compact = input.replaceAll(' ', '').trim();
+    // A lone comma before one or two digits is a decimal comma ("12,50").
+    // Thousands groups always have three digits after the comma.
+    final cleaned = RegExp(r'^\d+,\d{1,2}$').hasMatch(compact)
+        ? compact.replaceAll(',', '.')
+        : compact.replaceAll(',', '');
     if (cleaned.isEmpty) return null;
     final value = double.tryParse(cleaned);
     if (value == null || !value.isFinite) return null;

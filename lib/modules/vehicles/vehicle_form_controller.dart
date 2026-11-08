@@ -4,6 +4,7 @@ import 'package:get/get.dart' hide Value;
 
 import '../../app/routes/app_routes.dart';
 import '../../core/utils/money.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/utils/units.dart';
 import '../../data/db/database.dart';
 import '../../data/repositories/vehicle_repo.dart';
@@ -45,6 +46,13 @@ class VehicleFormController extends GetxController {
   int? editId;
 
   bool get isEditing => editId != null;
+
+  // Set when editing, so a field left alone keeps its exact stored value —
+  // unless its unit changed, when the same text means a different quantity.
+  LoadedQuantity? _loadedTank;
+  LoadedQuantity? _loadedOdometer;
+  VolumeUnit? _loadedVolumeUnit;
+  DistanceUnit? _loadedDistanceUnit;
 
   @override
   void onInit() {
@@ -106,6 +114,17 @@ class VehicleFormController extends GetxController {
       v.distanceUnit,
     ).toStringAsFixed(0);
 
+    final tankMl = v.tankCapacityMl;
+    _loadedTank = tankMl == null
+        ? null
+        : LoadedQuantity(tankCapacityCtrl.text, tankMl);
+    _loadedOdometer = LoadedQuantity(
+      initialOdometerCtrl.text,
+      v.initialOdometerM,
+    );
+    _loadedVolumeUnit = v.volumeUnit;
+    _loadedDistanceUnit = v.distanceUnit;
+
     fuelType.value = v.fuelType;
     distanceUnit.value = v.distanceUnit;
     volumeUnit.value = v.volumeUnit;
@@ -137,10 +156,24 @@ class VehicleFormController extends GetxController {
         tankCapacityMl: Value(
           _double(tankCapacityCtrl) == null
               ? null
-              : Units.toMl(_double(tankCapacityCtrl)!, volumeUnit.value),
+              : (volumeUnit.value == _loadedVolumeUnit ? _loadedTank : null)
+                    .resolve(
+                      tankCapacityCtrl.text,
+                      () => Units.toMl(
+                        _double(tankCapacityCtrl)!,
+                        volumeUnit.value,
+                      ),
+                    ),
         ),
         initialOdometerM: Value(
-          Units.toMetres(_double(initialOdometerCtrl) ?? 0, distanceUnit.value),
+          (distanceUnit.value == _loadedDistanceUnit ? _loadedOdometer : null)
+              .resolve(
+                initialOdometerCtrl.text,
+                () => Units.toMetres(
+                  _double(initialOdometerCtrl) ?? 0,
+                  distanceUnit.value,
+                ),
+              ),
         ),
         distanceUnit: Value(distanceUnit.value),
         volumeUnit: Value(volumeUnit.value),

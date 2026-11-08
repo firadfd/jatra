@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide Value;
 
 import '../../../app/theme/app_dimens.dart';
 import '../../../app/theme/app_text.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
+import '../../../core/utils/numeric_input.dart';
 import '../../../core/utils/units.dart';
 import '../../../core/widgets/jatra_widgets.dart';
 import '../../../l10n/app_localizations.dart';
@@ -51,9 +51,7 @@ class _TripCalculatorState extends State<TripCalculator> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-              ],
+              inputFormatters: [const DecimalInputFormatter()],
               style: AppText.numeralMd.copyWith(color: c.textPrimary),
               decoration: InputDecoration(
                 labelText: L.of(context).statsTripDistance,

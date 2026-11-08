@@ -44,6 +44,15 @@ abstract final class Units {
     DistanceUnit.mi => (value * metresPerMile).round(),
   };
 
+  /// [metres] to one decimal for pre-filling a form, never rounding up past
+  /// the real reading — a pre-fill that is higher than the last reading would
+  /// pass the "must be higher" check without the rider changing it.
+  static double odometerPrefill(int metres, DistanceUnit unit) {
+    final tenths = metresTo(metres, unit) * 10;
+    final rounded = tenths.round() / 10;
+    return toMetres(rounded, unit) > metres ? tenths.floor() / 10 : rounded;
+  }
+
   static double mlToLitres(int ml) => ml / mlPerLitre;
 
   static double mlToGallons(int ml) => ml / mlPerGallon;

@@ -6,6 +6,7 @@ import '../../app/routes/app_routes.dart';
 import '../../core/utils/clock.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/utils/money.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/utils/units.dart';
 import '../../data/db/database.dart';
 import '../../data/repositories/fuel_repo.dart';
@@ -108,6 +109,7 @@ class ServiceLogFormController extends GetxController {
         odometerCtrl.text = _trim(
           Units.metresTo(log.odometerM, fmt.distanceUnit),
         );
+        _loadedOdometer = LoadedQuantity(odometerCtrl.text, log.odometerM);
         partsCtrl.text = _major(log.partsCostMinor);
         laborCtrl.text = _major(log.laborCostMinor);
         _writingTotal = true;
@@ -126,7 +128,7 @@ class ServiceLogFormController extends GetxController {
       // Pre-fill the odometer with the current reading — the overwhelmingly
       // common case is logging a service that just happened.
       odometerCtrl.text = _trim(
-        Units.metresTo(
+        Units.odometerPrefill(
           await _fuel.latestOdometerM(_vehicles.activeId),
           fmt.distanceUnit,
         ),
@@ -190,9 +192,13 @@ class ServiceLogFormController extends GetxController {
         name: Value(nameCtrl.text.trim()),
         dateMs: Value(dateMs.value),
         odometerM: Value(
-          Units.toMetres(
-            double.tryParse(odometerCtrl.text.replaceAll(',', '').trim()) ?? 0,
-            fmt.distanceUnit,
+          _loadedOdometer.resolve(
+            odometerCtrl.text,
+            () => Units.toMetres(
+              double.tryParse(odometerCtrl.text.replaceAll(',', '').trim()) ??
+                  0,
+              fmt.distanceUnit,
+            ),
           ),
         ),
         partsCostMinor: Value(parts.minor),
@@ -231,6 +237,9 @@ class ServiceLogFormController extends GetxController {
       isSaving.value = false;
     }
   }
+
+  /// Set when editing, so an untouched odometer keeps its exact stored value.
+  LoadedQuantity? _loadedOdometer;
 
   static String _major(int minor) => Money(minor).asMajor.toStringAsFixed(2);
 

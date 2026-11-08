@@ -6,6 +6,7 @@ import '../../app/theme/app_dimens.dart';
 import '../../app/theme/app_text.dart';
 import '../../app/theme/app_theme.dart';
 import '../../core/utils/formatters.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/widgets/jatra_widgets.dart';
 import 'service_item_form_controller.dart';
 import 'widgets/service_item_tile.dart';
@@ -216,9 +217,7 @@ class _IntervalCard extends GetView<ServiceItemFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-              ],
+              inputFormatters: [const DecimalInputFormatter()],
               decoration: InputDecoration(
                 labelText: L.of(context).serviceItemEvery,
                 suffixText: controller.fmt.distanceLabel,
@@ -277,9 +276,7 @@ class _BaselineCard extends GetView<ServiceItemFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-              ],
+              inputFormatters: [const DecimalInputFormatter()],
               decoration: InputDecoration(
                 labelText: L.of(context).serviceItemAtOdometer,
                 suffixText: controller.fmt.distanceLabel,

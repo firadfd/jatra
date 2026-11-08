@@ -7,6 +7,7 @@ import '../../app/theme/app_dimens.dart';
 import '../../app/theme/app_theme.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/utils/money.dart';
+import '../../core/utils/numeric_input.dart';
 import '../../core/utils/validators.dart';
 import '../../core/widgets/jatra_widgets.dart';
 import '../../data/models/enums.dart';
@@ -264,6 +265,7 @@ class _OwnershipSection extends GetView<VehicleFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: const [DecimalInputFormatter()],
               decoration: InputDecoration(
                 labelText: L.of(context).vehiclesStartingOdometer,
                 suffixText: controller.distanceUnit.value.label,
@@ -279,6 +281,7 @@ class _OwnershipSection extends GetView<VehicleFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: const [DecimalInputFormatter()],
               decoration: InputDecoration(
                 labelText: L.of(context).vehiclesTankCapacity,
                 suffixText: controller.volumeUnit.value.label,
@@ -301,6 +304,7 @@ class _OwnershipSection extends GetView<VehicleFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: const [DecimalInputFormatter()],
               decoration: InputDecoration(
                 labelText: L.of(context).vehiclesPurchasePrice,
                 prefixText:
@@ -317,6 +321,7 @@ class _OwnershipSection extends GetView<VehicleFormController> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: const [DecimalInputFormatter()],
               decoration: InputDecoration(
                 labelText: L.of(context).vehiclesCurrentValue,
                 helperText: L.of(context).vehiclesDepreciationHelp,
