@@ -82,7 +82,7 @@ jobs:
       # The release build is the one users install, so it does not get to
       # skip the suite.
       - name: Test
-        run: flutter test --reporter=github
+        run: bash tool/retry_native_assets.sh flutter test --reporter=github
 
       - name: Restore keystore
         env:
@@ -103,16 +103,16 @@ jobs:
       # because it carries the native SQLite and geolocator binaries for
       # every architecture.
       - name: Build split APKs
-        run: flutter build apk --release --split-per-abi
+        run: bash tool/retry_native_assets.sh flutter build apk --release --split-per-abi
 
       # The universal APK is the one to hand someone who does not know or
       # care what an ABI is. Built after the splits, which it does not
       # disturb — the two write different filenames.
       - name: Build universal APK
-        run: flutter build apk --release
+        run: bash tool/retry_native_assets.sh flutter build apk --release
 
       - name: Build app bundle
-        run: flutter build appbundle --release
+        run: bash tool/retry_native_assets.sh flutter build appbundle --release
 
       - name: Collect and name artifacts
         id: artifacts

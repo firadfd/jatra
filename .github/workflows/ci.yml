@@ -52,7 +52,7 @@ jobs:
           fi
 
       - name: Test
-        run: flutter test --reporter=github
+        run: bash tool/retry_native_assets.sh flutter test --reporter=github
 
   build:
     name: Build debug APK
@@ -78,4 +78,4 @@ jobs:
       # native libraries and the geolocator foreground service all fail here
       # rather than in a release tag if something regresses.
       - name: Build debug APK
-        run: flutter build apk --debug
+        run: bash tool/retry_native_assets.sh flutter build apk --debug
