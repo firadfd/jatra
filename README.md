@@ -79,8 +79,8 @@ it.
   timeline and total spend, labelled as owner-entered.
 - **Shareable ride cards**: start and end districts, your stats, and your
   own photo or a route map. The first and last kilometre are never drawn.
-- **Route planner**: pick a start and end district, see the route and an
-  estimated distance you can correct, and share it as a card.
+- **Route planner**: pick any district or upazila, see the route along real
+  roads and a distance you can correct, and share it as a card. Works offline.
 - **English and Bangla**, switchable in settings.
 
 ## Privacy

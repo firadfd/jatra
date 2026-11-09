@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
 
-import '../../../core/calc/district_route.dart';
+import '../../../core/calc/place_route.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../services/district_map.dart';
 
@@ -50,7 +50,7 @@ class RouteCardContent {
     this.photo,
   });
 
-  final DistrictRoute? route;
+  final PlaceRoute? route;
   final int? distanceM;
 
   /// Shown with `≈`, so an estimate is not posted as a measurement.
@@ -74,7 +74,7 @@ class RouteCardFace extends StatelessWidget {
     required this.districts,
     required this.content,
     required this.l,
-    this.onDistrictTap,
+    this.onMapTap,
   });
 
   static const size = Size(600, 800);
@@ -85,7 +85,7 @@ class RouteCardFace extends StatelessWidget {
   final L l;
 
   /// Makes the preview's map editable. The shared image leaves it null.
-  final ValueChanged<String>? onDistrictTap;
+  final void Function(double lat, double lng)? onMapTap;
 
   @override
   Widget build(BuildContext context) {
@@ -124,22 +124,27 @@ class RouteCardFace extends StatelessWidget {
         locale: content.locale,
       ),
     );
-    final onTap = onDistrictTap;
+    final onTap = onMapTap;
     if (onTap == null || districts.isEmpty) return map;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (details) {
-        final point = _Fit.of(districts, area).invert(details.localPosition);
-        final hit = districts.locate(point.lat, point.lng);
-        if (hit != null) onTap(hit.en);
+        final point = _Fit.of(
+          districts,
+          area,
+          content.route,
+        ).invert(details.localPosition);
+        if (districts.locate(point.lat, point.lng) != null) {
+          onTap(point.lat, point.lng);
+        }
       },
       child: map,
     );
   }
 
   Widget _header() {
-    final stops = content.route?.districts;
+    final stops = content.route?.waypoints;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,13 +244,16 @@ class RouteCardFace extends StatelessWidget {
   }
 
   Widget _distance() {
-    final stops = content.route?.districts;
+    final route = content.route;
+    final districtCount = route?.districts.length ?? 0;
     final hasDistance =
         content.distanceText.isNotEmpty && (content.distanceM ?? 0) > 0;
 
-    final via = stops != null && stops.length > 2
-        ? l.routeCardVia(localDigits('${stops.length}', content.locale))
-        : null;
+    final via = [
+      if (districtCount > 2)
+        l.routeCardVia(localDigits('$districtCount', content.locale)),
+      if (route?.usesFerry ?? false) l.routeCardFerry,
+    ].join(' · ');
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -275,7 +283,7 @@ class RouteCardFace extends StatelessWidget {
                 )
               : const SizedBox.shrink(),
         ),
-        if (via != null) ...[
+        if (via.isNotEmpty) ...[
           const SizedBox(width: 12),
           // Expanded, not Flexible: the text needs the full slot to sit right.
           Expanded(
@@ -327,26 +335,30 @@ class RouteCardFace extends StatelessWidget {
   );
 }
 
-/// Fits the country into a box, and maps a tap back to a position.
+/// Fits the map into a box, and maps a tap back to a position.
 class _Fit {
   _Fit._(this._midLat, this._midLng, this._stretch, this._scale, this._centre);
 
-  factory _Fit.of(DistrictMap map, Size size) {
-    var west = double.infinity, east = -double.infinity;
-    var south = double.infinity, north = -double.infinity;
-    for (final district in map.districts) {
-      for (final ring in district.rings) {
-        for (var i = 0; i < ring.length; i += 2) {
-          west = math.min(west, ring[i]);
-          east = math.max(east, ring[i]);
-          south = math.min(south, ring[i + 1]);
-          north = math.max(north, ring[i + 1]);
-        }
-      }
-    }
+  /// Below this span in degrees, the card zooms to the districts on the
+  /// route: on the country map a trip within a district would be a dot.
+  static const _zoomBelowDegrees = 1.6;
+
+  factory _Fit.of(DistrictMap map, Size size, PlaceRoute? route) {
+    final onRoute = {...?route?.districts};
+    final focus = map.districts.where((d) => onRoute.contains(d.en)).toList();
+
+    var bounds = _bounds(focus);
+    final zoomed =
+        focus.isNotEmpty &&
+        bounds.east - bounds.west < _zoomBelowDegrees &&
+        bounds.north - bounds.south < _zoomBelowDegrees;
+    if (!zoomed) bounds = _bounds(map.districts);
+
+    final (:west, :east, :south, :north) = bounds;
     final midLat = (south + north) / 2;
     final stretch = math.cos(midLat * math.pi / 180);
-    const inset = 10.0;
+    // Room for the labels of places near the edge.
+    final inset = zoomed ? 36.0 : 10.0;
     final scale = math.min(
       (size.width - inset * 2) / ((east - west) * stretch),
       (size.height - inset * 2) / (north - south),
@@ -358,6 +370,24 @@ class _Fit {
       scale,
       size.center(Offset.zero),
     );
+  }
+
+  static ({double west, double east, double south, double north}) _bounds(
+    Iterable<District> districts,
+  ) {
+    var west = double.infinity, east = -double.infinity;
+    var south = double.infinity, north = -double.infinity;
+    for (final district in districts) {
+      for (final ring in district.rings) {
+        for (var i = 0; i < ring.length; i += 2) {
+          west = math.min(west, ring[i]);
+          east = math.max(east, ring[i]);
+          south = math.min(south, ring[i + 1]);
+          north = math.max(north, ring[i + 1]);
+        }
+      }
+    }
+    return (west: west, east: east, south: south, north: north);
   }
 
   final double _midLat;
@@ -385,18 +415,19 @@ class _RoutePainter extends CustomPainter {
   });
 
   final DistrictMap districts;
-  final DistrictRoute? route;
+  final PlaceRoute? route;
   final String locale;
 
   @override
   void paint(Canvas canvas, Size size) {
     if (districts.isEmpty) return;
 
-    final fit = _Fit.of(districts, size);
+    // Zoomed in, neighbouring districts run past the edge of the map.
+    canvas.clipRect(Offset.zero & size);
+    final fit = _Fit.of(districts, size, route);
     Offset project(double lat, double lng) => fit.project(lat, lng);
 
-    final stops = route?.districts ?? const <District>[];
-    final onRoute = {for (final d in stops) d.en};
+    final onRoute = {...?route?.districts};
 
     final land = Paint()..color = _land;
     final highlighted = Paint()
@@ -414,7 +445,7 @@ class _RoutePainter extends CustomPainter {
     // Route districts last, so their borders are not painted over.
     for (final district in [
       ...districts.districts.where((d) => !onRoute.contains(d.en)),
-      ...stops,
+      ...districts.districts.where((d) => onRoute.contains(d.en)),
     ]) {
       final path = Path()..fillType = PathFillType.evenOdd;
       for (final ring in district.rings) {
@@ -431,9 +462,10 @@ class _RoutePainter extends CustomPainter {
         ..drawPath(path, border);
     }
 
-    if (stops.isEmpty) return;
+    final current = route;
+    if (current == null) return;
 
-    final points = [for (final d in stops) project(d.anchor.lat, d.anchor.lng)];
+    final points = [for (final p in current.path) project(p.lat, p.lng)];
 
     if (points.length > 1) {
       final line = Path()..moveTo(points.first.dx, points.first.dy);
@@ -451,16 +483,19 @@ class _RoutePainter extends CustomPainter {
         ..drawPath(line, stroke(_pin, 3));
     }
 
+    // Only what the rider chose is named; the road passes many more.
+    final stops = current.waypoints;
     for (var i = 0; i < stops.length; i++) {
       final isEnd = i == 0 || i == stops.length - 1;
-      final radius = isEnd ? 6.0 : 3.0;
+      final radius = isEnd ? 6.0 : 4.0;
+      final point = project(stops[i].lat, stops[i].lng);
       canvas
-        ..drawCircle(points[i], radius + 1.5, Paint()..color = _white)
-        ..drawCircle(points[i], radius, Paint()..color = _pin);
+        ..drawCircle(point, radius + 1.5, Paint()..color = _white)
+        ..drawCircle(point, radius, Paint()..color = _pin);
       _label(
         canvas,
         stops[i].nameIn(locale),
-        points[i],
+        point,
         isEnd ? 13.0 : 10.0,
         radius,
       );

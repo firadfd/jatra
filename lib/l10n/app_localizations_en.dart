@@ -1812,17 +1812,17 @@ class LEn extends L {
   String get routeTitle => 'Plan a route';
 
   @override
-  String get routeStart => 'Start district';
+  String get routeStart => 'Start district or upazila';
 
   @override
-  String get routeEnd => 'End district';
+  String get routeEnd => 'End district or upazila';
 
   @override
   String get routeDistance => 'Distance';
 
   @override
   String get routeEstimateHelp =>
-      'Estimated from the districts on the way. Type the real distance if you know it.';
+      'Road distance between town centres. Type the real distance if you know it.';
 
   @override
   String get routeEditedHelp => 'Using the distance you entered.';
@@ -1872,7 +1872,7 @@ class LEn extends L {
 
   @override
   String get routeStopsHelp =>
-      'Tap a district on the map below to add or remove it. Drag to change the order.';
+      'Tap the map below to add or remove a stop. Drag to change the order.';
 
   @override
   String get routeResetSuggested => 'Reset';
@@ -1881,13 +1881,13 @@ class LEn extends L {
   String get routeRemoveStop => 'Remove';
 
   @override
-  String get routeAddStop => 'Add a district on the way';
+  String get routeAddStop => 'Add a stop on the way';
 
   @override
-  String get routeSearchHint => 'Search district';
+  String get routeSearchHint => 'Search district or upazila';
 
   @override
-  String get routeSearchNone => 'No district found';
+  String get routeSearchNone => 'No place found';
 
   @override
   String get routeBikeName => 'Bike name (optional)';
@@ -1911,4 +1911,19 @@ class LEn extends L {
   String routeCardRideWith(String bike) {
     return 'Ride with $bike';
   }
+
+  @override
+  String routePassesThrough(String districts) {
+    return 'Passes through $districts';
+  }
+
+  @override
+  String get routeFerryWarning =>
+      'This route includes a ferry crossing. Check the schedule before you ride.';
+
+  @override
+  String get routeCardFerry => 'Includes ferry';
+
+  @override
+  String get routeDistrictTag => 'District';
 }

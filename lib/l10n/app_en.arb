@@ -1432,10 +1432,10 @@
   "ridesCardPhotoFailed": "That photo could not be opened. Try another.",
   "navRoute": "Route",
   "routeTitle": "Plan a route",
-  "routeStart": "Start district",
-  "routeEnd": "End district",
+  "routeStart": "Start district or upazila",
+  "routeEnd": "End district or upazila",
   "routeDistance": "Distance",
-  "routeEstimateHelp": "Estimated from the districts on the way. Type the real distance if you know it.",
+  "routeEstimateHelp": "Road distance between town centres. Type the real distance if you know it.",
   "routeEditedHelp": "Using the distance you entered.",
   "routeUseEstimate": "Use estimate",
   "routeYourName": "Your name (optional)",
@@ -1464,12 +1464,12 @@
   "routeCardPromptStrong": "Ride on with Jatra",
   "routeCardTagline": "Motorcycle tracker",
   "routeStopsTitle": "Your route",
-  "routeStopsHelp": "Tap a district on the map below to add or remove it. Drag to change the order.",
+  "routeStopsHelp": "Tap the map below to add or remove a stop. Drag to change the order.",
   "routeResetSuggested": "Reset",
   "routeRemoveStop": "Remove",
-  "routeAddStop": "Add a district on the way",
-  "routeSearchHint": "Search district",
-  "routeSearchNone": "No district found",
+  "routeAddStop": "Add a stop on the way",
+  "routeSearchHint": "Search district or upazila",
+  "routeSearchNone": "No place found",
   "routeBikeName": "Bike name (optional)",
   "routeBikeHint": "Honda XBlade",
   "routeAddPhoto": "Add profile photo",
@@ -1483,5 +1483,14 @@
         "type": "String"
       }
     }
-  }
+  },
+  "routePassesThrough": "Passes through {districts}",
+  "@routePassesThrough": {
+    "placeholders": {
+      "districts": { "type": "String" }
+    }
+  },
+  "routeFerryWarning": "This route includes a ferry crossing. Check the schedule before you ride.",
+  "routeCardFerry": "Includes ferry",
+  "routeDistrictTag": "District"
 }

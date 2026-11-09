@@ -3,7 +3,7 @@ description: "Jatra — offline-first fuel, service and ride-cost tracker for mo
 publish_to: 'none'
 
 # versionName+versionCode. JSON backups record this, read at runtime.
-version: 1.2.1+11
+version: 1.2.2+12
 
 environment:
   sdk: ^3.12.2
@@ -97,6 +97,8 @@ flutter:
   assets:
     # District outlines for ride cards. Source and licence: assets/geo/NOTICE.txt
     - assets/geo/bd_districts.json
+    # Upazilas and road links for the route planner. Same notice.
+    - assets/geo/bd_upazilas.json
 
   # Generates lib/l10n/app_localizations.dart from the .arb files.
   generate: true
