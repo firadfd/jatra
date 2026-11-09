@@ -7,7 +7,7 @@ import '../../app/theme/app_theme.dart';
 import '../../core/utils/numeric_input.dart';
 import '../../core/widgets/jatra_widgets.dart';
 import '../../l10n/app_localizations.dart';
-import '../../services/district_map.dart';
+import '../../services/place_network.dart';
 import 'route_planner_controller.dart';
 import 'widgets/route_card_face.dart';
 
@@ -34,7 +34,7 @@ class RoutePlannerView extends GetView<RoutePlannerController> {
                 child: Column(
                   children: [
                     Obx(
-                      () => _DistrictPicker(
+                      () => _PlacePicker(
                         label: l.routeStart,
                         selected: controller.start.value,
                         onChanged: controller.setStart,
@@ -42,7 +42,7 @@ class RoutePlannerView extends GetView<RoutePlannerController> {
                     ),
                     const SizedBox(height: Gap.md),
                     Obx(
-                      () => _DistrictPicker(
+                      () => _PlacePicker(
                         label: l.routeEnd,
                         selected: controller.end.value,
                         onChanged: controller.setEnd,
@@ -118,9 +118,9 @@ class RoutePlannerView extends GetView<RoutePlannerController> {
                         districts: controller.districts,
                         content: controller.content(),
                         l: l,
-                        onDistrictTap: controller.route.value == null
+                        onMapTap: controller.route.value == null
                             ? null
-                            : controller.toggleStop,
+                            : controller.tapMap,
                       ),
                     ),
                   ),
@@ -146,7 +146,8 @@ class RoutePlannerView extends GetView<RoutePlannerController> {
               // translated. See assets/geo/NOTICE.txt.
               Text(
                 'District boundaries: geoBoundaries, BBS and OCHA ROAP '
-                '(CC BY 3.0 IGO), simplified.',
+                '(CC BY 3.0 IGO), simplified. Roads: © OpenStreetMap '
+                'contributors (ODbL).',
                 style: AppText.caption.copyWith(color: c.textMuted),
               ),
             ],
@@ -221,7 +222,8 @@ class _StopsCard extends GetView<RoutePlannerController> {
         if (route == null) return const SizedBox.shrink();
         final via = route.via;
         final locale = controller.locale;
-        final taken = {for (final d in route.districts) d.en};
+        final taken = {for (final p in route.waypoints) p.id};
+        final passes = route.districtsIn(locale);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,7 +245,7 @@ class _StopsCard extends GetView<RoutePlannerController> {
             const SizedBox(height: Gap.sm),
             _FixedStop(
               icon: Icons.trip_origin,
-              name: route.districts.first.nameIn(locale),
+              name: route.start.labelIn(locale),
             ),
             ReorderableListView(
               shrinkWrap: true,
@@ -253,29 +255,40 @@ class _StopsCard extends GetView<RoutePlannerController> {
               children: [
                 for (var i = 0; i < via.length; i++)
                   ListTile(
-                    key: ValueKey(via[i].en),
+                    key: ValueKey(via[i].id),
                     contentPadding: EdgeInsets.zero,
                     dense: true,
                     leading: ReorderableDragStartListener(
                       index: i,
                       child: const Icon(Icons.drag_indicator),
                     ),
-                    title: Text(via[i].nameIn(locale)),
+                    title: Text(via[i].labelIn(locale)),
                     trailing: IconButton(
                       icon: const Icon(Icons.close, size: 18),
                       tooltip: l.routeRemoveStop,
-                      onPressed: () => controller.removeStop(via[i].en),
+                      onPressed: () => controller.removeStop(via[i].id),
                     ),
                   ),
               ],
             ),
-            if (route.districts.length > 1)
-              _FixedStop(
-                icon: Icons.place,
-                name: route.districts.last.nameIn(locale),
+            if (route.waypoints.length > 1)
+              _FixedStop(icon: Icons.place, name: route.end.labelIn(locale)),
+            if (passes.length > 2) ...[
+              const SizedBox(height: Gap.xs),
+              Text(
+                l.routePassesThrough(passes.join(' → ')),
+                style: AppText.caption.copyWith(color: c.textMuted),
               ),
+            ],
+            if (route.usesFerry) ...[
+              const SizedBox(height: Gap.xs),
+              Text(
+                l.routeFerryWarning,
+                style: AppText.caption.copyWith(color: c.textPrimary),
+              ),
+            ],
             const SizedBox(height: Gap.sm),
-            _DistrictPicker(
+            _PlacePicker(
               label: l.routeAddStop,
               selected: null,
               onChanged: controller.addStop,
@@ -307,8 +320,8 @@ class _FixedStop extends StatelessWidget {
 }
 
 /// A field that opens the district search.
-class _DistrictPicker extends GetView<RoutePlannerController> {
-  const _DistrictPicker({
+class _PlacePicker extends GetView<RoutePlannerController> {
+  const _PlacePicker({
     required this.label,
     required this.selected,
     required this.onChanged,
@@ -325,9 +338,7 @@ class _DistrictPicker extends GetView<RoutePlannerController> {
   @override
   Widget build(BuildContext context) {
     final locale = controller.locale;
-    final current = controller.districts.districts
-        .where((d) => d.en == selected)
-        .firstOrNull;
+    final current = controller.network.byId(selected);
 
     return InkWell(
       borderRadius: BorderRadius.circular(Radii.input),
@@ -338,7 +349,7 @@ class _DistrictPicker extends GetView<RoutePlannerController> {
           labelText: label,
           suffixIcon: const Icon(Icons.search),
         ),
-        child: Text(current?.nameIn(locale) ?? ''),
+        child: Text(current?.labelIn(locale) ?? ''),
       ),
     );
   }
@@ -349,35 +360,35 @@ class _DistrictPicker extends GetView<RoutePlannerController> {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (_) => _DistrictSearchSheet(
+      builder: (_) => _PlaceSearchSheet(
         title: label,
         locale: controller.locale,
-        districts: [
-          for (final d in controller.sortedDistricts)
-            if (!exclude.contains(d.en)) d,
-        ],
+        network: controller.network,
+        exclude: exclude,
       ),
     );
     if (picked != null) onChanged(picked);
   }
 }
 
-class _DistrictSearchSheet extends StatefulWidget {
-  const _DistrictSearchSheet({
+class _PlaceSearchSheet extends StatefulWidget {
+  const _PlaceSearchSheet({
     required this.title,
     required this.locale,
-    required this.districts,
+    required this.network,
+    required this.exclude,
   });
 
   final String title;
   final String locale;
-  final List<District> districts;
+  final PlaceNetwork network;
+  final Set<String> exclude;
 
   @override
-  State<_DistrictSearchSheet> createState() => _DistrictSearchSheetState();
+  State<_PlaceSearchSheet> createState() => _PlaceSearchSheetState();
 }
 
-class _DistrictSearchSheetState extends State<_DistrictSearchSheet> {
+class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
   String _query = '';
 
   @override
@@ -385,7 +396,11 @@ class _DistrictSearchSheetState extends State<_DistrictSearchSheet> {
     final l = L.of(context);
     final c = context.jatra;
     final media = MediaQuery.of(context);
-    final results = widget.districts.where((d) => d.matches(_query)).toList();
+    final results = widget.network.search(
+      _query,
+      widget.locale,
+      exclude: widget.exclude,
+    );
     final otherLocale = widget.locale == 'bn' ? 'en' : 'bn';
 
     return Padding(
@@ -426,14 +441,18 @@ class _DistrictSearchSheetState extends State<_DistrictSearchSheet> {
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       itemCount: results.length,
                       itemBuilder: (context, index) {
-                        final district = results[index];
+                        final place = results[index];
                         return ListTile(
-                          title: Text(district.nameIn(widget.locale)),
+                          title: Text(place.nameIn(widget.locale)),
                           subtitle: Text(
-                            district.nameIn(otherLocale),
+                            place.isDistrict
+                                ? '${l.routeDistrictTag} · '
+                                      '${place.nameIn(otherLocale)}'
+                                : '${place.districtIn(widget.locale)} · '
+                                      '${place.nameIn(otherLocale)}',
                             style: AppText.caption.copyWith(color: c.textMuted),
                           ),
-                          onTap: () => Navigator.of(context).pop(district.en),
+                          onTap: () => Navigator.of(context).pop(place.id),
                         );
                       },
                     ),

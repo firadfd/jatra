@@ -3334,13 +3334,13 @@ abstract class L {
   /// No description provided for @routeStart.
   ///
   /// In en, this message translates to:
-  /// **'Start district'**
+  /// **'Start district or upazila'**
   String get routeStart;
 
   /// No description provided for @routeEnd.
   ///
   /// In en, this message translates to:
-  /// **'End district'**
+  /// **'End district or upazila'**
   String get routeEnd;
 
   /// No description provided for @routeDistance.
@@ -3352,7 +3352,7 @@ abstract class L {
   /// No description provided for @routeEstimateHelp.
   ///
   /// In en, this message translates to:
-  /// **'Estimated from the districts on the way. Type the real distance if you know it.'**
+  /// **'Road distance between town centres. Type the real distance if you know it.'**
   String get routeEstimateHelp;
 
   /// No description provided for @routeEditedHelp.
@@ -3442,7 +3442,7 @@ abstract class L {
   /// No description provided for @routeStopsHelp.
   ///
   /// In en, this message translates to:
-  /// **'Tap a district on the map below to add or remove it. Drag to change the order.'**
+  /// **'Tap the map below to add or remove a stop. Drag to change the order.'**
   String get routeStopsHelp;
 
   /// No description provided for @routeResetSuggested.
@@ -3460,19 +3460,19 @@ abstract class L {
   /// No description provided for @routeAddStop.
   ///
   /// In en, this message translates to:
-  /// **'Add a district on the way'**
+  /// **'Add a stop on the way'**
   String get routeAddStop;
 
   /// No description provided for @routeSearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search district'**
+  /// **'Search district or upazila'**
   String get routeSearchHint;
 
   /// No description provided for @routeSearchNone.
   ///
   /// In en, this message translates to:
-  /// **'No district found'**
+  /// **'No place found'**
   String get routeSearchNone;
 
   /// No description provided for @routeBikeName.
@@ -3516,6 +3516,30 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Ride with {bike}'**
   String routeCardRideWith(String bike);
+
+  /// No description provided for @routePassesThrough.
+  ///
+  /// In en, this message translates to:
+  /// **'Passes through {districts}'**
+  String routePassesThrough(String districts);
+
+  /// No description provided for @routeFerryWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This route includes a ferry crossing. Check the schedule before you ride.'**
+  String get routeFerryWarning;
+
+  /// No description provided for @routeCardFerry.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes ferry'**
+  String get routeCardFerry;
+
+  /// No description provided for @routeDistrictTag.
+  ///
+  /// In en, this message translates to:
+  /// **'District'**
+  String get routeDistrictTag;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

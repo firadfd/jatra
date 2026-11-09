@@ -13,6 +13,7 @@ import 'package:jatra/modules/route_planner/route_planner_view.dart';
 import 'package:jatra/modules/vehicles/vehicle_controller.dart';
 import 'package:jatra/services/district_map.dart';
 import 'package:jatra/services/export_service.dart';
+import 'package:jatra/services/place_network.dart';
 import 'package:jatra/data/repositories/backup_repo.dart';
 import 'package:jatra/services/settings_service.dart';
 
@@ -27,6 +28,7 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     await DistrictMap.load();
+    await PlaceNetwork.load();
   });
 
   Future<void> open(WidgetTester tester) async {
@@ -59,53 +61,66 @@ void main() {
   });
 
   List<String> stops() => [
-    for (final d in controller.route.value!.districts) d.en,
+    for (final p in controller.route.value!.waypoints) p.id,
   ];
 
   testWidgets('the suggested route can be corrected by hand', (tester) async {
     await open(tester);
 
     controller
-      ..setStart('Kurigram')
-      ..setEnd('Dhaka');
+      ..setStart('kurigram.kurigram-sadar')
+      ..setEnd('dhaka.dhaka-city');
     await tester.pump();
     expect(tester.takeException(), isNull);
     expect(find.byType(ReorderableListView), findsOneWidget);
 
     final suggested = controller.route.value!.estimatedM;
-    controller.addStop('Bandarban');
+    controller.addStop('bandarban.bandarban-sadar');
     await tester.pump();
     expect(tester.takeException(), isNull);
-    expect(stops(), contains('Bandarban'));
+    expect(stops(), contains('bandarban.bandarban-sadar'));
     expect(controller.isCustomRoute.value, isTrue);
     expect(controller.distanceM, greaterThan(suggested));
 
-    controller.removeStop('Bandarban');
+    controller.removeStop('bandarban.bandarban-sadar');
     await tester.pump();
-    expect(stops(), isNot(contains('Bandarban')));
+    expect(stops(), isNot(contains('bandarban.bandarban-sadar')));
 
-    controller.addStop('Bandarban');
+    controller.addStop('bandarban.bandarban-sadar');
     controller.resetRoute();
     await tester.pump();
-    expect(stops(), isNot(contains('Bandarban')));
+    expect(stops(), isNot(contains('bandarban.bandarban-sadar')));
     expect(controller.isCustomRoute.value, isFalse);
   });
 
   testWidgets('a start district can be found by searching', (tester) async {
     await open(tester);
 
-    await tester.tap(find.text('Start district'));
+    await tester.tap(find.text('Start district or upazila'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).last, 'kuri');
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(ListTile, 'Kurigram'), findsOneWidget);
-    expect(find.widgetWithText(ListTile, 'Dhaka'), findsNothing);
+    expect(find.widgetWithText(ListTile, 'Kurigram Sadar'), findsOneWidget);
+    expect(find.widgetWithText(ListTile, 'Dhaka City'), findsNothing);
 
-    await tester.tap(find.widgetWithText(ListTile, 'Kurigram'));
+    await tester.tap(find.widgetWithText(ListTile, 'Kurigram Sadar'));
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
-    expect(controller.start.value, 'Kurigram');
+    expect(controller.start.value, 'kurigram.kurigram-sadar');
+  });
+
+  testWidgets('a trip within one district gets a distance', (tester) async {
+    await open(tester);
+
+    controller
+      ..setStart('rangpur.rangpur-sadar')
+      ..setEnd('rangpur.pirganj');
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    expect(controller.distanceM, greaterThan(20000));
+    expect(controller.route.value!.districts, ['Rangpur']);
   });
 
   VehicleRow bike(String name) => VehicleRow(
@@ -155,13 +170,13 @@ void main() {
   testWidgets('a typed distance survives editing the stops', (tester) async {
     await open(tester);
     controller
-      ..setStart('Kurigram')
-      ..setEnd('Dhaka');
+      ..setStart('kurigram.kurigram-sadar')
+      ..setEnd('dhaka.dhaka-city');
     await tester.pump();
 
     controller.distanceCtrl.text = '360';
     await tester.pump();
-    controller.addStop('Bogura');
+    controller.addStop('bogura.bogura-sadar');
     await tester.pump();
 
     expect(controller.distanceM, 360000);

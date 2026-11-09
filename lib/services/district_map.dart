@@ -44,6 +44,9 @@ class District {
     'Brahmanbaria': 'brahamanbaria',
   };
 
+  /// The spellings [en] was formerly known by, or empty.
+  static String formerNameOf(String en) => _formerNames[en] ?? '';
+
   /// Whether [query] appears in the Bangla, English or former name, ignoring
   /// case, spaces and the apostrophe people skip in Cox's Bazar.
   bool matches(String query) {

@@ -1817,17 +1817,17 @@ class LBn extends L {
   String get routeTitle => 'রুট পরিকল্পনা';
 
   @override
-  String get routeStart => 'শুরুর জেলা';
+  String get routeStart => 'শুরুর জেলা বা উপজেলা';
 
   @override
-  String get routeEnd => 'শেষের জেলা';
+  String get routeEnd => 'শেষের জেলা বা উপজেলা';
 
   @override
   String get routeDistance => 'দূরত্ব';
 
   @override
   String get routeEstimateHelp =>
-      'পথের জেলাগুলো থেকে আনুমানিক হিসাব। আসল দূরত্ব জানলে লিখে দিন।';
+      'শহরের কেন্দ্রের মধ্যে সড়কপথের দূরত্ব। আসল দূরত্ব জানলে লিখে দিন।';
 
   @override
   String get routeEditedHelp => 'আপনার লেখা দূরত্ব ব্যবহার হচ্ছে।';
@@ -1877,7 +1877,7 @@ class LBn extends L {
 
   @override
   String get routeStopsHelp =>
-      'যোগ করতে বা সরাতে নিচের মানচিত্রে জেলায় ট্যাপ করুন। ক্রম বদলাতে টেনে সরান।';
+      'স্টপ যোগ করতে বা সরাতে নিচের মানচিত্রে ট্যাপ করুন। ক্রম বদলাতে টেনে সরান।';
 
   @override
   String get routeResetSuggested => 'আগের মতো করুন';
@@ -1886,13 +1886,13 @@ class LBn extends L {
   String get routeRemoveStop => 'সরান';
 
   @override
-  String get routeAddStop => 'পথের জেলা যোগ করুন';
+  String get routeAddStop => 'পথে একটি স্টপ যোগ করুন';
 
   @override
-  String get routeSearchHint => 'জেলা খুঁজুন';
+  String get routeSearchHint => 'জেলা বা উপজেলা খুঁজুন';
 
   @override
-  String get routeSearchNone => 'কোনো জেলা পাওয়া যায়নি';
+  String get routeSearchNone => 'কোনো জায়গা পাওয়া যায়নি';
 
   @override
   String get routeBikeName => 'বাইকের নাম (ঐচ্ছিক)';
@@ -1916,4 +1916,19 @@ class LBn extends L {
   String routeCardRideWith(String bike) {
     return '$bike নিয়ে যাত্রা';
   }
+
+  @override
+  String routePassesThrough(String districts) {
+    return '$districts হয়ে যাবে';
+  }
+
+  @override
+  String get routeFerryWarning =>
+      'এই রুটে ফেরি পারাপার আছে। যাত্রার আগে সময়সূচি দেখে নিন।';
+
+  @override
+  String get routeCardFerry => 'ফেরি পারাপার আছে';
+
+  @override
+  String get routeDistrictTag => 'জেলা';
 }

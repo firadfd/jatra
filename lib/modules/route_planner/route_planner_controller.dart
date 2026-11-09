@@ -9,7 +9,7 @@ import 'package:get/get.dart' hide Value;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../core/calc/district_route.dart';
+import '../../core/calc/place_route.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/utils/units.dart';
 import '../../data/db/database.dart';
@@ -17,11 +17,12 @@ import '../../l10n/app_localizations.dart';
 import '../../services/district_map.dart';
 import '../../services/export_service.dart';
 import '../../services/home_widget/offscreen_renderer.dart';
+import '../../services/place_network.dart';
 import '../../services/settings_service.dart';
 import '../vehicles/vehicle_controller.dart';
 import 'widgets/route_card_face.dart';
 
-/// Pick two districts, see the route, adjust the distance, share a card.
+/// Pick two places, see the route, adjust the distance, share a card.
 class RoutePlannerController extends GetxController {
   RoutePlannerController(this._vehicles, this._settings, this._export);
 
@@ -40,7 +41,7 @@ class RoutePlannerController extends GetxController {
   final isSharing = false.obs;
   final start = RxnString();
   final end = RxnString();
-  final route = Rxn<DistrictRoute>();
+  final route = Rxn<PlaceRoute>();
   final name = ''.obs;
   final bike = ''.obs;
   final photo = Rxn<ui.Image>();
@@ -52,6 +53,7 @@ class RoutePlannerController extends GetxController {
   final manualM = RxnInt();
 
   DistrictMap districts = DistrictMap.empty;
+  PlaceNetwork network = PlaceNetwork.empty;
 
   /// True once the rider has typed a bike name in this session.
   bool _bikeEdited = false;
@@ -95,6 +97,7 @@ class RoutePlannerController extends GetxController {
 
   Future<void> _load() async {
     districts = await DistrictMap.load();
+    network = await PlaceNetwork.load();
     await _restorePhoto();
     isLoading.value = false;
   }
@@ -161,53 +164,51 @@ class RoutePlannerController extends GetxController {
     old?.dispose();
   }
 
-  /// All districts, in the alphabetical order of the current language.
-  List<District> get sortedDistricts =>
-      [...districts.districts]
-        ..sort((a, b) => a.nameIn(locale).compareTo(b.nameIn(locale)));
-
-  void setStart(String? district) {
-    start.value = district;
+  void setStart(String? id) {
+    start.value = id;
     _recompute();
   }
 
-  void setEnd(String? district) {
-    end.value = district;
+  void setEnd(String? id) {
+    end.value = id;
     _recompute();
   }
 
-  /// Tapping the map: adds a district, or removes it if already a stop.
-  void toggleStop(String district) {
+  /// Tapping the map: toggles the place closest to the tap.
+  void tapMap(double lat, double lng) {
+    final place = network.nearest(lat, lng);
+    if (place != null) toggleStop(place.id);
+  }
+
+  /// Adds a place as a stop, or removes it if already one.
+  void toggleStop(String id) {
     final current = route.value;
-    if (current == null) return;
-    final found = districts.districts.firstWhereOrNull((d) => d.en == district);
-    if (found == null) return;
+    final place = network.byId(id);
+    if (current == null || place == null) return;
     _edit(
-      current.contains(district)
-          ? current.removing(district)
-          : current.adding(found),
+      current.contains(id)
+          ? current.removing(network, id)
+          : current.adding(network, place),
     );
   }
 
-  void addStop(String? district) {
-    if (district != null && route.value?.contains(district) == false) {
-      toggleStop(district);
-    }
+  void addStop(String? id) {
+    if (id != null && route.value?.contains(id) == false) toggleStop(id);
   }
 
-  void removeStop(String district) {
+  void removeStop(String id) {
     final current = route.value;
-    if (current != null) _edit(current.removing(district));
+    if (current != null) _edit(current.removing(network, id));
   }
 
   void moveStop(int from, int to) {
     final current = route.value;
-    if (current != null) _edit(current.movingVia(from, to));
+    if (current != null) _edit(current.movingVia(network, from, to));
   }
 
   /// A distance the rider typed stays put: they are correcting the path of
   /// the same trip. The estimate follows the stops.
-  void _edit(DistrictRoute edited) {
+  void _edit(PlaceRoute edited) {
     if (identical(edited, route.value)) return;
     route.value = edited;
     isCustomRoute.value = true;
@@ -224,7 +225,7 @@ class RoutePlannerController extends GetxController {
     final to = end.value;
     route.value = from == null || to == null
         ? null
-        : DistrictRouter.find(districts, from, to);
+        : PlaceRouter.find(network, from, to);
     isCustomRoute.value = false;
     useEstimate();
   }
